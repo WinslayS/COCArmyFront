@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const closeModal = document.getElementById('closeModal');
     const fullscreenModal = document.getElementById('fullscreenModal');
 
+    const MAX_VELOCITY = 2;
+
     // Переменные состояния
     let scale = 1;
     let offsetX = 0;  // смещение по X (относительно центра)
@@ -54,6 +56,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     let lastMoveTime = 0;
     let velocityX = 0;
     let velocityY = 0;
+
+    let isSwipeAnimating = false;
 
     // Загрузка JSON (пример)
     try {
@@ -356,6 +360,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     imageStage.addEventListener('pointercancel', onPointerCancel);
 
     function onPointerDown(e) {
+        // Если анимация свайпа уже идёт, игнорируем новые pointer‑события
+        if (isSwipeAnimating) return;
         if (e.target.closest('.control-button, #closeModal, #zoomSliderContainer, .thumbnail')) {
             return;
         }
@@ -367,12 +373,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             startPinchDist = getPinchDistance(pointers[0], pointers[1]);
             startPinchScale = scale;
             startPinchCenter = getPinchCenter(pointers[0], pointers[1]);
-            // Запоминаем текущие смещения:
             startOffsetX = offsetX;
             startOffsetY = offsetY;
         }
         
-        // Обрабатываем double tap только для одного указателя:
+        // Обработка двойного нажатия и начало отслеживания свайпа/перетаскивания
         if (pointers.length === 1) {
             clickCount++;
             if (clickCount === 1) {
@@ -383,8 +388,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 handleDoublePress(e);
             }
             
-            // Если только один палец – начинаем отслеживать drag/swipe.
-            // При запуске перетаскивания сохраняем начальное время и сбрасываем скорость.
             startX = e.clientX;
             startY = e.clientY;
             lastMoveTime = Date.now();
@@ -409,7 +412,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 slidePrev.style.transform = 'translateX(-100%)';
             }
         }
-    }       
+    }      
 
     function onPointerMove(e) {
         // Обновляем координаты указателей
@@ -443,8 +446,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             const dt = now - lastMoveTime || 16;
             const dx = e.clientX - startX;
             const dy = e.clientY - startY;
+            
+            // Вычисляем скорость перемещения
             velocityX = dx / dt;
             velocityY = dy / dt;
+            
+            // Ограничиваем скорость, чтобы инерция не была слишком сильной
+            velocityX = Math.max(-MAX_VELOCITY, Math.min(velocityX, MAX_VELOCITY));
+            velocityY = Math.max(-MAX_VELOCITY, Math.min(velocityY, MAX_VELOCITY));
+            
             offsetX += dx;
             offsetY += dy;
             startX = e.clientX;
@@ -534,14 +544,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Завершаем свайпы
     function finishHorizontalSwipe(dx) {
+        // Если анимация уже идёт, игнорируем повторный свайп
+        if (isSwipeAnimating) return;
+        isSwipeAnimating = true;
         const duration = 300;
+        let transitionElement;
+        
         if (dx < -SWIPE_THRESHOLD) {
             slideCurrent.style.transition = `transform ${duration}ms ease`;
             slideNext.style.transition = `transform ${duration}ms ease`;
             slideCurrent.style.transform = 'translateX(-100%)';
             slideNext.style.transform = 'translateX(0)';
-            slideNext.addEventListener('transitionend', function handler() {
-                slideNext.removeEventListener('transitionend', handler);
+            transitionElement = slideNext;
+            transitionElement.addEventListener('transitionend', function handler() {
+                transitionElement.removeEventListener('transitionend', handler);
                 currentImageIndex = (currentImageIndex + 1) % imagesList.length;
                 resetZoomParams();
                 updateSlides();
@@ -549,15 +565,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 syncZoomSlider();
                 updateThumbnails();
                 scrollToActiveThumbnail();
+                isSwipeAnimating = false;
             });
-        }
-        else if (dx > SWIPE_THRESHOLD) {
+        } else if (dx > SWIPE_THRESHOLD) {
             slideCurrent.style.transition = `transform ${duration}ms ease`;
             slidePrev.style.transition = `transform ${duration}ms ease`;
             slideCurrent.style.transform = 'translateX(100%)';
             slidePrev.style.transform = 'translateX(0)';
-            slidePrev.addEventListener('transitionend', function handler() {
-                slidePrev.removeEventListener('transitionend', handler);
+            transitionElement = slidePrev;
+            transitionElement.addEventListener('transitionend', function handler() {
+                transitionElement.removeEventListener('transitionend', handler);
                 currentImageIndex = (currentImageIndex - 1 + imagesList.length) % imagesList.length;
                 resetZoomParams();
                 updateSlides();
@@ -565,20 +582,29 @@ document.addEventListener('DOMContentLoaded', async () => {
                 syncZoomSlider();
                 updateThumbnails();
                 scrollToActiveThumbnail();
+                isSwipeAnimating = false;
             });
-        }
-        else {
+        } else {
             slideCurrent.style.transition = `transform ${duration}ms ease`;
             if (dx < 0) {
                 slideCurrent.style.transform = 'translateX(0)';
                 slideNext.style.transition = `transform ${duration}ms ease`;
                 slideNext.style.transform = 'translateX(100%)';
+                transitionElement = slideNext;
             } else {
                 slideCurrent.style.transform = 'translateX(0)';
                 slidePrev.style.transition = `transform ${duration}ms ease`;
                 slidePrev.style.transform = 'translateX(-100%)';
+                transitionElement = slidePrev;
             }
+            transitionElement.addEventListener('transitionend', function handler() {
+                transitionElement.removeEventListener('transitionend', handler);
+                isSwipeAnimating = false;
+            });
         }
+        
+        // На случай, если событие transitionend не сработает – сбрасываем флаг через timeout
+        setTimeout(() => { isSwipeAnimating = false; }, duration + 50);
     }
 
     function finishVerticalSwipe(dy) {
