@@ -71,6 +71,29 @@
     width: 100%; /* Растягиваем на всю ширину */
     z-index: 1000; /* Поверх фона */
 }
+.thumbnails {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Расстояние между миниатюрами */
+    background: none; /* Убираем фон */
+}
+.thumbnails img {
+    width: 80px;
+    height: 70px;
+    border-radius: 8px;
+    object-fit: cover; /* Квадратное отображение */
+    cursor: pointer;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    border: 2px solid transparent; /* Граница по умолчанию */
+}
+.thumbnails img:hover {
+border-color: rgba(255, 255, 255, 0.5); /* Подсветка активной миниатюры */
+}
+.thumbnails img.active {
+    transform: scale(1.1); /* Увеличение при наведении */
+    border-color: rgb(255, 255, 255); /* Подсветка активной миниатюры */
+
+}
 .preview-area {
     position: relative;
     width: 100%;
