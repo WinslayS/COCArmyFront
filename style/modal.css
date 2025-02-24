@@ -39,15 +39,17 @@
 }
 .modal-content {
     position: relative;
-    width: 90%;
-    max-width: 1200px;
-    height: auto; /* Автоматическая высота */
+    width: 100%;
+    max-width: 80%;
+    height: 100%;
+    max-height: 80%;
     visibility: visible;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     justify-content: flex-start; /* Интерфейс сверху, а миниатюры внизу */
     padding: 0;
+    background-color: rgba(0, 0, 0, 0.7);
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
@@ -59,6 +61,12 @@
     touch-action: none;     /* Отключаем системный скролл/зум внутри */
     user-select: none;      /* Запрещаем выделение текста при перетаскивании */
     cursor: grab; 
+}
+.image-stage-wrapper {
+    width: 100%;
+    flex: 1 1 auto; /* Позволяет обёртке занимать всю доступную высоту, заданную родителем */
+    position: relative;
+    overflow: hidden;
 }
 .controls-area {
     position: absolute; /* Фиксируем под рамкой */
@@ -267,6 +275,7 @@ body.modal-open::before {
     top: 0; left: 0;
     width: 100%;
     height: 100%;
+    border-radius: 12px;
     background-size: contain; 
     background-position: center;
     background-repeat: no-repeat;
@@ -282,7 +291,9 @@ body.modal-open::before {
     opacity: 0;
     /* transform будет ставиться динамически (translateY(-100%) или (100%)) */
   }
-  .slide.current { 
+  .slide.current {
+    border-radius: 12px;
+    overflow: hidden; 
     transform: translateX(0);
     z-index: 2;
   }
@@ -295,13 +306,15 @@ body.modal-open::before {
     z-index: 1;
   }
   .slide.current.zoom-animating {
-    transition: transform 0.3s ease !important;
+    transition: background-size 0.3s ease, background-position 0.3s ease !important;
   }
   .action-buttons {
     display: flex;
     gap: 10px;
     align-items: center;
   }
-  
+  .slide.current.snap-back-transition {
+    transition: background-position 0.3s ease, background-size 0.3s ease !important;
+  }
 
   

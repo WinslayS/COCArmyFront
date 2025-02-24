@@ -1,104 +1,180 @@
-/* js/header.js */
 document.addEventListener('DOMContentLoaded', function () {
-  const header = document.querySelector('.header-top');
-  const dropdownMenu = document.querySelector('.dropdown-menu');
-  // Выбираем только ссылки внутри элементов с классом "dropdown"
+  const headerTop = document.querySelector('.header-top');
+  const dropdownMenuContainer = document.querySelector('.dropdown-menu');
   const dropdownLinks = document.querySelectorAll('.nav-menu .dropdown > a');
-  // Для управления подсветкой открытого раздела – получим все элементы li с классом dropdown
   const dropdownItems = document.querySelectorAll('.nav-menu li.dropdown');
 
-  // Объект с подменю для каждого раздела (ключ – значение атрибута href)
+  // Подменю для каждого раздела
   const submenus = {
     "bases.html": [
       { text: "Загрузить", href: "upload.html" },
-      { text: "Расстановки", href: "layouts.html" },
+      { text: "Расстановки", href: "layouts.html" }
     ],
     "mix.html": [
+      { text: "Поиск", href: "search.html" },
       { text: "Создать", href: "create.html" },
       { text: "Смотреть", href: "view.html" }
     ],
     "advice.html": [
       { text: "Герои", href: "heroes.html" },
       { text: "Подкрепления", href: "reinforcements.html" },
-      { text: "Ошибки", href: "mistakes.html" }
+      { text: "Ошибки", href: "mistakes.html" },
+      { text: "Строительство", href: "build.html" }
     ]
   };
 
-  let currentDropdownKey = null;
-  let hideTimeout;
-  let changeTimeout;
+  let currentPanel = null;      // текущая открытая панель
+  let hideTimeout = null;       // таймер для запуска скрытия
 
-  // Обновление содержимого панели по ключу (значение href)
-  function updateDropdownContent(key) {
+  // Проверка, находится ли курсор в пределах разрешённых элементов (с запасом 20px)
+  function isMouseOverAllowed(e) {
+    const margin = 20;
+    const allowedElements = Array.from(dropdownLinks);
+    if (currentPanel) allowedElements.push(currentPanel);
+    for (const el of allowedElements) {
+      const rect = el.getBoundingClientRect();
+      if (
+        e.clientX >= rect.left - margin &&
+        e.clientX <= rect.right + margin &&
+        e.clientY >= rect.top - margin &&
+        e.clientY <= rect.bottom + margin
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // Создание панели с подменю для выбранного раздела
+  function createPanel(key) {
+    const panel = document.createElement('div');
+    panel.classList.add('dropdown-panel');
+    panel.dataset.key = key;
     if (submenus[key]) {
       let html = '<ul>';
       submenus[key].forEach(item => {
         html += `<li><a href="${item.href}">${item.text}</a></li>`;
       });
       html += '</ul>';
-      dropdownMenu.innerHTML = html;
-    } else {
-      dropdownMenu.innerHTML = '';
+      panel.innerHTML = html;
     }
-    currentDropdownKey = key;
+    return panel;
   }
 
-  // Функция показа панели с анимацией замены
+  // Открытие панели для выбранного пункта
   function showDropdown(key) {
-    // Если уже открыт нужный раздел и панель видна – ничего не делаем
-    if (currentDropdownKey === key && dropdownMenu.classList.contains('active')) {
-      return;
+    clearTimeout(hideTimeout);
+    hideTimeout = null;
+
+    // Если текущая панель уже запланирована к удалению – отменяем удаление
+    if (currentPanel && currentPanel.dataset.closing === "true") {
+      clearTimeout(currentPanel._closeTimer);
+      currentPanel.classList.add('active');
+      // Принудительный reflow для применения нового состояния
+      currentPanel.offsetHeight;
+      delete currentPanel.dataset.closing;
     }
-    // Сначала убираем подсветку со всех элементов
+
+    // Подсветка активного пункта
     dropdownItems.forEach(item => item.classList.remove('active'));
-    // Подсвечиваем элемент, на котором навели (его href совпадает с key)
     dropdownLinks.forEach(link => {
       if (link.getAttribute('href') === key) {
         link.parentElement.classList.add('active');
       }
     });
-    
-    // Если панель уже активна – запускаем анимацию исчезновения, затем обновляем контент и снова показываем её
-    if (dropdownMenu.classList.contains('active')) {
-      dropdownMenu.classList.remove('active');
-      clearTimeout(changeTimeout);
-      changeTimeout = setTimeout(function () {
-        updateDropdownContent(key);
-        dropdownMenu.classList.add('active');
-      }, 500); // длительность анимации 0.5 с
+
+    // Если панель для данного ключа уже существует – активируем её, иначе создаём новую
+    let existingPanel = dropdownMenuContainer.querySelector(`.dropdown-panel[data-key="${key}"]`);
+    if (existingPanel) {
+      existingPanel.style.zIndex = 2;
+      if (!existingPanel.classList.contains('active')) {
+        existingPanel.offsetHeight;
+        existingPanel.classList.add('active');
+      }
+      currentPanel = existingPanel;
     } else {
-      updateDropdownContent(key);
-      dropdownMenu.classList.add('active');
+      const newPanel = createPanel(key);
+      newPanel.style.zIndex = 2;
+      dropdownMenuContainer.appendChild(newPanel);
+      newPanel.offsetHeight;
+      newPanel.classList.add('active');
+      currentPanel = newPanel;
+    }
+
+    // Закрываем все панели, не соответствующие текущему разделу
+    const panels = dropdownMenuContainer.querySelectorAll('.dropdown-panel');
+    panels.forEach(panel => {
+      if (panel.dataset.key !== key) {
+        panel.style.zIndex = 1;
+        panel.classList.remove('active'); // запускаем анимацию закрытия (scaleY: 1→0)
+        panel.offsetHeight;
+        panel.dataset.closing = "true";
+        // Запланировать удаление панели через 450 мс (анимация 400 мс + небольшой запас)
+        panel._closeTimer = setTimeout(() => {
+          if (panel.dataset.closing === "true" && panel.parentNode === dropdownMenuContainer) {
+            dropdownMenuContainer.removeChild(panel);
+          }
+        }, 450);
+      }
+    });
+  }
+
+  // Скрытие текущей панели (запускается анимация закрытия, а удаление – по таймеру)
+  function hideDropdown() {
+    clearTimeout(hideTimeout);
+    hideTimeout = null;
+    dropdownItems.forEach(item => item.classList.remove('active'));
+    if (currentPanel) {
+      const panelToHide = currentPanel;
+      panelToHide.classList.remove('active');
+      panelToHide.offsetHeight;
+      panelToHide.dataset.closing = "true";
+      panelToHide._closeTimer = setTimeout(() => {
+        if (panelToHide.dataset.closing === "true" && panelToHide.parentNode === dropdownMenuContainer) {
+          dropdownMenuContainer.removeChild(panelToHide);
+        }
+        if (currentPanel === panelToHide) {
+          currentPanel = null;
+        }
+      }, 450);
     }
   }
 
-  // Функция скрытия панели и снятия подсветки
-  function hideDropdown() {
-    dropdownMenu.classList.remove('active');
-    dropdownItems.forEach(item => item.classList.remove('active'));
-    currentDropdownKey = null;
-  }
-
-  // При наведении на разделы с подменю – показываем панель с соответствующим содержимым
+  // Обработчики для ссылок с подменю
   dropdownLinks.forEach(link => {
     link.addEventListener('mouseenter', function () {
-      clearTimeout(hideTimeout);
       const key = link.getAttribute('href');
       showDropdown(key);
     });
+    link.addEventListener('click', function (e) {
+      if (window.innerWidth <= 768 || 'ontouchstart' in window) {
+        e.preventDefault();
+        const key = link.getAttribute('href');
+        if (currentPanel && currentPanel.dataset.key === key) {
+          hideDropdown();
+        } else {
+          showDropdown(key);
+        }
+      }
+    });
   });
 
-  // Если курсор уходит из области шапки или панели – скрываем панель с задержкой
-  header.addEventListener('mouseleave', function () {
-    hideTimeout = setTimeout(hideDropdown, 500);
+  // Обработка движения курсора по шапке
+  headerTop.addEventListener('mousemove', function (e) {
+    if (!isMouseOverAllowed(e)) {
+      if (!hideTimeout) {
+        hideTimeout = setTimeout(hideDropdown, 50);
+      }
+    } else {
+      if (currentPanel && currentPanel.dataset.closing !== "true" && hideTimeout) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+      }
+    }
   });
-  header.addEventListener('mouseenter', function () {
-    clearTimeout(hideTimeout);
-  });
-  dropdownMenu.addEventListener('mouseenter', function () {
-    clearTimeout(hideTimeout);
-  });
-  dropdownMenu.addEventListener('mouseleave', function () {
-    hideTimeout = setTimeout(hideDropdown, 500);
+
+  // При уходе курсора за пределы шапки – запускаем скрытие через 50 мс
+  headerTop.addEventListener('mouseleave', function () {
+    hideTimeout = setTimeout(hideDropdown, 50);
   });
 });
