@@ -1,8 +1,11 @@
 /* 1) Базовые стили для шапки */
+main {
+  margin-top: 70px !important; /* изначально равен высоте .header-top */
+}
 .header-top {
-  position: relative; /* для позиционирования подменю */
+  position: fixed; /* для позиционирования подменю */
   width: 100%;
-  min-height: 70px; /* чтобы шапка не схлопывалась, если нужно */
+  min-height: 70px; /* чтобы шапка не схлопывалась */
   background: #000;
   color: #ddd;
   z-index: 1000;
@@ -27,46 +30,72 @@
   height: 40px;
 }
 
-/* 2) Главное меню */
+/* 2) Главное меню (панель, которая выезжает на мобильных) */
+.nav-menu {
+  /* Для мобильных — выезжающая панель */
+  position: fixed;
+  top: 70px;
+  left: -100%; /* скрыто за экраном по умолчанию */
+  width: 100%;
+  background: #000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  transition: left 0.3s ease;
+  z-index: 999;
+  padding: 10px 0;
+}
+
 .nav-menu ul {
   display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 0 20px;
+  padding: 0;
   list-style: none;
-  margin-left: 20px;
 }
+
 .nav-menu li {
   position: relative;
   margin-right: 20px;
 }
+
 .nav-menu a {
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.7);
   transition: color 0.3s;
 }
+
 .nav-menu a:hover {
-  color: rgba(255, 255, 255, 0.7);
+  color: #fff;
 }
+
 .nav-menu .dropdown > a {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255,255,255,0.6);
   transition: color 0.3s, opacity 0.3s;
 }
+
 .nav-menu .dropdown > a:hover {
   color: #fff;
   opacity: 1;
 }
+
 /* Подсветка для пункта "ЛВК" (не dropdown) */
 .nav-menu li:not(.dropdown):hover > a {
   color: #fff;
 }
 
-/* 3) Контейнер для подпанели */
+/* При открытии панели (через JS добавляется класс .open) */
+.nav-menu.open {
+  left: 0;
+}
+
+/* 3) Контейнер для подпанели dropdown (оставляем без изменений) */
 .dropdown-menu {
   position: absolute;
   top: 70px;
   left: 0;
   width: 100%;
-  /* увеличиваем z-index, чтобы панель была выше контента */
   z-index: 2000;
-  /* убираем overflow, чтобы не обрезало содержимое */
   overflow: visible;
 }
 
@@ -91,7 +120,6 @@
   transform: scaleY(1);
 }
 
-/* Стили для содержимого панели */
 .dropdown-panel ul {
   margin: 0;
   padding: 0;
@@ -99,66 +127,67 @@
   display: flex;
   gap: 30px;
 }
+
 .dropdown-panel li {
   margin: 0;
 }
+
 .dropdown-panel a {
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255,255,255,0.6);
   transition: color 0.3s;
 }
+
 .dropdown-panel a:hover {
   color: #fff;
 }
 
-/* 4) Иконки */
+/* 4) Иконки и кнопки */
 .menu-icons {
   margin-left: auto;
   display: flex;
   gap: 15px;
 }
+
+/* Общие стили для кнопок-иконок */
 .icon-button {
   background: none;
   border: none;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255,255,255,0.6);
   transition: color 0.3s;
 }
+
 .icon-button:hover {
   color: #fff;
 }
+
 .icon-button svg {
   width: 24px;
   height: 24px;
   fill: currentColor;
 }
 
-/* 5) Адаптив для мобильных устройств */
-@media (max-width: 768px) {
-  .header-row {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px;
-  }
-  .header-top {
-    height: 60px;
-  }
-  .dropdown-menu {
-    top: 60px;
-  }
-  .nav-menu ul {
-    flex-direction: column;
-    gap: 10px;
-    margin-left: 0;
-    margin-top: 10px;
-  }
-  .menu-icons {
-    margin-left: 0;
-    margin-top: 10px;
-  }
+/* Гамбургер — отдельная кнопка внутри блока с иконками */
+.hamburger {
+  display: none; /* по умолчанию скрыт на десктопе */
+  cursor: pointer;
+  color: rgba(255,255,255,0.6);
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+.hamburger svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.hamburger:hover {
+  color: #fff;
 }
 
-/* Стили для карточек меню */
+/* 5) Стили для карточек меню и футера (оставляем без изменений) */
 .content-menu {
   display: flex;
   flex-wrap: wrap;
@@ -167,18 +196,105 @@
   padding: 20px;
 }
 
-/* Стили для футера */
 .footer-bottom {
   background: #000;
   color: #ddd;
   padding: 20px;
   text-align: center;
 }
+
 .footer-content a {
   color: #ddd;
   text-decoration: none;
   transition: color 0.3s;
 }
+
 .footer-content a:hover {
   color: #fff;
+}
+
+[data-theme="dark"] {
+  background-color: #444444;
+  color: white;
+}
+
+[data-theme="light"] {
+  background-color: white;
+  color: black;
+}
+
+/* По умолчанию подменю скрыто */
+.submenu {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* При добавлении класса .open показываем */
+.dropdown.open .submenu {
+  display: flex;
+}
+
+/* ------------- MEDIA QUERIES ------------- */
+
+/* Мобильные устройства (до 699px) */
+@media (max-width: 699px) {
+  .header-row {
+    flex-direction: row;
+    justify-content: space-between;
+    height: 70px;
+    padding: 0 10px;
+  }
+  .logo img {
+    height: 30px;
+  }
+  /* Показываем гамбургер на мобильном */
+  .hamburger {
+    display: inline-block;
+  }
+  /* Блок с иконками (включая гамбургер) остаётся справа */
+  .menu-icons {
+    display: flex;
+    gap: 10px;
+  }
+  .dropdown-menu {
+    display: none;
+  }
+}
+
+/* Для экранов от 700px и выше */
+@media (min-width: 700px) {
+  .header-row {
+    padding: 0 20px;
+    height: 70px;
+  }
+  .logo img {
+    height: 40px;
+  }
+  /* На десктопе гамбургер скрываем */
+  .hamburger {
+    display: none;
+  }
+  /* Если нужно, навигационное меню можно показывать сразу как inline */
+  .nav-menu {
+    position: static;
+    left: auto;
+    width: auto;
+    box-shadow: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+  }
+  .nav-menu ul {
+    flex-direction: row;
+    margin-left: 20px;
+  }
+  .dropdown .submenu {
+    display: none;
+  }
+  
+  /* Если где-то остался класс .open, то тоже не показываем */
+  .dropdown.open .submenu {
+    display: none;
+  }
 }

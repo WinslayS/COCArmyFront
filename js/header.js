@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
     "advice.html": [
       { text: "Герои", href: "heroes.html" },
       { text: "Подкрепления", href: "reinforcements.html" },
-      { text: "Ошибки", href: "mistakes.html" },
+      { text: "Атаки", href: "mistakes.html" },
       { text: "Строительство", href: "build.html" }
     ]
   };
@@ -178,3 +178,89 @@ document.addEventListener('DOMContentLoaded', function () {
     hideTimeout = setTimeout(hideDropdown, 50);
   });
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const themeToggle = document.getElementById("theme-toggle");
+
+  function setTheme(mode) {
+    document.body.dataset.theme = mode;
+    localStorage.setItem("theme", mode);
+  }
+
+  themeToggle.addEventListener("click", function () {
+    const currentTheme = localStorage.getItem("theme") || "dark";
+    setTheme(currentTheme === "dark" ? "light" : "dark");
+  });
+
+  // Устанавливаем тему при загрузке страницы
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  setTheme(savedTheme);
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const langToggle = document.getElementById("language-toggle");
+
+  function setLanguage(lang) {
+    localStorage.setItem("language", lang);
+    applyTranslations(lang);
+  }
+
+  function applyTranslations(lang) {
+    fetch("/translations.json")
+      .then(response => response.json())
+      .then(data => {
+        if (!data[lang]) return;
+
+        document.documentElement.lang = lang;
+        document.title = data[lang].title;
+
+        document.querySelectorAll("[data-i18n]").forEach(element => {
+          const key = element.getAttribute("data-i18n");
+          if (data[lang][key]) {
+            if (element.tagName === "IMG") {
+              element.setAttribute("alt", data[lang][key]);
+            } else {
+              element.innerText = data[lang][key];
+            }
+          }
+        });
+      });
+  }
+
+  // Обработчик переключения языка
+  langToggle.addEventListener("click", function () {
+    const currentLang = localStorage.getItem("language") || "ru";
+    const newLang = currentLang === "ru" ? "en" : "ru";
+    setLanguage(newLang);
+  });
+
+  // Устанавливаем язык при загрузке
+  const savedLang = localStorage.getItem("language") || navigator.language.slice(0, 2) || "ru";
+  setLanguage(savedLang);
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const mainNav = document.getElementById('mainNav');
+
+  // Находим сами SVG: три полоски и крест
+  const hamburgerLines = hamburgerBtn.querySelector('.hamburger-lines');
+  const hamburgerClose = hamburgerBtn.querySelector('.hamburger-close');
+
+  hamburgerBtn.addEventListener('click', () => {
+    // Переключаем меню
+    mainNav.classList.toggle('open');
+    // Если меню открыто, показываем крестик, прячем полоски
+    if (mainNav.classList.contains('open')) {
+      hamburgerLines.style.display = 'none';
+      hamburgerClose.style.display = 'block';
+    } else {
+      // Если меню закрыто, показываем полоски, прячем крестик
+      hamburgerLines.style.display = 'block';
+      hamburgerClose.style.display = 'none';
+    }
+  });
+});
+

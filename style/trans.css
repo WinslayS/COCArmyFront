@@ -35,9 +35,6 @@
     justify-content: space-around;
     gap: 20px;
     padding: 20px;
-    background-color: #fff8f0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
     max-width: 1200px;
     margin: 20px auto;
 }
@@ -61,8 +58,8 @@
 }
 
 .section-card h2 {
-    color: #e43b04;
-    font-size: 1.8em;
+    color: #333;
+    font-size: 1.5em;
     margin-bottom: 10px;
 }
 
