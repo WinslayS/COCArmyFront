@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const dropdownLinks = document.querySelectorAll('.nav-menu .dropdown > a');
   const dropdownItems = document.querySelectorAll('.nav-menu li.dropdown');
 
-  // Подменю для каждого раздела
+  // Список подменю для десктопной панели
   const submenus = {
     "bases.html": [
       { text: "Загрузить", href: "upload.html" },
@@ -23,10 +23,11 @@ document.addEventListener('DOMContentLoaded', function () {
     ]
   };
 
-  let currentPanel = null;      // текущая открытая панель
-  let hideTimeout = null;       // таймер для запуска скрытия
+  let currentPanel = null; // для десктопа
+  let hideTimeout = null;
 
-  // Проверка, находится ли курсор в пределах разрешённых элементов (с запасом 20px)
+  // ======== Десктопная логика (hover) ========
+
   function isMouseOverAllowed(e) {
     const margin = 20;
     const allowedElements = Array.from(dropdownLinks);
@@ -45,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
     return false;
   }
 
-  // Создание панели с подменю для выбранного раздела
   function createPanel(key) {
     const panel = document.createElement('div');
     panel.classList.add('dropdown-panel');
@@ -61,17 +61,14 @@ document.addEventListener('DOMContentLoaded', function () {
     return panel;
   }
 
-  // Открытие панели для выбранного пункта
   function showDropdown(key) {
     clearTimeout(hideTimeout);
     hideTimeout = null;
 
-    // Если текущая панель уже запланирована к удалению – отменяем удаление
     if (currentPanel && currentPanel.dataset.closing === "true") {
       clearTimeout(currentPanel._closeTimer);
       currentPanel.classList.add('active');
-      // Принудительный reflow для применения нового состояния
-      currentPanel.offsetHeight;
+      currentPanel.offsetHeight; 
       delete currentPanel.dataset.closing;
     }
 
@@ -83,7 +80,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
-    // Если панель для данного ключа уже существует – активируем её, иначе создаём новую
     let existingPanel = dropdownMenuContainer.querySelector(`.dropdown-panel[data-key="${key}"]`);
     if (existingPanel) {
       existingPanel.style.zIndex = 2;
@@ -101,15 +97,14 @@ document.addEventListener('DOMContentLoaded', function () {
       currentPanel = newPanel;
     }
 
-    // Закрываем все панели, не соответствующие текущему разделу
+    // Закрываем остальные панели
     const panels = dropdownMenuContainer.querySelectorAll('.dropdown-panel');
     panels.forEach(panel => {
       if (panel.dataset.key !== key) {
         panel.style.zIndex = 1;
-        panel.classList.remove('active'); // запускаем анимацию закрытия (scaleY: 1→0)
+        panel.classList.remove('active');
         panel.offsetHeight;
         panel.dataset.closing = "true";
-        // Запланировать удаление панели через 450 мс (анимация 400 мс + небольшой запас)
         panel._closeTimer = setTimeout(() => {
           if (panel.dataset.closing === "true" && panel.parentNode === dropdownMenuContainer) {
             dropdownMenuContainer.removeChild(panel);
@@ -119,7 +114,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Скрытие текущей панели (запускается анимация закрытия, а удаление – по таймеру)
   function hideDropdown() {
     clearTimeout(hideTimeout);
     hideTimeout = null;
@@ -140,27 +134,54 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Обработчики для ссылок с подменю
+  // ======== Мобильная логика (клик) ========
   dropdownLinks.forEach(link => {
+    // Десктоп — hover
     link.addEventListener('mouseenter', function () {
-      const key = link.getAttribute('href');
-      showDropdown(key);
-    });
-    link.addEventListener('click', function (e) {
-      if (window.innerWidth <= 768 || 'ontouchstart' in window) {
-        e.preventDefault();
+      if (!window.matchMedia("(max-width:699px)").matches) {
         const key = link.getAttribute('href');
-        if (currentPanel && currentPanel.dataset.key === key) {
+        showDropdown(key);
+      }
+    });
+  
+    // Мобильный — клик с закрытием остальных подменю
+    link.addEventListener('click', function (e) {
+      if (window.matchMedia("(max-width:699px)").matches) {
+        e.preventDefault();
+        const parentDropdown = link.parentElement;
+        const submenu = parentDropdown.querySelector('.submenu');
+        if (submenu) {
+          if (!submenu.classList.contains('open')) {
+            // Закрываем все открытые подменю, отличные от текущего
+            document.querySelectorAll('.nav-menu .dropdown').forEach(item => {
+              if (item !== parentDropdown) {
+                const otherSubmenu = item.querySelector('.submenu');
+                if (otherSubmenu && otherSubmenu.classList.contains('open')) {
+                  otherSubmenu.classList.remove('open');
+                  item.classList.remove('open');
+                }
+              }
+            });
+            // Открываем текущее подменю и добавляем класс для анимации стрелочки
+            submenu.classList.add('open');
+            parentDropdown.classList.add('open');
+          } else {
+            // Если уже открыто — закрываем
+            submenu.classList.remove('open');
+            parentDropdown.classList.remove('open');
+          }
+        }
+        // Если открыта десктопная панель — закрываем её
+        if (currentPanel) {
           hideDropdown();
-        } else {
-          showDropdown(key);
         }
       }
     });
   });
+  
 
-  // Обработка движения курсора по шапке
-  headerTop.addEventListener('mousemove', function (e) {
+  // ======== Скрытие десктопной панели при уходе мыши ========
+  document.addEventListener('mousemove', function (e) {
     if (!isMouseOverAllowed(e)) {
       if (!hideTimeout) {
         hideTimeout = setTimeout(hideDropdown, 50);
@@ -172,14 +193,10 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
   });
-
-  // При уходе курсора за пределы шапки – запускаем скрытие через 50 мс
-  headerTop.addEventListener('mouseleave', function () {
-    hideTimeout = setTimeout(hideDropdown, 50);
-  });
 });
 
 
+// ==== Остальная часть (тема, язык, гамбургер) без изменений ====
 document.addEventListener("DOMContentLoaded", function () {
   const themeToggle = document.getElementById("theme-toggle");
 
@@ -193,11 +210,9 @@ document.addEventListener("DOMContentLoaded", function () {
     setTheme(currentTheme === "dark" ? "light" : "dark");
   });
 
-  // Устанавливаем тему при загрузке страницы
   const savedTheme = localStorage.getItem("theme") || "dark";
   setTheme(savedTheme);
 });
-
 
 document.addEventListener("DOMContentLoaded", function () {
   const langToggle = document.getElementById("language-toggle");
@@ -229,38 +244,55 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  // Обработчик переключения языка
   langToggle.addEventListener("click", function () {
     const currentLang = localStorage.getItem("language") || "ru";
     const newLang = currentLang === "ru" ? "en" : "ru";
     setLanguage(newLang);
   });
 
-  // Устанавливаем язык при загрузке
   const savedLang = localStorage.getItem("language") || navigator.language.slice(0, 2) || "ru";
   setLanguage(savedLang);
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-  const hamburgerBtn = document.getElementById('hamburgerBtn');
-  const mainNav = document.getElementById('mainNav');
+// ==== Гамбургер + сброс подменю ====
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mainNav = document.getElementById('mainNav');
 
-  // Находим сами SVG: три полоски и крест
-  const hamburgerLines = hamburgerBtn.querySelector('.hamburger-lines');
-  const hamburgerClose = hamburgerBtn.querySelector('.hamburger-close');
+hamburgerBtn.addEventListener('click', () => {
+  const isMenuOpen = mainNav.classList.contains('open');
+  mainNav.classList.toggle('open');
+  hamburgerBtn.classList.toggle('open');
+  // Если меню закрывается на мобильном, сбрасываем все открытые подменю и их родительские .dropdown
+  if (isMenuOpen && window.matchMedia("(max-width:699px)").matches) {
+    document.querySelectorAll('.nav-menu .submenu.open, .nav-menu .dropdown.open').forEach(el => {
+      el.classList.remove('open');
+    });
+  }
+});
 
-  hamburgerBtn.addEventListener('click', () => {
-    // Переключаем меню
-    mainNav.classList.toggle('open');
-    // Если меню открыто, показываем крестик, прячем полоски
-    if (mainNav.classList.contains('open')) {
-      hamburgerLines.style.display = 'none';
-      hamburgerClose.style.display = 'block';
-    } else {
-      // Если меню закрыто, показываем полоски, прячем крестик
-      hamburgerLines.style.display = 'block';
-      hamburgerClose.style.display = 'none';
-    }
-  });
+function disableTransitionTemporarily(el, duration = 50) {
+  el.classList.add('no-transition');
+  setTimeout(() => {
+    el.classList.remove('no-transition');
+  }, duration);
+}
+
+window.addEventListener('resize', () => {
+  if (window.matchMedia("(max-width:699px)").matches) {
+    disableTransitionTemporarily(mainNav, 50);
+    mainNav.classList.remove('open');
+    hamburgerBtn.classList.remove('open');
+    // Сбрасываем состояние всех открытых подменю и родительских .dropdown
+    document.querySelectorAll('.nav-menu .submenu.open, .nav-menu .dropdown.open').forEach(el => {
+      el.classList.remove('open');
+    });
+  } else {
+    mainNav.classList.remove('open');
+    hamburgerBtn.classList.remove('open');
+    // Также сбрасываем мобильные раскрытия при переходе на десктоп
+    document.querySelectorAll('.nav-menu .submenu.open, .nav-menu .dropdown.open').forEach(el => {
+      el.classList.remove('open');
+    });
+  }
 });
 
