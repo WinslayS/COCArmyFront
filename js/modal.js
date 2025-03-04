@@ -538,16 +538,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (pointers.length === 2) {
-            // При необходимости можно отключить анимацию для pinch-жеста
-            // startZoomAnimation();
             const newDist = getPinchDistance(pointers[0], pointers[1]);
             const newPinchCenter = getPinchCenter(pointers[0], pointers[1]);
             const pinchRatio = newDist / startPinchDist;
             let newScale = startPinchScale * pinchRatio;
         
-            if (newScale >= MAX_SCALE) {
+            // Ограничиваем масштаб по MIN_SCALE и MAX_SCALE
+            if (newScale < MIN_SCALE) {
+                newScale = MIN_SCALE;
+                // При достижении минимального зума не изменяем смещения
+                offsetX = startOffsetX;
+                offsetY = startOffsetY;
+            } else if (newScale > MAX_SCALE) {
                 newScale = MAX_SCALE;
-                // Фиксируем смещение, чтобы дальнейшее движение пальцев не изменяло позицию картинки
+                // При достижении максимального зума тоже можно зафиксировать offset
                 offsetX = startOffsetX;
                 offsetY = startOffsetY;
             } else {
@@ -563,6 +567,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             updateBackground(true);
             return;
         }
+        
         
 
         if (isDragging) {
