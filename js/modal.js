@@ -538,24 +538,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (pointers.length === 2) {
+            // При необходимости можно отключить анимацию для pinch-жеста
+            // startZoomAnimation();
             const newDist = getPinchDistance(pointers[0], pointers[1]);
             const newPinchCenter = getPinchCenter(pointers[0], pointers[1]);
             const pinchRatio = newDist / startPinchDist;
             let newScale = startPinchScale * pinchRatio;
-            newScale = Math.max(MIN_SCALE, Math.min(newScale, MAX_SCALE));
-
-            const rect = imageStage.getBoundingClientRect();
-            const slideCenterX = rect.left + rect.width / 2;
-            const slideCenterY = rect.top + rect.height / 2;
-            const ds = newScale - startPinchScale;
-
-            offsetX = startOffsetX - ((newPinchCenter.x - slideCenterX) * ds);
-            offsetY = startOffsetY - ((newPinchCenter.y - slideCenterY) * ds);
-
+        
+            if (newScale >= MAX_SCALE) {
+                newScale = MAX_SCALE;
+                // Фиксируем смещение, чтобы дальнейшее движение пальцев не изменяло позицию картинки
+                offsetX = startOffsetX;
+                offsetY = startOffsetY;
+            } else {
+                const rect = imageStage.getBoundingClientRect();
+                const slideCenterX = rect.left + rect.width / 2;
+                const slideCenterY = rect.top + rect.height / 2;
+                const ds = newScale - startPinchScale;
+                offsetX = startOffsetX - ((newPinchCenter.x - slideCenterX) * ds);
+                offsetY = startOffsetY - ((newPinchCenter.y - slideCenterY) * ds);
+            }
+        
             scale = newScale;
             updateBackground(true);
             return;
         }
+        
 
         if (isDragging) {
             const now = Date.now();
