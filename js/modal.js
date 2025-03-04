@@ -485,8 +485,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 lastPinchDistance = currentDistance;
                 return;
             }
+            // Рассчитываем дельту и новый масштаб с учетом чувствительности
             const delta = currentDistance - lastPinchDistance;
-            const sensitivity = 0.005;
+            const sensitivity = 0.005; // уменьшите значение для меньшей чувствительности
             let factor = 1 + delta * sensitivity;
             let newScale = scale * factor;
             if (newScale < MIN_SCALE) {
@@ -496,12 +497,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 newScale = MAX_SCALE;
                 factor = newScale / scale;
             }
+            // Определяем центр жеста (точку между пальцами)
             const pinchCenter = getPinchCenter(pointers[0], pointers[1]);
             const rect = imageStage.getBoundingClientRect();
             const slideCenterX = rect.left + rect.width / 2;
             const slideCenterY = rect.top + rect.height / 2;
-            offsetX -= (pinchCenter.x - slideCenterX) * (factor - 1);
-            offsetY -= (pinchCenter.y - slideCenterY) * (factor - 1);
+            // Рассчитываем новые offset, чтобы pinchCenter оставался на месте
+            // Формула: newOffset = oldOffset + [ (pinchCenter - containerCenter) - oldOffset ] * (1 - newScale/oldScale)
+            const oldScale = scale;
+            offsetX = offsetX + ((pinchCenter.x - slideCenterX) - offsetX) * (1 - newScale / oldScale);
+            offsetY = offsetY + ((pinchCenter.y - slideCenterY) - offsetY) * (1 - newScale / oldScale);
+            
             scale = newScale;
             lastPinchDistance = currentDistance;
             updateBackground(true);
