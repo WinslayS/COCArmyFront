@@ -538,7 +538,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (pointers.length === 2) {
-            startZoomAnimation();
             const newDist = getPinchDistance(pointers[0], pointers[1]);
             const newPinchCenter = getPinchCenter(pointers[0], pointers[1]);
             const pinchRatio = newDist / startPinchDist;

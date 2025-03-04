@@ -8,10 +8,10 @@ document.addEventListener('DOMContentLoaded', function () {
   const submenus = {
     "bases.html": [
       { text: "Загрузить", href: "upload.html" },
-      { text: "Расстановки", href: "layouts.html" }
+      { text: "Основная", href: "layouts.html" },
+      { text: "Строитель", href: "builder.html" }
     ],
     "mix.html": [
-      { text: "Поиск", href: "search.html" },
       { text: "Создать", href: "create.html" },
       { text: "Смотреть", href: "view.html" }
     ],
@@ -134,6 +134,45 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  // Функция для планирования закрытия панели
+  function scheduleClose(panel) {
+    panel.dataset.closing = "true";
+    panel._closeTimer = setTimeout(() => {
+      if (panel.dataset.closing === "true" && panel.parentNode === dropdownMenuContainer) {
+        dropdownMenuContainer.removeChild(panel);
+      }
+      if (currentPanel === panel) {
+        currentPanel = null;
+      }
+    }, 450);
+  }
+
+  // ======== Обновлённый обработчик mousemove для десктопа ========
+  document.addEventListener('mousemove', function (e) {
+    if (isMouseOverAllowed(e)) {
+      // Если курсор в допустимой зоне – отменяем запланированное закрытие
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+      }
+      if (currentPanel && currentPanel.dataset.closing === "true") {
+        clearTimeout(currentPanel._closeTimer);
+        delete currentPanel.dataset.closing;
+        currentPanel.classList.add('active');
+      }
+    } else {
+      if (!hideTimeout) {
+        hideTimeout = setTimeout(() => {
+          if (currentPanel && !currentPanel.dataset.closing) {
+            currentPanel.classList.remove('active');
+            scheduleClose(currentPanel);
+          }
+          hideTimeout = null;
+        }, 150); // задержка 150 мс для плавного закрытия
+      }
+    }
+  });
+
   // ======== Мобильная логика (клик) ========
   dropdownLinks.forEach(link => {
     // Десктоп — hover
@@ -178,23 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   });
-  
-
-  // ======== Скрытие десктопной панели при уходе мыши ========
-  document.addEventListener('mousemove', function (e) {
-    if (!isMouseOverAllowed(e)) {
-      if (!hideTimeout) {
-        hideTimeout = setTimeout(hideDropdown, 50);
-      }
-    } else {
-      if (currentPanel && currentPanel.dataset.closing !== "true" && hideTimeout) {
-        clearTimeout(hideTimeout);
-        hideTimeout = null;
-      }
-    }
-  });
 });
-
 
 // ==== Остальная часть (тема, язык, гамбургер) без изменений ====
 document.addEventListener("DOMContentLoaded", function () {
@@ -295,4 +318,3 @@ window.addEventListener('resize', () => {
     });
   }
 });
-
