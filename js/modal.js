@@ -21,14 +21,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const MIN_SCALE = 1;
     const MAX_SCALE = 5;    // теперь максимум x5
+    const MID_SCALE = 2.5;  // для дабл-тэпа
 
-    // При дабл-тапе или кнопке если scale=1 => ставим 2.5 (среднее между 1 и 5)
-    const MID_SCALE = 2.5;
-
-    // Управление «пружиной»
+    // Параметры "пружины"
     const ALLOW_ELASTIC_EDGES = true;
-    const ELASTIC_FACTOR = 0.7; // базовый коэффициент эластичности
-    const DAMPENING_CONSTANT = 100; // константа для нелинейного затухания
+    const ELASTIC_FACTOR = 0.7;
+    const DAMPENING_CONSTANT = 100;
 
     // Базовые размеры фоновой картинки (scale=1)
     let baseWidth = 0;
@@ -53,15 +51,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     let doubleClickTimer = null;
     const DOUBLE_CLICK_DELAY = 300;
 
-    // Pinch
+    // Pinch (обновлённый подход)
     let pointers = [];
-    let startPinchDist = 0;
-    let startPinchScale = 1;
-    let startPinchCenter = { x: 0, y: 0 };
-    let startOffsetX = 0;
-    let startOffsetY = 0;
+    // Мы больше не используем фиксированные значения startPinchDist/startPinchScale для pinch‑жеста.
+    let lastPinchDistance = 0;
 
-    // Список изображений
+    // Список изображений и данные
     let currentImageIndex = 0;
     let imagesList = [];
     let layoutsData = [];
@@ -72,20 +67,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     let velocityX = 0;
     let velocityY = 0;
     const MAX_VELOCITY = 2;
-    // Множитель для расчёта инерции (уменьшен для плавности)
     const INERTIA_MULTIPLIER = 8;
 
-    // Флаг анимации свайпа
+    // Флаги анимации
     let isSwipeAnimating = false;
-
-    // Флаг, указывающий, что сейчас идёт snap-back анимация
     let isSnapBackActive = false;
-
-    // Соотношение сторон загруженного изображения
     let currentImageAspectRatio = 1;
 
     // -------------------------------
-    // ЗАГРУЗКА ДАННЫХ (пример, если нужно)
+    // ЗАГРУЗКА ДАННЫХ (пример)
     // -------------------------------
     try {
         const layoutsResponse = await fetch('data/layouts.json');
@@ -99,9 +89,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // -------------------------------
     // ФУНКЦИИ ДЛЯ ЗУМА
     // -------------------------------
-
-    // Включаем CSS-анимацию (transition) на background-size/position
     function startZoomAnimation() {
+        // Для pinch‑жеста анимация не вызывается – она нужна только для других сценариев.
         slideCurrent.classList.add('zoom-animating');
         slideCurrent.addEventListener('transitionend', function handler() {
             slideCurrent.classList.remove('zoom-animating');
@@ -109,12 +98,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Считаем базовые размеры фоновой картинки (scale=1) «по contain»
     function computeBaseSize() {
         const containerW = imageStage.offsetWidth;
         const containerH = imageStage.offsetHeight;
         const containerRatio = containerW / containerH;
-
         if (currentImageAspectRatio > containerRatio) {
             baseWidth = containerW;
             baseHeight = containerW / currentImageAspectRatio;
@@ -124,23 +111,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // При drag (pointermove = true) используем "резинку" с нелинейным затуханием
-    // При отпускании/инерции (pointermove = false) – жёстко clamp
     function constrainOffsets(finalW, finalH, isPointerMove = false) {
         const containerW = imageStage.offsetWidth;
         const containerH = imageStage.offsetHeight;
-
-        // Горизонталь
         if (finalW <= containerW) {
             offsetX = 0;
         } else {
             const maxOffsetX = (finalW - containerW) / 2;
             if (isPointerMove && ALLOW_ELASTIC_EDGES) {
                 if (offsetX < -maxOffsetX) {
-                    let extra = -maxOffsetX - offsetX; // дополнительное смещение (положительное)
+                    let extra = -maxOffsetX - offsetX;
                     extra = (extra * ELASTIC_FACTOR) / (1 + extra / DAMPENING_CONSTANT);
                     offsetX = -maxOffsetX - extra;
-                    // ограничиваем максимальное отклонение (заменили 1.5 на 1.2)
                     if (offsetX < -maxOffsetX * 1.2) offsetX = -maxOffsetX * 1.2;
                 } else if (offsetX > maxOffsetX) {
                     let extra = offsetX - maxOffsetX;
@@ -152,8 +134,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 offsetX = Math.max(-maxOffsetX, Math.min(offsetX, maxOffsetX));
             }
         }
-
-        // Вертикаль
         if (finalH <= containerH) {
             offsetY = 0;
         } else {
@@ -176,27 +156,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Обновляем фон (с ограничением, используется при отпускании или для анимации инерции)
     function updateBackground(isPointerMove = false) {
         const finalW = baseWidth * scale;
         const finalH = baseHeight * scale;
-
-        // Ограничиваем смещения
         constrainOffsets(finalW, finalH, isPointerMove);
-
-        // background-size
         slideCurrent.style.backgroundSize = `${finalW}px ${finalH}px`;
-
-        // background-position
         const posX = `calc(50% + ${offsetX}px)`;
         const posY = `calc(50% + ${offsetY}px)`;
         slideCurrent.style.backgroundPosition = `${posX} ${posY}`;
-
-        // Синхронизация ползунка
         syncZoomSlider();
     }
 
-    // Новая функция для обновления фона во время перетаскивания без жёсткого ограничения
     function updateBackgroundDragging() {
         const finalW = baseWidth * scale;
         const finalH = baseHeight * scale;
@@ -207,7 +177,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         syncZoomSlider();
     }
 
-    // Синхронизация значения на ползунке
     function syncZoomSlider() {
         zoomSlider.value = scale.toFixed(2);
         const min = parseFloat(zoomSlider.min);
@@ -237,13 +206,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         let newScale = parseFloat(e.target.value);
         if (newScale < MIN_SCALE) newScale = MIN_SCALE;
         if (newScale > MAX_SCALE) newScale = MAX_SCALE;
-
         scale = newScale;
         updateBackground(false);
     });
 
     // -------------------------------
-    // ЗАГРУЗКА/ОТОБРАЖЕНИЕ ИЗОБРАЖЕНИЙ
+    // Загрузка/отображение изображений
     // -------------------------------
     function resetZoomParams() {
         scale = 1;
@@ -257,18 +225,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         resetZoomParams();
         slideCurrent.style.backgroundImage = 'none';
         modalContent.classList.add('loading');
-
         const fullImage = imagesList[index];
         const image = new Image();
         image.src = fullImage;
         image.onload = () => {
             modalContent.classList.remove('loading');
             currentImageAspectRatio = image.width / image.height;
-
             computeBaseSize();
             slideCurrent.style.backgroundImage = `url(${fullImage})`;
             updateSlides();
-
             updateBackground();
             recalcModalHeight();
             updateThumbnails();
@@ -294,11 +259,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         slideNext.style.backgroundImage = `url(${imagesList[nextIndex]})`;
         const prevIndex = (currentImageIndex - 1 + imagesList.length) % imagesList.length;
         slidePrev.style.backgroundImage = `url(${imagesList[prevIndex]})`;
-
         slideCurrent.style.transition = 'none';
         slideNext.style.transition = 'none';
         slidePrev.style.transition = 'none';
-
         slideCurrent.style.transform = 'translateX(0)';
         slideNext.style.transform = 'translateX(100%)';
         slidePrev.style.transform = 'translateX(-100%)';
@@ -376,7 +339,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         resetZoomParams();
         modalContent.classList.remove('loading');
-
         if (!swipeClose) {
             modal.classList.add('closing');
             modalContent.addEventListener('animationend', function handler() {
@@ -384,13 +346,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 slideCurrent.style.backgroundImage = 'none';
                 modal.classList.remove('show', 'closing');
                 document.body.classList.remove('modal-open');
-
                 modalContent.style.transition = 'none';
                 modalContent.style.transform = 'translateY(0)';
                 modalContent.style.opacity = '1';
                 computeBaseSize();
                 updateBackground();
-
                 document.body.style.setProperty('--overlay-opacity', 1);
                 document.body.style.setProperty('--gallery-blur', '4px');
                 modalContent.style.setProperty('--modal-dimming', 0);
@@ -399,13 +359,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             modal.classList.remove('show');
             document.body.classList.remove('modal-open');
             slideCurrent.style.backgroundImage = 'none';
-
             modalContent.style.transition = 'none';
             modalContent.style.transform = 'translateY(0)';
             modalContent.style.opacity = '1';
             computeBaseSize();
             updateBackground();
-
             document.body.style.setProperty('--overlay-opacity', 1);
             document.body.style.setProperty('--gallery-blur', '4px');
             modalContent.style.setProperty('--modal-dimming', 0);
@@ -435,28 +393,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     // -------------------------------
     slideCurrent.addEventListener('wheel', (e) => {
         e.preventDefault();
-
         startZoomAnimation();
-
         const factor = 0.25;
         const deltaFactor = (e.deltaY > 0) ? (1 - factor) : (1 + factor);
         let newScale = scale * deltaFactor;
         newScale = Math.max(MIN_SCALE, Math.min(newScale, MAX_SCALE));
-
         const ds = newScale - scale;
         const containerRect = imageStage.getBoundingClientRect();
         const centerX = containerRect.left + containerRect.width / 2;
         const centerY = containerRect.top + containerRect.height / 2;
-
         const cursorX = e.clientX;
         const cursorY = e.clientY;
-
         const dx = cursorX - centerX;
         const dy = cursorY - centerY;
-
         offsetX -= dx * ds;
         offsetY -= dy * ds;
-
         scale = newScale;
         updateBackground();
     }, { passive: false });
@@ -474,7 +425,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (e.target.closest('.control-button, #closeModal, #zoomSliderContainer, .thumbnail')) {
             return;
         }
-        // Если идёт snap-back анимация, прерываем её
         if (isSnapBackActive) {
             slideCurrent.classList.remove('snap-back-transition');
             slideCurrent.style.transition = 'none';
@@ -482,15 +432,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         imageStage.setPointerCapture(e.pointerId);
         pointers.push({ id: e.pointerId, x: e.clientX, y: e.clientY });
-
         if (pointers.length === 2) {
-            startPinchDist = getPinchDistance(pointers[0], pointers[1]);
-            startPinchScale = scale;
-            startPinchCenter = getPinchCenter(pointers[0], pointers[1]);
-            startOffsetX = offsetX;
-            startOffsetY = offsetY;
+            // Инициализируем lastPinchDistance при старте pinch‑жеста
+            lastPinchDistance = getPinchDistance(pointers[0], pointers[1]);
         }
-
         if (pointers.length === 1) {
             clickCount++;
             if (clickCount === 1) {
@@ -500,13 +445,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 clickCount = 0;
                 handleDoublePress(e);
             }
-
             startX = e.clientX;
             startY = e.clientY;
             lastMoveTime = Date.now();
             velocityX = 0;
             velocityY = 0;
-
             if (scale > 1) {
                 isDragging = true;
                 isPotentialSwipe = false;
@@ -517,7 +460,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 isVerticalSwipe = false;
                 swipeStartX = e.clientX;
                 swipeStartY = e.clientY;
-
                 slideCurrent.style.transition = 'none';
                 slideNext.style.transition = 'none';
                 slidePrev.style.transition = 'none';
@@ -536,59 +478,49 @@ document.addEventListener('DOMContentLoaded', async () => {
                 break;
             }
         }
-
+        // Новая логика pinch‑зума с использованием инкрементального подхода
         if (pointers.length === 2) {
-            const newDist = getPinchDistance(pointers[0], pointers[1]);
-            const newPinchCenter = getPinchCenter(pointers[0], pointers[1]);
-            const pinchRatio = newDist / startPinchDist;
-            let newScale = startPinchScale * pinchRatio;
-        
-            // Ограничиваем масштаб по MIN_SCALE и MAX_SCALE
+            const currentDistance = getPinchDistance(pointers[0], pointers[1]);
+            if (lastPinchDistance === 0) {
+                lastPinchDistance = currentDistance;
+                return;
+            }
+            const delta = currentDistance - lastPinchDistance;
+            const sensitivity = 0.005;
+            let factor = 1 + delta * sensitivity;
+            let newScale = scale * factor;
             if (newScale < MIN_SCALE) {
                 newScale = MIN_SCALE;
-                // При достижении минимального зума не изменяем смещения
-                offsetX = startOffsetX;
-                offsetY = startOffsetY;
+                factor = newScale / scale;
             } else if (newScale > MAX_SCALE) {
                 newScale = MAX_SCALE;
-                // При достижении максимального зума тоже можно зафиксировать offset
-                offsetX = startOffsetX;
-                offsetY = startOffsetY;
-            } else {
-                const rect = imageStage.getBoundingClientRect();
-                const slideCenterX = rect.left + rect.width / 2;
-                const slideCenterY = rect.top + rect.height / 2;
-                const ds = newScale - startPinchScale;
-                offsetX = startOffsetX - ((newPinchCenter.x - slideCenterX) * ds);
-                offsetY = startOffsetY - ((newPinchCenter.y - slideCenterY) * ds);
+                factor = newScale / scale;
             }
-        
+            const pinchCenter = getPinchCenter(pointers[0], pointers[1]);
+            const rect = imageStage.getBoundingClientRect();
+            const slideCenterX = rect.left + rect.width / 2;
+            const slideCenterY = rect.top + rect.height / 2;
+            offsetX -= (pinchCenter.x - slideCenterX) * (factor - 1);
+            offsetY -= (pinchCenter.y - slideCenterY) * (factor - 1);
             scale = newScale;
+            lastPinchDistance = currentDistance;
             updateBackground(true);
             return;
         }
-        
-        
-
         if (isDragging) {
             const now = Date.now();
             const dt = now - lastMoveTime || 16;
             const dx = e.clientX - startX;
             const dy = e.clientY - startY;
-
             velocityX = dx / dt;
             velocityY = dy / dt;
             velocityX = Math.max(-MAX_VELOCITY, Math.min(velocityX, MAX_VELOCITY));
             velocityY = Math.max(-MAX_VELOCITY, Math.min(velocityY, MAX_VELOCITY));
-
             offsetX += dx;
             offsetY += dy;
-
             startX = e.clientX;
             startY = e.clientY;
             lastMoveTime = now;
-
-            // Обновляем фон во время перетаскивания без жёсткого clamp
             updateBackgroundDragging();
         }
         else if (isPotentialSwipe) {
@@ -628,11 +560,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         imageStage.releasePointerCapture(e.pointerId);
         pointers = pointers.filter(p => p.id !== e.pointerId);
         if (pointers.length < 2) {
-            startPinchDist = 0;
+            lastPinchDistance = 0;
         }
         if (isDragging) {
             isDragging = false;
-            // Запускаем анимацию инерции с эффектом подпрыгивания
             animateInertia();
         } else if (isPotentialSwipe) {
             const dx = e.clientX - swipeStartX;
@@ -666,12 +597,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         velocityY *= friction;
         offsetX += velocityX * INERTIA_MULTIPLIER;
         offsetY += velocityY * INERTIA_MULTIPLIER;
-
         const finalW = baseWidth * scale;
         const finalH = baseHeight * scale;
         const containerW = imageStage.offsetWidth;
         const containerH = imageStage.offsetHeight;
-
         if (finalW <= containerW) {
             offsetX = 0;
             velocityX = 0;
@@ -679,7 +608,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const maxOffsetX = (finalW - containerW) / 2;
             if (offsetX < -maxOffsetX) {
                 offsetX = -maxOffsetX;
-                velocityX = -velocityX * 0.3; // сниженный коэффициент отскока
+                velocityX = -velocityX * 0.3;
             } else if (offsetX > maxOffsetX) {
                 offsetX = maxOffsetX;
                 velocityX = -velocityX * 0.3;
@@ -698,18 +627,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 velocityY = -velocityY * 0.3;
             }
         }
-
         slideCurrent.style.backgroundSize = `${finalW}px ${finalH}px`;
         const posX = `calc(50% + ${offsetX}px)`;
         const posY = `calc(50% + ${offsetY}px)`;
         slideCurrent.style.backgroundPosition = `${posX} ${posY}`;
-
         syncZoomSlider();
-
         if (Math.abs(velocityX) > 0.1 || Math.abs(velocityY) > 0.1) {
             requestAnimationFrame(animateInertia);
         } else {
-            // Если инерция закончилась и пользователь не удерживает перетаскивание, запускаем snap-back
             if (!isDragging) {
                 isSnapBackActive = true;
                 slideCurrent.classList.add('snap-back-transition');
@@ -731,7 +656,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         isSwipeAnimating = true;
         const duration = 300;
         let transitionElement;
-
         if (dx < -SWIPE_THRESHOLD) {
             slideCurrent.style.transition = `transform ${duration}ms ease`;
             slideNext.style.transition = `transform ${duration}ms ease`;
@@ -812,25 +736,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
     }
 
-    // Двойной клик => при scale=1 => scale=2.5
     function handleDoublePress(e) {
         startZoomAnimation();
-
         const rect = imageStage.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
         const cursorX = e.clientX;
         const cursorY = e.clientY;
-
         let newScale = (scale === 1) ? MID_SCALE : 1;
         if (newScale > MAX_SCALE) newScale = MAX_SCALE;
-
         const ds = newScale - scale;
         const dx = cursorX - centerX;
         const dy = cursorY - centerY;
         offsetX -= dx * ds;
         offsetY -= dy * ds;
-
         scale = newScale;
         updateBackground(false);
     }
