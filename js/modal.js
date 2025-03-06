@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let offsetY = 0;
 
     const MIN_SCALE = 1;
-    const MAX_SCALE = 5;    // теперь максимум x5
+    const MAX_SCALE = 5;    // максимум x5
     const MID_SCALE = 2.5;  // для дабл-тэпа
 
     // Параметры "пружины"
@@ -51,10 +51,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     let doubleClickTimer = null;
     const DOUBLE_CLICK_DELAY = 300;
 
-    // Pinch (обновлённый подход)
+    // Pinch (новый подход)
     let pointers = [];
-    // Мы больше не используем фиксированные значения startPinchDist/startPinchScale для pinch‑жеста.
-    let lastPinchDistance = 0;
+    // Новые переменные для pinch‑жеста:
+    let pinchStartDistance = 0;
+    let pinchStartScale = 1;
+    let pinchStartOffsetX = 0;
+    let pinchStartOffsetY = 0;
+    let pinchStartCenter = { x: 0, y: 0 };
 
     // Список изображений и данные
     let currentImageIndex = 0;
@@ -90,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ФУНКЦИИ ДЛЯ ЗУМА
     // -------------------------------
     function startZoomAnimation() {
-        // Для pinch‑жеста анимация не вызывается – она нужна только для других сценариев.
+        // Анимация не применяется для pinch‑жеста – только для прочих сценариев.
         slideCurrent.classList.add('zoom-animating');
         slideCurrent.addEventListener('transitionend', function handler() {
             slideCurrent.classList.remove('zoom-animating');
@@ -432,9 +436,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         imageStage.setPointerCapture(e.pointerId);
         pointers.push({ id: e.pointerId, x: e.clientX, y: e.clientY });
+        // Если получили два указателя – фиксируем начальные параметры для pinch‑жеста
         if (pointers.length === 2) {
-            // Инициализируем lastPinchDistance при старте pinch‑жеста
-            lastPinchDistance = getPinchDistance(pointers[0], pointers[1]);
+            pinchStartDistance = getPinchDistance(pointers[0], pointers[1]);
+            pinchStartScale = scale;
+            pinchStartOffsetX = offsetX;
+            pinchStartOffsetY = offsetY;
+            pinchStartCenter = getPinchCenter(pointers[0], pointers[1]);
+            return;
         }
         if (pointers.length === 1) {
             clickCount++;
@@ -478,38 +487,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                 break;
             }
         }
-        // Новая логика pinch‑зума с использованием инкрементального подхода
+        // Если два указателя – выполняем pinch-логику с возможностью перемещения
         if (pointers.length === 2) {
             const currentDistance = getPinchDistance(pointers[0], pointers[1]);
-            if (lastPinchDistance === 0) {
-                lastPinchDistance = currentDistance;
-                return;
-            }
-            // Рассчитываем дельту и новый масштаб с учетом чувствительности
-            const delta = currentDistance - lastPinchDistance;
-            const sensitivity = 0.005; // уменьшите значение для меньшей чувствительности
-            let factor = 1 + delta * sensitivity;
-            let newScale = scale * factor;
-            if (newScale < MIN_SCALE) {
-                newScale = MIN_SCALE;
-                factor = newScale / scale;
-            } else if (newScale > MAX_SCALE) {
-                newScale = MAX_SCALE;
-                factor = newScale / scale;
-            }
-            // Определяем центр жеста (точку между пальцами)
-            const pinchCenter = getPinchCenter(pointers[0], pointers[1]);
+            const currentPinchCenter = getPinchCenter(pointers[0], pointers[1]);
+            let newScale = pinchStartScale * (currentDistance / pinchStartDistance);
+            if (newScale < MIN_SCALE) newScale = MIN_SCALE;
+            if (newScale > MAX_SCALE) newScale = MAX_SCALE;
             const rect = imageStage.getBoundingClientRect();
-            const slideCenterX = rect.left + rect.width / 2;
-            const slideCenterY = rect.top + rect.height / 2;
-            // Рассчитываем новые offset, чтобы pinchCenter оставался на месте
-            // Формула: newOffset = oldOffset + [ (pinchCenter - containerCenter) - oldOffset ] * (1 - newScale/oldScale)
-            const oldScale = scale;
-            offsetX = offsetX + ((pinchCenter.x - slideCenterX) - offsetX) * (1 - newScale / oldScale);
-            offsetY = offsetY + ((pinchCenter.y - slideCenterY) - offsetY) * (1 - newScale / oldScale);
-            
+            const containerCenter = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+            // Вычисляем смещение центра жеста с момента начала pinch
+            const deltaCenter = {
+                x: currentPinchCenter.x - pinchStartCenter.x,
+                y: currentPinchCenter.y - pinchStartCenter.y
+            };
+            const scaleFactor = newScale / pinchStartScale;
+            // Перемещаем изображение так, чтобы начальный центр жеста оставался на месте,
+            // плюс учитываем смещение пальцев
+            offsetX = pinchStartOffsetX + deltaCenter.x + (1 - scaleFactor) * (pinchStartCenter.x - containerCenter.x);
+            offsetY = pinchStartOffsetY + deltaCenter.y + (1 - scaleFactor) * (pinchStartCenter.y - containerCenter.y);
             scale = newScale;
-            lastPinchDistance = currentDistance;
             updateBackground(true);
             return;
         }
@@ -566,7 +563,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         imageStage.releasePointerCapture(e.pointerId);
         pointers = pointers.filter(p => p.id !== e.pointerId);
         if (pointers.length < 2) {
-            lastPinchDistance = 0;
+            pinchStartDistance = 0;
         }
         if (isDragging) {
             isDragging = false;
