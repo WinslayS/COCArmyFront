@@ -495,27 +495,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (newScale < MIN_SCALE) newScale = MIN_SCALE;
             if (newScale > MAX_SCALE) newScale = MAX_SCALE;
             const rect = imageStage.getBoundingClientRect();
-            const containerCenter = { 
-                x: rect.left + rect.width / 2, 
-                y: rect.top + rect.height / 2 
-            };
-            // Вычисляем смещение центра жеста с начала pinch
+            const containerCenter = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+            // Вычисляем смещение центра жеста с момента начала pinch
             const deltaCenter = {
                 x: currentPinchCenter.x - pinchStartCenter.x,
                 y: currentPinchCenter.y - pinchStartCenter.y
             };
             const scaleFactor = newScale / pinchStartScale;
-            // Пересчёт offset так, чтобы начальный центр жеста оставался зафиксированным,
-            // плюс учитывается движение пальцев
+            // Перемещаем изображение так, чтобы начальный центр жеста оставался на месте,
+            // плюс учитываем смещение пальцев
             offsetX = pinchStartOffsetX + deltaCenter.x + (1 - scaleFactor) * (pinchStartCenter.x - containerCenter.x);
             offsetY = pinchStartOffsetY + deltaCenter.y + (1 - scaleFactor) * (pinchStartCenter.y - containerCenter.y);
-            
-            scale = newScale;
-            // Здесь вместо updateBackground(true) вызываем строгое ограничение:
-            updateBackground(false);
+            scale = newScale
+            lastPinchDistance = currentDistance;
+            updateBackgroundDragging();
             return;
         }
-        
         if (isDragging) {
             const now = Date.now();
             const dt = now - lastMoveTime || 16;
