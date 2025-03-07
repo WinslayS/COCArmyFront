@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const closeModal = document.getElementById('closeModal');
     const fullscreenModal = document.getElementById('fullscreenModal');
 
+    const TAP_MOVEMENT_THRESHOLD = 10; // порог в пикселях
+
     // -------------------------------
     // ПАРАМЕТРЫ ДЛЯ ЗУМА
     // -------------------------------
@@ -54,6 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let clickCount = 0;
     let doubleClickTimer = null;
     const DOUBLE_CLICK_DELAY = 300;
+    let doubleTapLock = false;
 
     // Pinch
     let pointers = [];
@@ -77,6 +80,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     let velocityY = 0;
     const MAX_VELOCITY = 2;
     const INERTIA_MULTIPLIER = 8;
+
+    let inertiaAnimationFrame = null;
 
     // -------------------------------
     // ЗАГРУЗКА ДАННЫХ
@@ -334,7 +339,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         isHorizontalSwipe = false;
         isVerticalSwipe = false;
         pointers = [];
-    }
+    }    
 
     function closeModalWindow(swipeClose = false) {
         if (document.fullscreenElement) {
@@ -482,6 +487,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }    
 
     function onPointerMove(e) {
+        if (doubleTapLock) return;
         for (let i = 0; i < pointers.length; i++) {
             if (pointers[i].id === e.pointerId) {
                 pointers[i].x = e.clientX;
@@ -573,32 +579,47 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (pointers.length < 2) {
             pinchStartDistance = 0;
         }
+        
+        // Вычисляем перемещение от начальной точки
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        const moveDistance = Math.sqrt(dx * dx + dy * dy);
+    
+        // Если перемещение мало, считаем это тапом
+        if (moveDistance < TAP_MOVEMENT_THRESHOLD) {
+            clickCount++;
+            if (clickCount === 1) {
+                doubleClickTimer = setTimeout(() => {
+                    clickCount = 0;
+                }, DOUBLE_CLICK_DELAY);
+            } else if (clickCount === 2) {
+                clearTimeout(doubleClickTimer);
+                clickCount = 0;
+                handleDoublePress(e);
+                doubleTapLock = true;
+                setTimeout(() => { doubleTapLock = false; }, 300);
+                return; // завершаем обработку
+            }
+        }
+    
+        // Дальше стандартная логика для drag/свайпа
         if (isDragging) {
             isDragging = false;
-            
-            // Применяем инерцию: ограничиваем скорость и вычисляем дополнительное смещение
             const limitedVelX = Math.max(-MAX_VELOCITY, Math.min(velocityX, MAX_VELOCITY));
             const limitedVelY = Math.max(-MAX_VELOCITY, Math.min(velocityY, MAX_VELOCITY));
-            
-            // Можно подогнать множитель (здесь 16 — примерно длительность одного кадра)
-            const momentumX = limitedVelX * INERTIA_MULTIPLIER * 16;
-            const momentumY = limitedVelY * INERTIA_MULTIPLIER * 16;
-            
+            const momentumX = limitedVelX * INERTIA_MULTIPLIER * 24;
+            const momentumY = limitedVelY * INERTIA_MULTIPLIER * 24;
             rawOffsetX += momentumX;
             rawOffsetY += momentumY;
-            
-            // Обновляем фон с учетом инерционного смещения
             updateBackground(false);
-            
-            // После инерционного шага проверяем, не вышли ли мы за границы, и если да – запускаем snapBack
             snapBackToBounds();
         } else if (isPotentialSwipe) {
-            const dx = e.clientX - swipeStartX;
-            const dy = e.clientY - swipeStartY;
+            const dxSwipe = e.clientX - swipeStartX;
+            const dySwipe = e.clientY - swipeStartY;
             if (isHorizontalSwipe) {
-                finishHorizontalSwipe(dx);
+                finishHorizontalSwipe(dxSwipe);
             } else if (isVerticalSwipe) {
-                finishVerticalSwipe(dy);
+                finishVerticalSwipe(dySwipe);
             }
             isPotentialSwipe = false;
             isHorizontalSwipe = false;
@@ -606,7 +627,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             snapBackToBounds();
         }
-    }    
+    }
 
     function onPointerCancel(e) {
         imageStage.releasePointerCapture(e.pointerId);
@@ -728,18 +749,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         const rect = imageStage.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
-        const cursorX = e.clientX;
-        const cursorY = e.clientY;
-        let newScale = (scale === 1) ? MID_SCALE : 1;
-        newScale = Math.min(newScale, MAX_SCALE);
-        const ds = newScale - scale;
-        const dx = cursorX - centerX;
-        const dy = cursorY - centerY;
-        rawOffsetX -= dx * ds;
-        rawOffsetY -= dy * ds;
+        let newScale;
+        if (scale === 1) {
+            // При приближении – вычисляем смещение относительно точки клика
+            newScale = MID_SCALE;
+            const ds = newScale - scale;
+            const dx = e.clientX - centerX;
+            const dy = e.clientY - centerY;
+            rawOffsetX -= dx * ds;
+            rawOffsetY -= dy * ds;
+        } else {
+            // При отдалении – сбрасываем смещения и флаг перетаскивания
+            newScale = 1;
+            resetZoomParams();    // сбрасывает scale, rawOffsetX и rawOffsetY
+            isDragging = false;   // обязательно сбрасываем перетаскивание
+        }
         scale = newScale;
         updateBackground(false);
-    }
+        resetSwipeState(); // сбрасываем состояния свайпа/драга
+    }               
 
     // fullscreenchange
     document.addEventListener('fullscreenchange', () => {
