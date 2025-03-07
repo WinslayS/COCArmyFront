@@ -445,9 +445,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         imageStage.setPointerCapture(e.pointerId);
         pointers.push({ id: e.pointerId, x: e.clientX, y: e.clientY });
-
-        // Pinch
+    
+        // Если появилось два указателя, отключаем режим свайпа,
+        // чтобы обрабатывать жест как pinch
         if (pointers.length === 2) {
+            isPotentialSwipe = false;
+            isDragging = false;
             pinchStartDistance = getPinchDistance(pointers[0], pointers[1]);
             pinchStartScale = scale;
             pinchStartOffsetX = rawOffsetX;
@@ -455,18 +458,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             pinchStartCenter = getPinchCenter(pointers[0], pointers[1]);
             return;
         }
-        // Двойной клик
-        clickCount++;
-        if (clickCount === 1) {
-            doubleClickTimer = setTimeout(() => { clickCount = 0; }, DOUBLE_CLICK_DELAY);
-        } else if (clickCount === 2) {
-            clearTimeout(doubleClickTimer);
-            clickCount = 0;
-            handleDoublePress(e);
-        }
-        startX = e.clientX;
-        startY = e.clientY;
-
+        
+        // Если только один палец:
         if (scale > 1) {
             isDragging = true;
             isPotentialSwipe = false;
@@ -484,7 +477,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             slideNext.style.transform = 'translateX(100%)';
             slidePrev.style.transform = 'translateX(-100%)';
         }
-    }
+        startX = e.clientX;
+        startY = e.clientY;
+    }    
 
     function onPointerMove(e) {
         for (let i = 0; i < pointers.length; i++) {
