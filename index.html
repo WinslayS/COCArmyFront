@@ -7,6 +7,7 @@
   <title>Главное меню</title>
   <link rel="stylesheet" href="style/base.css">
   <link rel="stylesheet" href="style/header.css">
+  <link rel="stylesheet" href="style/front.css">
 </head>
 <body>
   <header class="header-top">
@@ -51,53 +52,131 @@
           Планировки <span class="arrow"></span>
         </a>
         <ul class="submenu">
-          <li><a href="upload.html">Загрузить</a></li>
-          <li><a href="layouts.html">Расстановки</a></li>
+          <li><a href="base-upload.html">Загрузить</a></li>
+          <li><a href="base-main.html">Основная</a></li>
+          <li><a href="base-builder.html">Строитель</a></li>
+          <li><a href="base-capital.html">Столица</a></li>
         </ul>
       </li>
       <li class="dropdown">
-        <a href="mix.html" class="dropdown-link">
+        <a href="armies.html" class="dropdown-link">
           Миксы <span class="arrow"></span>
         </a>
         <ul class="submenu">
-          <li><a href="search.html">Поиск</a></li>
-          <li><a href="create.html">Создать</a></li>
-          <li><a href="view.html">Смотреть</a></li>
+          <li><a href="army-create.html">Создать</a></li>
+          <li><a href="army-main.html">Смотреть</a></li>
+          <li><a href="army-builder.html">Смотреть</a></li>
+          <li><a href="army-capital.html">Смотреть</a></li>
         </ul>
       </li>
       <li class="dropdown">
-        <a href="advice.html" class="dropdown-link">
+        <a href="advices.html" class="dropdown-link">
           Советы <span class="arrow"></span>
         </a>
         <ul class="submenu">
-          <li><a href="heroes.html">Герои</a></li>
-          <li><a href="reinforcements.html">Подкрепление</a></li>
-          <li><a href="mistakes.html">Атаки</a></li>
-          <li><a href="build.html">Строительство</a></li>
+          <li><a href="advice-heroes.html">Герои</a></li>
+          <li><a href="advice-reinforcements.html">Подкрепление</a></li>
+          <li><a href="advice-armies.html">Атаки</a></li>
+          <li><a href="advice-bases.html">Строительство</a></li>
         </ul>
       </li>
       <li><a href="table.html">ЛВК</a></li>
     </ul>
   </nav>
   <main>
-    <section class="content-menu">
-      <a class="menu-card" href="bases.html">
-        <img src="images/banner/bases.webp" alt="Планировки">
-        <h2>Планировки</h2>
-      </a>
-      <a class="menu-card" href="mix.html">
-        <img src="images/banner/mix.webp" alt="Миксы">
-        <h2>Миксы</h2>
-      </a>
-      <a class="menu-card" href="advice.html">
-        <img src="images/banner/advice.webp" alt="Советы">
-        <h2>Советы</h2>
-      </a>
-      <a class="menu-card" href="table.html">
-        <img src="images/banner/table.webp" alt="ЛВК">
-        <h2>ЛВК</h2>
-      </a>
+    <section class="greeting">
+      <h2>Добро пожаловать на cocarmy.com</h2>
+      <p>Здесь вы найдете все, что нужно для успешной игры в Clash of Clans. У нас собраны лучшие планировки баз для разных уровней ратуши, эффективные миксы для атак, советы по прокачке, стратегии ведения боя и многое другое. Мы помогаем вам быть на шаг впереди соперников, улучшать свои навыки и развивать деревню максимально эффективно</p>
     </section>
+    <section class="cards">
+      <div class="card card-bases diagonal-slices">
+        <div class="slice slice1">
+          <a href="base-upload.html" class="slice-link">
+            <div class="slice-label1">Загрузить</div>
+          </a>
+        </div>
+        <div class="slice slice2">
+          <a href="base-main.html" class="slice-link">
+            <div class="slice-label2">Основная</div>
+          </a>
+        </div>
+        <div class="slice slice3">
+          <a href="base-builder.html" class="slice-link">
+            <div class="slice-label3">Строитель</div>
+          </a>
+        </div>
+        <div class="slice slice4">
+          <a href="base-capital.html" class="slice-link">
+            <div class="slice-label4">Столица</div>
+          </a>
+        </div>
+        <div class="card-content">
+          <h3 class="category-title category-bases">Планировки</h3>
+          <p class="category-description description-bases">
+            Найдите лучшую из предварительно отобранных планировок на любой вкус
+          </p>
+        </div>
+      </div>
+    <div class="card card-advise">
+      <a href="advices.html" class="card-link">
+        <div class="card-content">
+          <h3 class="category-title category-advise">Советы</h3>
+          <p class="category-description description-advise">
+            Практические советы по прокачке и ведению боя
+          </p>
+        </div>
+      </a>
+      <div class="character"></div>
+    </div>
+  </div>
+  <div class="card card-mix diagonal-slices">
+    <div class="slice slice1">
+      <a href="army-create.html" class="slice-link">
+        <div class="slice-label1">Создать</div>
+      </a>
+    </div>
+    <div class="slice slice2">
+      <a href="army-main.html" class="slice-link">
+        <div class="slice-label2">Основная</div>
+      </a>
+    </div>
+    <div class="slice slice3">
+      <a href="army-builder.html" class="slice-link">
+        <div class="slice-label3">Строитель</div>
+      </a>
+    </div>
+    <div class="slice slice4">
+      <a href="army-capital.html" class="slice-link">
+        <div class="slice-label4">Столица</div>
+      </a>
+    </div>
+    <div class="card-content">
+      <h3 class="category-title category-mix">Армии</h3>
+      <p class="category-description description-mix">
+        Откройте для себя разнообразные комбинации войск для любой прокачки
+      </p>
+    </div>
+  </div>
+    <div class="card card-table">
+      <a href="table.html" class="card-link">
+        <div class="card-content">
+          <h3 class="category-title category-table">ЛВК</h3>
+          <p class="category-description description-table">
+            Ознакомьтесь с последней статистикой
+          </p>
+        </div>
+      </a>
+      <div class="character"></div>
+    </div>
+      <div class="decor decor1"></div>
+      <div class="decor decor2"></div>
+      <div class="decor decor3"></div>
+      <div class="decor decor4"></div>
+      <div class="decor decor5"></div>
+      <div class="decor decor6"></div>
+      <div class="decor decor7"></div>
+    </section>
+
   </main>
   <footer class="footer-bottom">
     <div class="footer-content">
@@ -107,5 +186,6 @@
     </div>
   </footer>
   <script src="js/header.js"></script>
+  <script src="js/front.js"></script>
 </body>
 </html>

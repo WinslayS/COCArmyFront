@@ -1,22 +1,14 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>ЛВК</title>
-  <link rel="icon" href="images/banner/head.webp" type="image/webp" />
-
-  <!-- Ваши базовые стили -->
-  <link rel="stylesheet" href="style/base.css" />
-  <link rel="stylesheet" href="style/header.css" />
-  <link rel="stylesheet" href="style/table.css" />
-
-  <!-- DataTables CSS -->
-  <link
-    rel="stylesheet"
-    type="text/css"
-    href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css"
-  />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/banner/head.webp" type="image/webp">
+    <title>Расстановки</title>
+    <link rel="stylesheet" href="style/base.css">
+    <link rel="stylesheet" href="style/gallery.css">
+    <link rel="stylesheet" href="style/header.css">
+    <link rel="stylesheet" href="style/modal.css">
 </head>
 <body>
   <header class="header-top">
@@ -93,45 +85,82 @@
     </ul>
   </nav>
   <main>
-  <div class="description-section">
-    <p>По поводу коэффициента:</p>
-    <ul>
-        <li><strong>Атака + атака%:</strong> суммируются.</li>
-        <li><strong>Защита + защита%:</strong> суммируются, но каждый % умножается на <strong>0.5</strong>, чтобы звёзды имели приоритет.</li>
-        <li>Вся защита дополнительно умножается на <strong>0.5</strong>, чтобы дать приоритет атакам.</li>
-        <li>В конце от атаки отнимается защита (идеальный коэффициент — <strong>1.0000000</strong>).</li>
-        <li>При атаках на <strong>17ТХ</strong> базу прокачки <strong>16ТХ</strong> и ниже даётся <strong>0.04 очка</strong>, что немного сдвигает вас в топе.</li>
-    </ul>
-</div>
-
-  <!-- Блок с кнопками (плашками) в столбик -->
-  <div class="tabs-container" id="tabsContainer">
-    <!-- Тут динамически появятся наши кнопки -->
-  </div>
-
-  <!-- Обёртка для таблицы (скрыта по умолчанию, 
-       чтобы не было пустого места до первой загрузки) -->
-  <div class="datatable-wrapper" style="display: none;">
-    <table id="myDataTable" class="display">
-      <thead></thead>
-      <tbody></tbody>
-    </table>
+    <div class="main-container">
+        <div class="filter-section">
+            <button id="filterPanelToggle" class="filter-toggle-button">Фильтры</button>
+            <div class="filter-panel">
+                <div class="filter-categories">
+                    <button class="filter-category" data-category="war">#Война</button>
+                    <button class="filter-category" data-category="resources">#Ресурсы</button>
+                    <button class="filter-category" data-category="decor">#Декор</button>
+                </div>
+                <div class="filter-statuses">
+                    <button class="filter-status" data-status="new">Новая</button>
+                    <button class="filter-status" data-status="updated">Обновлено</button>
+                </div>
+            </div>
+        </div>
+        <div class="gallery" id="gallery"></div>
+    </div>
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <div class="spinner-overlay"></div>
+          <div class="image-stage-wrapper">
+            <div class="image-stage">
+              <div class="slide current"></div>
+              <div class="slide next"></div>
+              <div class="slide prev"></div>
+            </div>
+          </div>
+        <div class="modal-controls">
+            <div class="zoom-controls">
+                <button id="resetZoom" class="control-button">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="11" cy="11" r="7" stroke="white" stroke-width="2"/>
+                    <line x1="16" y1="16" x2="21" y2="21" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+                <div id="zoomSliderContainer">
+                    <input id="zoomSlider" type="range" min="1" max="5" step="0.1" value="1" />
+                </div>
+            </div>
+            <div class="action-buttons">
+              <button id="fullscreenModal" class="control-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                  <polyline points="4 10 4 4 10 4"></polyline>
+                  <polyline points="14 4 20 4 20 10"></polyline>
+                  <polyline points="20 14 20 20 14 20"></polyline>
+                  <polyline points="10 20 4 20 4 14"></polyline>
+                </svg>
+              </button>
+              <button id="closeModal" class="control-button">
+                <svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="6" y1="6" x2="18" y2="18" stroke="white" stroke-width="2"/>
+                  <line x1="6" y1="18" x2="18" y2="6" stroke="white" stroke-width="2"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        <div class="preview-area">
+            <img id="modalImage" src="" alt="">
+        </div>
+        <div class="controls-area">
+            <div class="thumbnails" id="thumbnailsContainer">
+            </div>
+        </div>
+    </div>
   </div>
 </main>
-  <footer class="footer-bottom">
+<footer class="footer-bottom">
     <div class="footer-content">
-      <p>Создатель: <strong>Kvane</strong></p>
-      <p>Почта: <a href="mailto:nvbuilder.coc@gmail.com">nvbuilder.coc@gmail.com</a></p>
-      <p>ТГ: <a href="https://t.me/winslays" target="_blank">winslays</a></p>
+        <p>Создатель: <strong>Kvane</strong></p>
+        <p>Почта: <a href="mailto:nvbuilder.coc@gmail.com">nvbuilder.coc@gmail.com</a></p>
+        <p>ТГ: <a href="https://t.me/winslays" target="_blank">winslays</a></p>
     </div>
-  </footer>
-  <!-- Скрипты -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script
-    type="text/javascript"
-    src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js">
-  </script>
-  <script src="js/table.js"></script>
-  <script src="js/header.js"></script>
+</footer>
+<script src="js/render-layouts.js"></script>
+<script src="js/header.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/modal.js"></script>
 </body>
 </html>

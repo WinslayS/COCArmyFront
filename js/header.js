@@ -7,19 +7,22 @@ document.addEventListener('DOMContentLoaded', function () {
   // Список подменю для десктопной панели
   const submenus = {
     "bases.html": [
-      { text: "Загрузить", href: "upload.html" },
-      { text: "Основная", href: "layouts.html" },
-      { text: "Строитель", href: "builder.html" }
+      { text: "Загрузить", href: "base-upload.html" },
+      { text: "Основная", href: "base-main.html" },
+      { text: "Строитель", href: "base-builder.html" },
+      { text: "Столица", href: "base-capital.html" }
     ],
-    "mix.html": [
-      { text: "Создать", href: "create.html" },
-      { text: "Смотреть", href: "view.html" }
+    "armies.html": [
+      { text: "Создать", href: "army-create.html" },
+      { text: "Основная", href: "army-main.html" },
+      { text: "Строитель", href: "army-builder.html" },
+      { text: "Столица", href: "army-capital.html" }
     ],
-    "advice.html": [
-      { text: "Герои", href: "heroes.html" },
-      { text: "Подкрепления", href: "reinforcements.html" },
-      { text: "Атаки", href: "mistakes.html" },
-      { text: "Строительство", href: "build.html" }
+    "advices.html": [
+      { text: "Герои", href: "advice-heroes.html" },
+      { text: "Подкрепления", href: "advice-reinforcements.html" },
+      { text: "Атаки", href: "advice-armies.html" },
+      { text: "Строительство", href: "advice-bases.html" }
     ]
   };
 

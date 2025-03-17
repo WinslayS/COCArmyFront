@@ -5,11 +5,13 @@ main {
 
 .header-top {
   position: fixed;
-  width: 100%;
+  width: 90%;
   min-height: 70px;
   background: #000;
   color: #ddd;
   z-index: 1000;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .header-top.scrolled {
@@ -73,7 +75,7 @@ main {
 }
 .nav-menu ul {
   flex-direction: column; /* вертикальный список на мобильном */
-  gap: 25px;
+  gap: 10px;
   margin: 0 20px;
   padding: 0;
   list-style: none;
@@ -217,8 +219,9 @@ main {
 .footer-bottom {
   background: #000;
   color: #ddd;
-  padding: 20px;
+  padding: 80px;
   text-align: center;
+  margin-top: 20px;
 }
 .footer-content a {
   color: #ddd;
@@ -260,10 +263,16 @@ main {
 
 /* --- Мобильные устройства (до 699px) --- */
 @media (max-width: 699px) {
+  .header-top {
+    width: 100%;
+  }
   .nav-menu {
   z-index: 999;
   height: 50%;
   overflow-y: auto;
+  } 
+  .nav-menu ul {
+    gap: 25px;
   } 
   .header-row {
     flex-direction: row;
@@ -308,15 +317,13 @@ main {
     transform: rotate(180deg);
   }
   .nav-menu .dropdown > a.dropdown-link {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
   .nav-menu .submenu a {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 }
-
-/* --- Десктоп (от 700px и выше) --- */
-@media (min-width: 700px) {
+@media (min-width: 700px) and (max-width: 999px)  {
   .header-row {
     padding: 0 20px;
     height: 70px;
@@ -330,7 +337,7 @@ main {
   .nav-menu {
     font-size: 1rem;
     top: 30px;
-    left: 50px;
+    left: 10%;
     width: auto;
     display: flex;
     flex-direction: row;
@@ -338,14 +345,54 @@ main {
     background: none;
     box-shadow: none;
     padding: 0;
-    margin-left: 30px;
+    margin-left: 40px;
     z-index: 1000;
     transition: none;
   }
   .nav-menu ul {
     display: flex;
     flex-direction: row;
-    gap: 20px;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+  }
+  .dropdown .submenu {
+    display: none !important;
+  }
+  .dropdown.open .submenu {
+    display: none !important;
+  }
+}
+/* --- Десктоп (от 700px и выше) --- */
+@media (min-width: 1000px) {
+  .header-row {
+    padding: 0 20px;
+    height: 70px;
+  }
+  .logo img {
+    height: 40px;
+  }
+  .hamburger {
+    display: none;
+  }
+  .nav-menu {
+    font-size: 1rem;
+    top: 30px;
+    left: 10%;
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    margin-left: 20px;
+    z-index: 1000;
+    transition: none;
+  }
+  .nav-menu ul {
+    display: flex;
+    flex-direction: row;
     margin: 0;
     padding: 0;
   }
@@ -354,5 +401,10 @@ main {
   }
   .dropdown.open .submenu {
     display: none !important;
+  }
+}
+@media (min-width: 1500px) {
+  .nav-menu {
+  margin-left: 0 !important;
   }
 }

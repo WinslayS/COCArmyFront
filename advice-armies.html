@@ -1,22 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>ЛВК</title>
-  <link rel="icon" href="images/banner/head.webp" type="image/webp" />
-
-  <!-- Ваши базовые стили -->
-  <link rel="stylesheet" href="style/base.css" />
-  <link rel="stylesheet" href="style/header.css" />
-  <link rel="stylesheet" href="style/table.css" />
-
-  <!-- DataTables CSS -->
-  <link
-    rel="stylesheet"
-    type="text/css"
-    href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css"
-  />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/banner/head.webp" type="image/webp">
+    <title>Герои</title>
+    <link rel="stylesheet" href="style/base.css">
+    <link rel="stylesheet" href="style/header.css">
+    <link rel="stylesheet" href="style/advice.css">
 </head>
 <body>
   <header class="header-top">
@@ -92,46 +83,27 @@
       <li><a href="table.html">ЛВК</a></li>
     </ul>
   </nav>
-  <main>
-  <div class="description-section">
-    <p>По поводу коэффициента:</p>
-    <ul>
-        <li><strong>Атака + атака%:</strong> суммируются.</li>
-        <li><strong>Защита + защита%:</strong> суммируются, но каждый % умножается на <strong>0.5</strong>, чтобы звёзды имели приоритет.</li>
-        <li>Вся защита дополнительно умножается на <strong>0.5</strong>, чтобы дать приоритет атакам.</li>
-        <li>В конце от атаки отнимается защита (идеальный коэффициент — <strong>1.0000000</strong>).</li>
-        <li>При атаках на <strong>17ТХ</strong> базу прокачки <strong>16ТХ</strong> и ниже даётся <strong>0.04 очка</strong>, что немного сдвигает вас в топе.</li>
-    </ul>
-</div>
-
-  <!-- Блок с кнопками (плашками) в столбик -->
-  <div class="tabs-container" id="tabsContainer">
-    <!-- Тут динамически появятся наши кнопки -->
-  </div>
-
-  <!-- Обёртка для таблицы (скрыта по умолчанию, 
-       чтобы не было пустого места до первой загрузки) -->
-  <div class="datatable-wrapper" style="display: none;">
-    <table id="myDataTable" class="display">
-      <thead></thead>
-      <tbody></tbody>
-    </table>
-  </div>
-</main>
-  <footer class="footer-bottom">
-    <div class="footer-content">
-      <p>Создатель: <strong>Kvane</strong></p>
-      <p>Почта: <a href="mailto:nvbuilder.coc@gmail.com">nvbuilder.coc@gmail.com</a></p>
-      <p>ТГ: <a href="https://t.me/winslays" target="_blank">winslays</a></p>
-    </div>
-  </footer>
-  <!-- Скрипты -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script
-    type="text/javascript"
-    src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js">
-  </script>
-  <script src="js/table.js"></script>
-  <script src="js/header.js"></script>
+    <main>
+        <div class="advice-section">
+            <p>Распростроненые проблемы в атаках</p>
+            <ul>
+                <li>Недооценивайте бандитку в миксе</li>
+                <li>Нелогичные способности у героев (например, перчатка + усы)</li>
+                <li>Не игнорируйте наличие ученика хранителя в наземных миксах</li>
+                <li>С шаром хранителя берется 2 тряса</li>
+                <li>Используйте огнеметатель / казарму / войскомет в подходящих местах (углы) и помните, что мортиры и арбалеты легко их достают</li>
+                <li>Перед хилками используйте 1 шар для обезвреживания воздушных мин на начале</li>
+                <li>Дережабль с шарами будет заметно хуже, чем с йети</li>
+            </ul>
+        </div>
+    </main>
+    <footer class="footer-bottom">
+        <div class="footer-content">
+          <p>Создатель: <strong>Kvane</strong></p>
+          <p>Почта: <a href="mailto:nvbuilder.coc@gmail.com">nvbuilder.coc@gmail.com</a></p>
+          <p>ТГ: <a href="https://t.me/winslays" target="_blank">winslays</a></p>
+        </div>
+      </footer>
+    <script src="js/header.js"></script>
 </body>
 </html>

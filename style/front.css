@@ -1,0 +1,598 @@
+/* ----- Приветствие (не меняем) ----- */
+.greeting {
+  text-align: center;
+  border-bottom: 2px solid #ddd;
+  height: 400px;
+  margin-top: 80px;
+}
+/* Эффект печатанья для заголовка */
+.greeting h2 {
+  margin-bottom: 10px;
+  display: inline-block;              /* чтобы ширина элемента зависела от содержимого */
+  overflow: hidden;                   /* скрываем текст, выходящий за пределы блока */
+  white-space: nowrap;                /* предотвращаем перенос строк */
+  border-right: 2px solid #333;       /* имитируем курсор печатания */
+  width: 0;                           /* изначально скрыт */
+  font-size: 2.5em;                  /* размер шрифта можно изменить по вкусу */
+  animation: typing 2s steps(40, end) forwards, blink-caret 0.75s step-end infinite;
+}
+/* Ключевые кадры эффекта печатания */
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* Анимация мигания курсора */
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: #333; }
+}
+.greeting p {
+  font-size: 1.5em;
+  max-width: 800px;
+  margin: 0 auto;
+}
+/* Эффект плавного появления для описания */
+.greeting p {
+  opacity: 0;                        /* начальное состояние – текст невидим */
+  transform: translateY(10px);       /* небольшой сдвиг вниз для эффекта появления */
+  animation: fadeIn 1s forwards 1s;   /* задержка 3s, чтобы дождаться завершения печатанья заголовка */
+}
+
+/* Ключевые кадры для плавного появления */
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Контейнер для всех карточек */
+.cards {
+
+  opacity: 0;
+  animation: fadeInUp 1s forwards;
+  position: relative; /* чтобы дети могли быть position: absolute */
+  width: 100%;
+  min-height: 1800px; /* подберите высоту или оставьте auto, но тогда важно 
+                        следить, чтобы все карточки помещались */
+  margin: 0 auto;    /* центрируем по горизонтали, если нужно */
+}
+/* Общие стили для карточек */
+.card {
+  overflow: hidden; 
+  position: absolute; /* абсолютное позиционирование */
+  box-sizing: border-box;
+  background: #c9c9c9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+/* 1. Планировки - большой блок слева, вплотную к границе */
+.card-bases {
+  top: 20px;
+  left: -10px;
+  height: 600px;
+  width: 70%;   /* подберите ширину */
+  z-index: 1;   /* если хотите, чтобы его перекрывали другие блоки */
+}
+
+/* 2. Советы - ниже, смещён вправо и перекрывает Планировки */
+.card-advise {
+  top: 600px;   /* отступ сверху (примерное значение, регулируйте под макет) */
+  left: 45%;    /* немного вправо, чтобы перекрывать .card-bases */
+  width: 50%; 
+  height: 400px;
+  z-index: 2;   /* выше Планировок */
+}
+
+/* 3. Миксы - меньше, не касается экрана, частично перекрывает Советы */
+.card-mix {
+  top: 850px;   /* между Планировками и Советами */
+  left: 10%;    /* смещён от левого края, чтобы не касаться границ экрана */
+  width: 65%;
+  height: 500px;
+  z-index: 3;   /* ещё выше, чтобы «лежать» поверх Советов */
+}
+
+/* 4. ЛВК - под Миксами */
+.card-table {
+  top: 1300px;   /* ещё ниже, чем Советы и Миксы */
+  left: 35%;
+  width: 50%;
+  height: 300px;
+  z-index: 1;
+}
+/* Общий стиль заголовков */
+.category-title {
+  position: absolute;
+  font-size: 5em;
+}
+
+/* Общий стиль описаний */
+.category-description {
+  position: absolute;
+  font-size: 2.5em;
+}
+
+/* 1. Планировки */
+.category-bases {
+  top: 100px;
+  left: 5%;
+}
+
+.description-bases {
+  top: 250px;
+  left: 10%;
+}
+
+/* 2. Советы */
+.category-advise {
+  top: 60px;
+  left: 30%;
+}
+
+.description-advise {
+  top: 150px;
+  left: 10%;
+}
+
+/* 3. Миксы */
+.category-mix {
+  top: 70px;
+  left: 45%;
+}
+
+.description-mix {
+  top: 200px;
+  left: 10%;
+}
+
+/* 4. ЛВК */
+.category-table {
+  top: 80px;
+  left: 30%;
+}
+
+.description-table {
+  top: 180px;
+  left: 5%;
+}
+.card-content p {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.card:hover .card-content p {
+  transform: translateY(-200%);
+  opacity: 0;
+}
+/* Общий стиль для всех заголовков h3 внутри .card-content */
+.card-content h3 {
+  transition: transform 0.3s ease;
+  /* При необходимости можно добавить начальное состояние transform: none; */
+}
+
+/* Для карточки "Планировки" - h3 поднимается вверх на 100% своей высоты */
+.card:hover .card-content h3.category-bases {
+  transform: translateY(-100%);
+}
+
+/* Для карточки "Советы" - h3 сдвигается влево и поднимается на 50% своей высоты */
+.card:hover .card-content h3.category-advise {
+  transform: translate(-50%, +40%);
+}
+
+/* Для карточки "Миксы" - h3 поднимается вверх на 50% своей высоты */
+.card:hover .card-content h3.category-mix {
+  transform: translateY(-70%);
+}
+
+/* Для карточки "ЛВК" - h3 сдвигается вправо на 100% своей ширины */
+.card:hover .card-content h3.category-table {
+  transform: translate(+80%, +40%);
+}
+.card.card-advise .character {
+  position: absolute;
+  left: 75%;               /* Располагаем левее центра – можно регулировать */
+  transform: translateX(-50%);
+  bottom: -100%;           /* Изначально скрыт под нижней границей карточки */
+  width: 200px;
+  height: 350px;
+  background-color: #333;
+  transition: bottom 0.3s ease;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* === Начальное расположение для card-table === */
+.card.card-table .character {
+  position: absolute;
+  left: 20%;               /* Располагаем правее центра – можно регулировать */
+  transform: translateX(-50%);
+  bottom: -100%;           /* Изначально скрыт под нижней границей карточки */
+  width: 300px;
+  height: 300px;
+  background-color: #333;
+  transition: bottom 0.3s ease;
+  z-index: 5;
+}
+
+/* === Ховер-состояние для card-advise: персонаж выезжает и левитирует === */
+.card.card-advise:hover .character {
+  bottom: 0;
+  animation: levitateCharacterAdvise 3s ease-in-out infinite;
+}
+
+/* === Ховер-состояние для card-table: персонаж выезжает и левитирует (с другим эффектом) === */
+.card.card-table:hover .character {
+  bottom: 0;
+  animation: levitateCharacterTable 3s ease-in-out infinite;
+}
+
+/* === Анимация для card-advise === */
+@keyframes levitateCharacterAdvise {
+  0% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-10px);
+  }
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* === Анимация для card-table === */
+@keyframes levitateCharacterTable {
+  0% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-15px);
+  }
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+/* Ссылки внутри слайсов делают всю область слайда кликабельной */
+.slice-link, .card-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+/* Общие стили для декора */
+.decor {
+  opacity: 0;
+  animation: fadeInUp 1s forwards, levitate 5s ease-in-out infinite;
+  position: absolute;  /* так же, как и .card */
+  background-color: #ffdddd; /* любой цвет для наглядности */
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  border: 2px dashed #ff7777; /* пример «наброска» */
+  z-index: 0; /* ниже карточек, если у карточек z-index:1 и выше */
+}
+
+/* Пример координат и размеров (подгоняйте под ваш макет) */
+.decor1 {
+  top: -200px;
+  left: 2%;
+  width: 200px;
+  height: 180px;
+  z-index: 4;
+}
+
+.decor2 {
+  top: -450px;
+  left: 85%;
+  width: 250px;
+  height: 200px;
+  z-index: 4;
+}
+
+.decor3 {
+  top: 130px;
+  left: 75%;
+  width: 250px;
+  height: 400px;
+  z-index: 4;
+}
+
+.decor4 {
+  top: 680px;
+  left: 5%;
+  width: 200px;
+  height: 200px;
+  z-index: 4;
+}
+
+.decor5 {
+  top: 650px;
+  left: 20%;
+  width: 100px;
+  height: 100px;
+  z-index: 4;
+}
+
+.decor6 {
+  top: 1110px;
+  left: 80%;
+  width: 250px;
+  height: 200px;
+  z-index: 4;
+}
+
+.decor7 {
+  top: 1500px;
+  left: 15%;
+  width: 100px;
+  height: 100px;
+  z-index: 4;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes levitate {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+/* Исходное состояние для карточек и декора */
+.card,
+.decor {
+  opacity: 0;
+  transform: translateY(20px);
+  /* Можно задать transition, если не используем ключевые кадры */
+}
+
+/* Когда элемент появится (класс in-view добавляется через JS) */
+.card.in-view {
+  animation: fadeInUp 0.8s forwards;
+}
+
+/* Для декораций: сначала fadeInUp, затем левитация (задержка для второго эффекта) */
+.decor.in-view {
+  animation: fadeInUp 0.8s forwards, levitate 3s ease-in-out infinite 1s;
+}
+
+/* Для поэтапного (стаггерного) появления можно добавить задержку через nth-child */
+/* Если порядок в HTML соответствует желаемой последовательности: */
+.cards .card:nth-child(1).in-view { animation-delay: 0.2s; }
+.cards .card:nth-child(2).in-view { animation-delay: 0.4s; }
+.cards .card:nth-child(3).in-view { animation-delay: 0.6s; }
+.cards .card:nth-child(4).in-view { animation-delay: 0.8s; }
+
+.cards .decor:nth-child(n+5).in-view { 
+  /* Если декоры идут после карточек, можно задать свою схему задержек */
+  animation-delay: 0.3s;
+}
+
+/* Общий стиль для каждого слайда */
+.card.diagonal-slices .slice {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease, clip-path 0.3s ease;
+  z-index: 5;
+  background-size: cover;
+  background-position: center;
+
+}
+.card.diagonal-slices .card-content {
+  position: relative;
+  z-index: 10;
+  pointer-events: none; /* если нужно, чтобы клики проходили через текст */
+  padding: 20px;
+  transition: transform 0.3s ease;
+}
+.slice.slice1 {
+  left: 0;
+  width: 25%;
+}
+.slice.slice2 {
+  left: 25%;
+  width: 25%;
+}
+.slice.slice3 {
+  left: 50%;
+  width: 25%;
+}
+.slice.slice4 {
+  left: 75%;
+  width: 25%;
+}
+
+.card-bases.diagonal-slices .slice.slice1 {
+  background: url("../images/banner/base-upload.webp") center/cover;
+}
+.card-bases.diagonal-slices .slice.slice2 {
+  background: url("../images/banner/base-main.webp") -200px center/cover;
+}
+.card-bases.diagonal-slices .slice.slice3 {
+  background: url("../images/banner/base-builder.webp") 20% center/cover;
+}
+.card-bases.diagonal-slices .slice.slice4 {
+  background: url("../images/banner/base-capital.webp") 100px center/cover;
+}
+.card-mix.diagonal-slices .slice.slice1 {
+  background: url("../images/banner/army-create.webp") -500px center/cover;
+}
+.card-mix.diagonal-slices .slice.slice2 {
+  background: url("../images/banner/army-main.webp") -50px center/cover;
+}
+.card-mix.diagonal-slices .slice.slice3 {
+  background: url("../images/banner/army-builder.webp") 250px center/cover;
+}
+.card-mix.diagonal-slices .slice.slice4 {
+  background: url("../images/banner/army-capital.webp") 600px center/cover;
+}
+.card-advise {
+  background: url("../images/banner/advices.webp") no-repeat center/cover;
+}
+.card-table {
+  background: url("../images/banner/table.webp") no-repeat 0px -110px/cover;
+}
+.card.card-advise .character {
+  background: url("../images/banner/villager.webp") no-repeat center/contain;
+}
+.card.card-table .character {
+  background: url("../images/banner/lava.webp") no-repeat center/contain;
+}
+/* Убедимся, что сам слайс лежит на базовом уровне */
+.card.diagonal-slices .slice {
+  /* position: absolute уже задан, оставляем без изменений */
+  z-index: 0;
+}
+/* === Для карточек с диагональными слайсами === */
+/* Убедимся, что слайс с фоном располагается на базовом уровне */
+.card.diagonal-slices .slice {
+  /* У вас уже задан position: absolute, поэтому оставляем как есть */
+  z-index: 0;
+}
+
+/* Псевдоэлемент затемнения для слайсов */
+.card.diagonal-slices .slice::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* уровень затемнения */
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Чтобы текст и подписи внутри слайса отображались поверх затемнения */
+.card.diagonal-slices .slice > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* При наведении затемнение плавно исчезает */
+.card.diagonal-slices .slice:hover::after {
+  opacity: 0;
+}
+
+/* Псевдоэлемент затемнения для карточек */
+.card-advise::after,
+.card-table::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* уровень затемнения */
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* При наведении затемнение исчезает */
+.card-advise:hover::after,
+.card-table:hover::after {
+  opacity: 0;
+}
+
+/* Содержимое карточки должно располагаться выше затемнения */
+.card-advise > *,
+.card-table > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Базовые стили для элемента персонажа */
+/* === Начальное расположение для card-advise === */
+.slice-label1 {
+  position: absolute;
+  font-size: 1.5em;
+  left: 7%;
+  bottom: -30px;
+  opacity: 0;
+  transition: bottom 0.3s ease, opacity 0.3s ease;
+}
+.slice-label2 {
+  position: absolute;
+  font-size: 1.5em;
+  left: 25%;
+  bottom: -30px;
+  opacity: 0;
+  transition: bottom 0.3s ease, opacity 0.3s ease;
+}
+.slice-label3 {
+  position: absolute;
+  font-size: 1.5em;
+  left: 48%;
+  bottom: -30px;
+  opacity: 0;
+  transition: bottom 0.3s ease, opacity 0.3s ease;
+}
+.slice-label4 {
+  position: absolute;
+  font-size: 1.5em;
+  left: 75%;
+  bottom: -30px;
+  opacity: 0;
+  transition: bottom 0.3s ease, opacity 0.3s ease;
+}
+.slice-label1::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: -200%;
+  width: calc(100% + 500%);
+  height: 70px;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 1;
+  z-index: -1;
+}
+.slice-label2::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: -200%;
+  width: calc(100% + 500%);
+  height: 70px;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 1;
+  z-index: -1;
+}
+.slice-label3::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: -200%;
+  width: calc(100% + 500%);
+  height: 70px;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 1;
+  z-index: -1;
+}
+.slice-label4::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: -250%;
+  width: calc(100% + 600%);
+  height: 70px;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 1;
+  z-index: -1;
+}
