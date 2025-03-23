@@ -49,14 +49,11 @@
 
 /* Контейнер для всех карточек */
 .cards {
-
   opacity: 0;
   animation: fadeInUp 1s forwards;
   position: relative; /* чтобы дети могли быть position: absolute */
   width: 100%;
-  min-height: 1800px; /* подберите высоту или оставьте auto, но тогда важно 
-                        следить, чтобы все карточки помещались */
-  margin: 0 auto;    /* центрируем по горизонтали, если нужно */
+  min-height: 1800px;
 }
 /* Общие стили для карточек */
 .card {
@@ -68,7 +65,8 @@
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
-/* 1. Планировки - большой блок слева, вплотную к границе */
+@media screen and (min-width: 1100px) {
+  /* 1. Планировки - большой блок слева, вплотную к границе */
 .card-bases {
   top: 20px;
   left: -10px;
@@ -88,7 +86,7 @@
 
 /* 3. Миксы - меньше, не касается экрана, частично перекрывает Советы */
 .card-mix {
-  top: 850px;   /* между Планировками и Советами */
+  top: 900px;   /* между Планировками и Советами */
   left: 10%;    /* смещён от левого края, чтобы не касаться границ экрана */
   width: 65%;
   height: 500px;
@@ -97,7 +95,7 @@
 
 /* 4. ЛВК - под Миксами */
 .card-table {
-  top: 1300px;   /* ещё ниже, чем Советы и Миксы */
+  top: 1350px;   /* ещё ниже, чем Советы и Миксы */
   left: 35%;
   width: 50%;
   height: 300px;
@@ -106,13 +104,13 @@
 /* Общий стиль заголовков */
 .category-title {
   position: absolute;
-  font-size: 5em;
+  font-size: 4em;
 }
 
 /* Общий стиль описаний */
 .category-description {
   position: absolute;
-  font-size: 2.5em;
+  font-size: 1.8em;
 }
 
 /* 1. Планировки */
@@ -191,6 +189,390 @@
 .card:hover .card-content h3.category-table {
   transform: translate(+80%, +40%);
 }
+.slice-label1{
+  font-size: 1.4em;
+  left: 7%;
+  bottom: -30px;
+}
+.slice-label2 {
+  font-size: 1.4em;
+  left: 25%;
+  bottom: -30px;
+}
+.slice-label3 {
+  font-size: 1.4em;
+  left: 48%;
+  bottom: -30px;
+}
+.slice-label4 {
+  font-size: 1.4em;
+  left: 75%;
+  bottom: -30px;
+}
+.slice-label1::before {
+  left: -200%;
+  width: calc(100% + 500%);
+  height: 70px;
+  bottom: 0;
+}
+.slice-label2::before {
+  left: -200%;
+  width: calc(100% + 500%);
+  height: 70px;
+  bottom: 0;
+}
+.slice-label3::before {
+  left: -200%;
+  width: calc(100% + 500%);
+  height: 70px;
+  bottom: 0;
+}
+.slice-label4::before {
+  left: -250%;
+  width: calc(100% + 600%);
+  height: 70px;
+  bottom: 0;
+}
+}
+@media screen and (min-width: 700px) and (max-width: 1099px) {
+  /* 1. Планировки - большой блок слева, вплотную к границе */
+  .card-bases {
+    top: 20px;
+    left: -10px;
+    height: 600px;
+    width: 75%;   /* подберите ширину */
+    z-index: 2;   /* если хотите, чтобы его перекрывали другие блоки */
+  }
+  
+  /* 2. Советы - ниже, смещён вправо и перекрывает Планировки */
+  .card-advise {
+    top: 600px;   /* отступ сверху (примерное значение, регулируйте под макет) */
+    left: 35%;    /* немного вправо, чтобы перекрывать .card-bases */
+    width: 60%; 
+    height: 300px;
+    z-index: 1;   /* выше Планировок */
+  }
+  
+  /* 3. Миксы - меньше, не касается экрана, частично перекрывает Советы */
+  .card-mix {
+    top: 850px;   /* между Планировками и Советами */
+    left: 5%;    /* смещён от левого края, чтобы не касаться границ экрана */
+    width: 85%;
+    height: 500px;
+    z-index: 3;   /* ещё выше, чтобы «лежать» поверх Советов */
+  }
+  
+  /* 4. ЛВК - под Миксами */
+  .card-table {
+    top: 1300px;   /* ещё ниже, чем Советы и Миксы */
+    left: 25%;
+    width: 60%;
+    height: 300px;
+    z-index: 1;
+  }
+  /* Общий стиль заголовков */
+  .category-title {
+    position: absolute;
+    font-size: 3em;
+  }
+  
+  /* Общий стиль описаний */
+  .category-description {
+    position: absolute;
+    font-size: 1.5em;
+  }
+  
+  /* 1. Планировки */
+  .category-bases {
+    top: 150px;
+    left: 5%;
+  }
+  
+  .description-bases {
+    top: 250px;
+    left: 15%;
+  }
+  
+  /* 2. Советы */
+  .category-advise {
+    top: 20px;
+    left: 15%;
+  }
+  
+  .description-advise {
+    top: 100px;
+    left: 10%;
+  }
+  
+  /* 3. Миксы */
+  .category-mix {
+    top: 120px;
+    left: 25%;
+  }
+  
+  .description-mix {
+    top: 200px;
+    left: 10%;
+  }
+  
+  /* 4. ЛВК */
+  .category-table {
+    top: 70px;
+    left: 30%;
+  }
+  
+  .description-table {
+    top: 150px;
+    left: 10%;
+  }
+  .card-content p {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  
+  .card:hover .card-content p {
+    transform: translateY(-200%);
+    opacity: 0;
+  }
+  /* Общий стиль для всех заголовков h3 внутри .card-content */
+  .card-content h3 {
+    transition: transform 0.3s ease;
+    /* При необходимости можно добавить начальное состояние transform: none; */
+  }
+  
+  /* Для карточки "Планировки" - h3 поднимается вверх на 100% своей высоты */
+  .card:hover .card-content h3.category-bases {
+    transform: translateY(-250%);
+  }
+  
+  /* Для карточки "Советы" - h3 сдвигается влево и поднимается на 50% своей высоты */
+  .card:hover .card-content h3.category-advise {
+    transform: translate(-20%, +50%);
+  }
+  
+  /* Для карточки "Миксы" - h3 поднимается вверх на 50% своей высоты */
+  .card:hover .card-content h3.category-mix {
+    transform: translateY(-170%);
+  }
+  
+  /* Для карточки "ЛВК" - h3 сдвигается вправо на 100% своей ширины */
+  .card:hover .card-content h3.category-table {
+    transform: translate(+80%, +40%);
+  }
+  .slice-label1{
+    font-size: 1.2em;
+    left: 18%;
+    bottom: -30px;
+  }
+  .slice-label2 {
+    font-size: 1.2em;
+    left: 62%;
+    bottom: -30px;
+  }
+  .slice-label3 {
+    font-size: 1.2em;
+    left: 18%;
+    bottom: -30px;
+  }
+  .slice-label4 {
+    font-size: 1.2em;
+    left: 62%;
+    bottom: -30px;
+  }
+  .slice-label1::before {
+    left: -200%;
+    width: calc(100% + 500%);
+    height: 50px;
+    bottom: 0;
+  }
+  .slice-label2::before {
+    left: -200%;
+    width: calc(100% + 500%);
+    height: 50px;
+    bottom: 0;
+  }
+  .slice-label3::before {
+    left: -200%;
+    width: calc(100% + 500%);
+    height: 50px;
+    bottom: 0;
+  }
+  .slice-label4::before {
+    left: -250%;
+    width: calc(100% + 600%);
+    height: 50px;
+    bottom: 0;
+  }
+}
+@media screen and (max-width: 699px) {
+  /* 1. Планировки - большой блок слева, вплотную к границе */
+  .card-bases {
+    top: 20px;
+    left: -10px;
+    height: 600px;
+    width: 75%;   /* подберите ширину */
+    z-index: 2;   /* если хотите, чтобы его перекрывали другие блоки */
+  }
+  
+  /* 2. Советы - ниже, смещён вправо и перекрывает Планировки */
+  .card-advise {
+    top: 600px;   /* отступ сверху (примерное значение, регулируйте под макет) */
+    left: 35%;    /* немного вправо, чтобы перекрывать .card-bases */
+    width: 60%; 
+    height: 300px;
+    z-index: 1;   /* выше Планировок */
+  }
+  
+  /* 3. Миксы - меньше, не касается экрана, частично перекрывает Советы */
+  .card-mix {
+    top: 850px;   /* между Планировками и Советами */
+    left: 5%;    /* смещён от левого края, чтобы не касаться границ экрана */
+    width: 85%;
+    height: 500px;
+    z-index: 3;   /* ещё выше, чтобы «лежать» поверх Советов */
+  }
+  
+  /* 4. ЛВК - под Миксами */
+  .card-table {
+    top: 1300px;   /* ещё ниже, чем Советы и Миксы */
+    left: 25%;
+    width: 60%;
+    height: 300px;
+    z-index: 1;
+  }
+  /* Общий стиль заголовков */
+  .category-title {
+    position: absolute;
+    font-size: 1.5em;
+  }
+  
+  /* Общий стиль описаний */
+  .category-description {
+    position: absolute;
+    font-size: 1em;
+  }
+  
+  /* 1. Планировки */
+  .category-bases {
+    top: 150px;
+    left: 5%;
+  }
+  
+  .description-bases {
+    top: 250px;
+    left: 15%;
+  }
+  
+  /* 2. Советы */
+  .category-advise {
+    top: 20px;
+    left: 15%;
+  }
+  
+  .description-advise {
+    top: 100px;
+    left: 10%;
+  }
+  
+  /* 3. Миксы */
+  .category-mix {
+    top: 120px;
+    left: 25%;
+  }
+  
+  .description-mix {
+    top: 200px;
+    left: 10%;
+  }
+  
+  /* 4. ЛВК */
+  .category-table {
+    top: 70px;
+    left: 30%;
+  }
+  
+  .description-table {
+    top: 150px;
+    left: 10%;
+  }
+  .card-content p {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  
+  .card:hover .card-content p {
+    transform: translateY(-200%);
+    opacity: 0;
+  }
+  /* Общий стиль для всех заголовков h3 внутри .card-content */
+  .card-content h3 {
+    transition: transform 0.3s ease;
+    /* При необходимости можно добавить начальное состояние transform: none; */
+  }
+  
+  /* Для карточки "Планировки" - h3 поднимается вверх на 100% своей высоты */
+  .card:hover .card-content h3.category-bases {
+    transform: translateY(-250%);
+  }
+  
+  /* Для карточки "Советы" - h3 сдвигается влево и поднимается на 50% своей высоты */
+  .card:hover .card-content h3.category-advise {
+    transform: translate(-20%, +50%);
+  }
+  
+  /* Для карточки "Миксы" - h3 поднимается вверх на 50% своей высоты */
+  .card:hover .card-content h3.category-mix {
+    transform: translateY(-170%);
+  }
+  
+  /* Для карточки "ЛВК" - h3 сдвигается вправо на 100% своей ширины */
+  .card:hover .card-content h3.category-table {
+    transform: translate(+80%, +40%);
+  }
+  .slice-label1{
+    font-size: 1em;
+    left: 32%;
+    bottom: -30px;
+  }
+  .slice-label2 {
+    font-size: 1em;
+    left: 32%;
+    bottom: -30px;
+  }
+  .slice-label3 {
+    font-size: 1em;
+    left: 32%;
+    bottom: -30px;
+  }
+  .slice-label4 {
+    font-size: 1em;
+    left: 32%;
+    bottom: -30px;
+  }
+  .slice-label1::before {
+    left: -200%;
+    width: calc(100% + 500%);
+    height: 30px;
+    bottom: 0;
+  }
+  .slice-label2::before {
+    left: -200%;
+    width: calc(100% + 500%);
+    height: 30px;
+    bottom: 0;
+  }
+  .slice-label3::before {
+    left: -200%;
+    width: calc(100% + 500%);
+    height: 30px;
+    bottom: 0;
+  }
+  .slice-label4::before {
+    left: -250%;
+    width: calc(100% + 600%);
+    height: 30px;
+    bottom: 0;
+  }
+}
+
 .card.card-advise .character {
   position: absolute;
   left: 75%;               /* Располагаем левее центра – можно регулировать */
@@ -400,22 +782,6 @@
   padding: 20px;
   transition: transform 0.3s ease;
 }
-.slice.slice1 {
-  left: 0;
-  width: 25%;
-}
-.slice.slice2 {
-  left: 25%;
-  width: 25%;
-}
-.slice.slice3 {
-  left: 50%;
-  width: 25%;
-}
-.slice.slice4 {
-  left: 75%;
-  width: 25%;
-}
 
 .card-bases.diagonal-slices .slice.slice1 {
   background: url("../images/banner/base-upload.webp") center/cover;
@@ -453,19 +819,10 @@
 .card.card-table .character {
   background: url("../images/banner/lava.webp") no-repeat center/contain;
 }
-/* Убедимся, что сам слайс лежит на базовом уровне */
+/*Слайсы текст*/
 .card.diagonal-slices .slice {
-  /* position: absolute уже задан, оставляем без изменений */
   z-index: 0;
 }
-/* === Для карточек с диагональными слайсами === */
-/* Убедимся, что слайс с фоном располагается на базовом уровне */
-.card.diagonal-slices .slice {
-  /* У вас уже задан position: absolute, поэтому оставляем как есть */
-  z-index: 0;
-}
-
-/* Псевдоэлемент затемнения для слайсов */
 .card.diagonal-slices .slice::after {
   content: "";
   position: absolute;
@@ -473,24 +830,18 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* уровень затемнения */
+  background-color: rgba(0, 0, 0, 0.5);
   transition: opacity 0.3s ease;
   pointer-events: none;
   z-index: 1;
 }
-
-/* Чтобы текст и подписи внутри слайса отображались поверх затемнения */
 .card.diagonal-slices .slice > * {
   position: relative;
   z-index: 2;
 }
-
-/* При наведении затемнение плавно исчезает */
 .card.diagonal-slices .slice:hover::after {
   opacity: 0;
 }
-
-/* Псевдоэлемент затемнения для карточек */
 .card-advise::after,
 .card-table::after {
   content: "";
@@ -499,100 +850,31 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* уровень затемнения */
+  background-color: rgba(0, 0, 0, 0.5);
   transition: opacity 0.3s ease;
   pointer-events: none;
   z-index: 1;
 }
-
-/* При наведении затемнение исчезает */
 .card-advise:hover::after,
 .card-table:hover::after {
   opacity: 0;
 }
-
-/* Содержимое карточки должно располагаться выше затемнения */
 .card-advise > *,
 .card-table > * {
   position: relative;
   z-index: 2;
 }
+.slice-label1, .slice-label2, .slice-label3, .slice-label4  {
+  position: absolute;
+  opacity: 0;
+  transition: bottom 0.3s ease, opacity 0.3s ease;
+}
+.slice-label1::before, .slice-label2::before, .slice-label3::before, .slice-label4::before{
+  content: "";
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 1;
+  z-index: -1;
+}
 
-/* Базовые стили для элемента персонажа */
-/* === Начальное расположение для card-advise === */
-.slice-label1 {
-  position: absolute;
-  font-size: 1.5em;
-  left: 7%;
-  bottom: -30px;
-  opacity: 0;
-  transition: bottom 0.3s ease, opacity 0.3s ease;
-}
-.slice-label2 {
-  position: absolute;
-  font-size: 1.5em;
-  left: 25%;
-  bottom: -30px;
-  opacity: 0;
-  transition: bottom 0.3s ease, opacity 0.3s ease;
-}
-.slice-label3 {
-  position: absolute;
-  font-size: 1.5em;
-  left: 48%;
-  bottom: -30px;
-  opacity: 0;
-  transition: bottom 0.3s ease, opacity 0.3s ease;
-}
-.slice-label4 {
-  position: absolute;
-  font-size: 1.5em;
-  left: 75%;
-  bottom: -30px;
-  opacity: 0;
-  transition: bottom 0.3s ease, opacity 0.3s ease;
-}
-.slice-label1::before {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: -200%;
-  width: calc(100% + 500%);
-  height: 70px;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 1;
-  z-index: -1;
-}
-.slice-label2::before {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: -200%;
-  width: calc(100% + 500%);
-  height: 70px;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 1;
-  z-index: -1;
-}
-.slice-label3::before {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: -200%;
-  width: calc(100% + 500%);
-  height: 70px;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 1;
-  z-index: -1;
-}
-.slice-label4::before {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: -250%;
-  width: calc(100% + 600%);
-  height: 70px;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 1;
-  z-index: -1;
-}
+
