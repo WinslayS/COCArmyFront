@@ -480,45 +480,48 @@
   
   /* 1. Планировки */
   .category-bases {
-    top: 150px;
+    top: 50px;
     left: 5%;
   }
   
   .description-bases {
-    top: 250px;
-    left: 15%;
+    top: 190px;
+    max-width: 400px;
+    left: 5%;
   }
   
   /* 2. Советы */
   .category-advise {
-    top: 20px;
-    left: 15%;
+    top: 40px;
+    left: 20%;
   }
   
   .description-advise {
-    top: 100px;
-    left: 10%;
+    top: 80px;
+    left: 15%;
+    max-width: 300px;
   }
   
   /* 3. Миксы */
   .category-mix {
-    top: 120px;
-    left: 25%;
+    top: 40px;
+    left: 60%;
   }
   
   .description-mix {
-    top: 200px;
-    left: 10%;
+    top: 160px;
+    left: 25%;
+    max-width: 400px;
   }
   
   /* 4. ЛВК */
   .category-table {
-    top: 70px;
-    left: 30%;
+    top: 30px;
+    left: 10%;
   }
   
   .description-table {
-    top: 150px;
+    top: 80px;
     left: 10%;
   }
   .card-content p {
@@ -537,22 +540,22 @@
   
   /* Для карточки "Планировки" - h3 поднимается вверх на 100% своей высоты */
   .card:hover .card-content h3.category-bases {
-    transform: translateY(-250%);
+    transform: translateY(-150%);
   }
   
   /* Для карточки "Советы" - h3 сдвигается влево и поднимается на 50% своей высоты */
   .card:hover .card-content h3.category-advise {
-    transform: translate(-20%, +50%);
+    transform: translate(-10%, +80%);
   }
   
   /* Для карточки "Миксы" - h3 поднимается вверх на 50% своей высоты */
   .card:hover .card-content h3.category-mix {
-    transform: translateY(-170%);
+    transform: translateY(-150%);
   }
   
   /* Для карточки "ЛВК" - h3 сдвигается вправо на 100% своей ширины */
   .card:hover .card-content h3.category-table {
-    transform: translate(+80%, +40%);
+    transform: translate(+280%, +140%);
   }
   .slice-label1{
     font-size: 1em;
@@ -690,8 +693,7 @@
   border: 2px dashed #ff7777; /* пример «наброска» */
   z-index: 0; /* ниже карточек, если у карточек z-index:1 и выше */
 }
-
-/* Пример координат и размеров (подгоняйте под ваш макет) */
+/* Декор */
 .decor1 {
   top: -200px;
   left: 2%;
@@ -699,7 +701,6 @@
   height: 180px;
   z-index: 4;
 }
-
 .decor2 {
   top: -450px;
   left: 85%;
@@ -707,7 +708,6 @@
   height: 200px;
   z-index: 4;
 }
-
 .decor3 {
   top: 130px;
   left: 75%;
@@ -715,7 +715,6 @@
   height: 400px;
   z-index: 4;
 }
-
 .decor4 {
   top: 680px;
   left: 5%;
@@ -723,7 +722,6 @@
   height: 200px;
   z-index: 4;
 }
-
 .decor5 {
   top: 650px;
   left: 20%;
@@ -731,7 +729,6 @@
   height: 100px;
   z-index: 4;
 }
-
 .decor6 {
   top: 1110px;
   left: 80%;
@@ -739,7 +736,6 @@
   height: 200px;
   z-index: 4;
 }
-
 .decor7 {
   top: 1500px;
   left: 15%;
