@@ -1,20 +1,15 @@
 /* ----- Приветствие (не меняем) ----- */
 .greeting {
   text-align: center;
-  border-bottom: 2px solid #ddd;
   height: 400px;
   margin-top: 80px;
 }
 /* Эффект печатанья для заголовка */
 .greeting h2 {
   margin-bottom: 10px;
-  display: inline-block;              /* чтобы ширина элемента зависела от содержимого */
-  overflow: hidden;                   /* скрываем текст, выходящий за пределы блока */
-  white-space: nowrap;                /* предотвращаем перенос строк */
-  border-right: 2px solid #333;       /* имитируем курсор печатания */
-  width: 0;                           /* изначально скрыт */
-  font-size: 2.5em;                  /* размер шрифта можно изменить по вкусу */
-  animation: typing 2s steps(40, end) forwards, blink-caret 0.75s step-end infinite;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeIn 1s forwards;
 }
 /* Ключевые кадры эффекта печатания */
 @keyframes typing {
@@ -28,15 +23,13 @@
   50% { border-color: #333; }
 }
 .greeting p {
-  font-size: 1.5em;
-  max-width: 800px;
-  margin: 0 auto;
+  margin: 20px auto 0 auto;
 }
 /* Эффект плавного появления для описания */
 .greeting p {
   opacity: 0;                        /* начальное состояние – текст невидим */
   transform: translateY(10px);       /* небольшой сдвиг вниз для эффекта появления */
-  animation: fadeIn 1s forwards 1s;   /* задержка 3s, чтобы дождаться завершения печатанья заголовка */
+  animation: fadeIn 1s forwards 0.5s;   /* задержка 3s, чтобы дождаться завершения печатанья заголовка */
 }
 
 /* Ключевые кадры для плавного появления */
@@ -50,7 +43,7 @@
 /* Контейнер для всех карточек */
 .cards {
   opacity: 0;
-  animation: fadeInUp 1s forwards;
+  animation: fadeInUp 1s forwards 1s;
   position: relative; /* чтобы дети могли быть position: absolute */
   width: 100%;
   min-height: 1800px;
@@ -66,6 +59,16 @@
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 @media screen and (min-width: 1100px) {
+  .greeting {
+    margin-top: 80px;
+  }
+  .greeting h2 {
+    font-size: 2.5em;   
+  }
+  .greeting p {
+    max-width: 800px;
+    font-size: 1.5em;
+  }
   /* 1. Планировки - большой блок слева, вплотную к границе */
 .card-bases {
   top: 20px;
@@ -235,6 +238,18 @@
 }
 }
 @media screen and (min-width: 700px) and (max-width: 1099px) {
+  .greeting {
+    margin-top: 60px;
+  }
+  .greeting h2 {
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 2em;   
+  }
+  .greeting p {
+    max-width: 600px;
+    font-size: 1.3em;
+  }
   /* 1. Планировки - большой блок слева, вплотную к границе */
   .card-bases {
     top: 20px;
@@ -404,39 +419,51 @@
   }
 }
 @media screen and (max-width: 699px) {
+  .greeting {
+    margin-top: 40px;
+  }
+  .greeting h2 {
+    font-size: 1.5em;
+    max-width: 400px;   
+    margin: 0 auto;
+  }
+  .greeting p {
+    max-width: 400px;
+    font-size: 1.1em;
+  }
   /* 1. Планировки - большой блок слева, вплотную к границе */
   .card-bases {
     top: 20px;
     left: -10px;
-    height: 600px;
-    width: 75%;   /* подберите ширину */
+    height: 650px;
+    width: 90%;   /* подберите ширину */
     z-index: 2;   /* если хотите, чтобы его перекрывали другие блоки */
   }
   
   /* 2. Советы - ниже, смещён вправо и перекрывает Планировки */
   .card-advise {
-    top: 600px;   /* отступ сверху (примерное значение, регулируйте под макет) */
-    left: 35%;    /* немного вправо, чтобы перекрывать .card-bases */
-    width: 60%; 
-    height: 300px;
+    top: 650px;   /* отступ сверху (примерное значение, регулируйте под макет) */
+    left: 25%;    /* немного вправо, чтобы перекрывать .card-bases */
+    width: 80%; 
+    height: 200px;
     z-index: 1;   /* выше Планировок */
   }
   
   /* 3. Миксы - меньше, не касается экрана, частично перекрывает Советы */
   .card-mix {
-    top: 850px;   /* между Планировками и Советами */
+    top: 840px;   /* между Планировками и Советами */
     left: 5%;    /* смещён от левого края, чтобы не касаться границ экрана */
-    width: 85%;
-    height: 500px;
+    width: 90%;
+    height: 550px;
     z-index: 3;   /* ещё выше, чтобы «лежать» поверх Советов */
   }
   
   /* 4. ЛВК - под Миксами */
   .card-table {
-    top: 1300px;   /* ещё ниже, чем Советы и Миксы */
-    left: 25%;
-    width: 60%;
-    height: 300px;
+    top: 1370px;   /* ещё ниже, чем Советы и Миксы */
+    left: 15%;
+    width: 70%;
+    height: 200px;
     z-index: 1;
   }
   /* Общий стиль заголовков */
@@ -572,7 +599,16 @@
     bottom: 0;
   }
 }
-
+@media screen and (max-width: 420px) {
+  .greeting h2 {
+    font-size: 1.5em;
+    max-width: 400px;
+  }
+  .greeting p {
+    max-width: 300px;
+    font-size: 1em;
+  }
+}
 .card.card-advise .character {
   position: absolute;
   left: 75%;               /* Располагаем левее центра – можно регулировать */
