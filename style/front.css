@@ -236,6 +236,48 @@
   height: 70px;
   bottom: 0;
 }
+.decor1 {
+  top: -400px;
+  left: -100px;
+  width: 400px;
+  height: 400px;
+}
+.decor2 {
+  top: -450px;
+  left: 80%;
+  width: 300px;
+  height: 300px;
+}
+.decor3 {
+  top: 120px;
+  left: 75%;
+  width: 300px;
+  height: 500px;
+}
+.decor4 {
+  top: 720px;
+  left: 5%;
+  width: 300px;
+  height: 200px;
+}
+.decor5 {
+  top: 600px;
+  left: 15%;
+  width: 500px;
+  height: 200px;
+}
+.decor6 {
+  top: 1100px;
+  left: 75%;
+  width: 250px;
+  height: 250px;
+}
+.decor7 {
+  top: 1400px;
+  left: 7%;
+  width: 350px;
+  height: 350px;
+}
 }
 @media screen and (min-width: 700px) and (max-width: 1099px) {
   .greeting {
@@ -416,6 +458,48 @@
     width: calc(100% + 600%);
     height: 50px;
     bottom: 0;
+  }
+  .decor1 {
+    top: -200px;
+    left: -100px;
+    width: 300px;
+    height: 300px;
+  }
+  .decor2 {
+    top: -400px;
+    left: 80%;
+    width: 300px;
+    height: 250px;
+  }
+  .decor3 {
+    top: 150px;
+    left: 75%;
+    width: 300px;
+    height: 450px;
+  }
+  .decor4 {
+    top: 720px;
+    left: 0;
+    width: 250px;
+    height: 150px;
+  }
+  .decor5 {
+    top: 850px;
+    left: 80%;
+    width: 200px;
+    height: 150px;
+  }
+  .decor6 {
+    top: 1450px;
+    left: 85%;
+    width: 130px;
+    height: 130px;
+  }
+  .decor7 {
+    top: 1350px;
+    left: 0;
+    width: 300px;
+    height: 300px;
   }
 }
 @media screen and (max-width: 699px) {
@@ -601,6 +685,48 @@
     height: 30px;
     bottom: 0;
   }
+  .decor1 {
+    top: -200px;
+    left: -100px;
+    width: 250px;
+    height: 250px;
+  }
+  .decor2 {
+    top: -400px;
+    left: 75%;
+    width: 200px;
+    height: 200px;
+  }
+  .decor3 {
+    top: 320px;
+    left: 75%;
+    width: 200px;
+    height: 350px;
+  }
+  .decor4 {
+    top: 740px;
+    left: 0;
+    width: 150px;
+    height: 120px;
+  }
+  .decor5 {
+    top: 900px;
+    left: 85%;
+    width: 100px;
+    height: 150px;
+  }
+  .decor6 {
+    top: 1470px;
+    left: 85%;
+    width: 100px;
+    height: 100px;
+  }
+  .decor7 {
+    top: 1400px;
+    left: -50px;
+    width: 200px;
+    height: 250px;
+  }
 }
 @media screen and (max-width: 420px) {
   .greeting h2 {
@@ -683,65 +809,37 @@
   text-decoration: none;
   color: inherit;
 }
-/* Общие стили для декора */
+/* Декор */
 .decor {
   opacity: 0;
   animation: fadeInUp 1s forwards, levitate 5s ease-in-out infinite;
   position: absolute;  /* так же, как и .card */
-  background-color: #ffdddd; /* любой цвет для наглядности */
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-  border: 2px dashed #ff7777; /* пример «наброска» */
-  z-index: 0; /* ниже карточек, если у карточек z-index:1 и выше */
-}
-/* Декор */
-.decor1 {
-  top: -200px;
-  left: 2%;
-  width: 200px;
-  height: 180px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
   z-index: 4;
+  pointer-events: none;
+}
+.decor1 {
+  background-image: url("/images/banner/dragon.webp");
 }
 .decor2 {
-  top: -450px;
-  left: 85%;
-  width: 250px;
-  height: 200px;
-  z-index: 4;
+  background-image: url("/images/banner/ball.webp");
 }
 .decor3 {
-  top: 130px;
-  left: 75%;
-  width: 250px;
-  height: 400px;
-  z-index: 4;
+  background-image: url("/images/banner/archer.webp");
 }
 .decor4 {
-  top: 680px;
-  left: 5%;
-  width: 200px;
-  height: 200px;
-  z-index: 4;
+  background-image: url("/images/banner/skeleton.webp");
 }
 .decor5 {
-  top: 650px;
-  left: 20%;
-  width: 100px;
-  height: 100px;
-  z-index: 4;
+  background-image: url("/images/banner/minion.webp");
 }
 .decor6 {
-  top: 1110px;
-  left: 80%;
-  width: 250px;
-  height: 200px;
-  z-index: 4;
+  background-image: url("/images/banner/bomber.webp");
 }
 .decor7 {
-  top: 1500px;
-  left: 15%;
-  width: 100px;
-  height: 100px;
-  z-index: 4;
+  background-image: url("/images/banner/witch.webp");
 }
 @keyframes fadeInUp {
   from {
@@ -935,6 +1033,14 @@
   .card-table::after {
     background-color: transparent !important;
     transition: none !important;
+  }
+  .category-description {
+    display: none !important;
+  }
+  .category-title {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px 10px;
+    border-radius: 10px;
   }
   .character {
     display: none !important;
