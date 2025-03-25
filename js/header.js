@@ -6,23 +6,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Список подменю для десктопной панели
   const submenus = {
-    "pages/bases.html": [
-      { text: "Загрузить", href: "pages/base-upload.html" },
-      { text: "Основная", href: "pages/base-main.html" },
-      { text: "Строитель", href: "pages/base-builder.html" },
-      { text: "Столица", href: "pages/base-capital.html" }
+    "/pages/bases.html": [
+      { text: "Загрузить", href: "/pages/base-upload.html" },
+      { text: "Основная", href: "/pages/base-main.html" },
+      { text: "Строитель", href: "/pages/base-builder.html" },
+      { text: "Столица", href: "/pages/base-capital.html" }
     ],
-    "pages/armies.html": [
-      { text: "Создать", href: "pages/army-create.html" },
-      { text: "Основная", href: "pages/army-main.html" },
-      { text: "Строитель", href: "pages/army-builder.html" },
-      { text: "Столица", href: "pages/army-capital.html" }
+    "/pages/armies.html": [
+      { text: "Создать", href: "/pages/army-create.html" },
+      { text: "Основная", href: "/pages/army-main.html" },
+      { text: "Строитель", href: "/pages/army-builder.html" },
+      { text: "Столица", href: "/pages/army-capital.html" }
     ],
-    "pages/advices.html": [
-      { text: "Герои", href: "pages/advice-heroes.html" },
-      { text: "Подкрепления", href: "pages/advice-reinforcements.html" },
-      { text: "Атаки", href: "pages/advice-armies.html" },
-      { text: "Строительство", href: "pages/advice-bases.html" }
+    "/pages/advices.html": [
+      { text: "Герои", href: "/pages/advice-heroes.html" },
+      { text: "Подкрепления", href: "/pages/advice-reinforcements.html" },
+      { text: "Атаки", href: "/pages/advice-armies.html" },
+      { text: "Строительство", href: "/pages/advice-bases.html" }
     ]
   };
 

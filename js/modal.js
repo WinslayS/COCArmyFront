@@ -87,9 +87,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ЗАГРУЗКА ДАННЫХ
     // -------------------------------
     try {
-        const layoutsResponse = await fetch('data/layouts.json');
+        const layoutsResponse = await fetch('/data/layouts.json');
         layoutsData = await layoutsResponse.json();
-        const thumbnailsResponse = await fetch('data/thumbnailData.json');
+        const thumbnailsResponse = await fetch('/data/thumbnailData.json');
         thumbnailData = await thumbnailsResponse.json();
     } catch (error) {
         console.error('Ошибка загрузки JSON:', error);
