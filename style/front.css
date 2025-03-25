@@ -304,7 +304,7 @@
   }
   
   .description-bases {
-    top: 250px;
+    top: 350px;
     left: 15%;
   }
   
@@ -326,7 +326,7 @@
   }
   
   .description-mix {
-    top: 200px;
+    top: 270px;
     left: 10%;
   }
   
@@ -816,40 +816,40 @@
 }
 
 .card-bases.diagonal-slices .slice.slice1 {
-  background: url("../images/banner/base-upload.webp") center/cover;
+  background: url("/images/banner/base-upload.webp") center/cover;
 }
 .card-bases.diagonal-slices .slice.slice2 {
-  background: url("../images/banner/base-main.webp") -200px center/cover;
+  background: url("/images/banner/base-main.webp") -200px center/cover;
 }
 .card-bases.diagonal-slices .slice.slice3 {
-  background: url("../images/banner/base-builder.webp") 20% center/cover;
+  background: url("/images/banner/base-builder.webp") 20% center/cover;
 }
 .card-bases.diagonal-slices .slice.slice4 {
-  background: url("../images/banner/base-capital.webp") 100px center/cover;
+  background: url("/images/banner/base-capital.webp") 100px center/cover;
 }
 .card-mix.diagonal-slices .slice.slice1 {
-  background: url("../images/banner/army-create.webp") -500px center/cover;
+  background: url("/images/banner/army-create.webp") -500px center/cover;
 }
 .card-mix.diagonal-slices .slice.slice2 {
-  background: url("../images/banner/army-main.webp") -50px center/cover;
+  background: url("/images/banner/army-main.webp") -50px center/cover;
 }
 .card-mix.diagonal-slices .slice.slice3 {
-  background: url("../images/banner/army-builder.webp") 250px center/cover;
+  background: url("/images/banner/army-builder.webp") 250px center/cover;
 }
 .card-mix.diagonal-slices .slice.slice4 {
-  background: url("../images/banner/army-capital.webp") 600px center/cover;
+  background: url("/images/banner/army-capital.webp") 600px center/cover;
 }
 .card-advise {
-  background: url("../images/banner/advices.webp") no-repeat center/cover;
+  background: url("/images/banner/advices.webp") no-repeat center/cover;
 }
 .card-table {
-  background: url("../images/banner/table.webp") no-repeat 0px -110px/cover;
+  background: url("/images/banner/table.webp") no-repeat 0px -110px/cover;
 }
 .card.card-advise .character {
-  background: url("../images/banner/villager.webp") no-repeat center/contain;
+  background: url("/images/banner/villager.webp") no-repeat center/contain;
 }
 .card.card-table .character {
-  background: url("../images/banner/lava.webp") no-repeat center/contain;
+  background: url("/images/banner/lava.webp") no-repeat center/contain;
 }
 /*Слайсы текст*/
 .card.diagonal-slices .slice {
@@ -909,4 +909,34 @@
   z-index: -1;
 }
 
-
+@media (hover: none) and (pointer: coarse) {
+  .card:hover .card-content p,
+  .card:hover .card-content h3 {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+  .slice-label1,
+  .slice-label2,
+  .slice-label3,
+  .slice-label4 {
+    transition: none !important;
+    opacity: 1 !important;
+    bottom: 0 !important;
+  }
+  .slice-label1::before,
+  .slice-label2::before,
+  .slice-label3::before,
+  .slice-label4::before {
+    bottom: 0 !important;
+    transition: none !important;
+  }
+  .card.diagonal-slices .slice::after,
+  .card-advise::after,
+  .card-table::after {
+    background-color: transparent !important;
+    transition: none !important;
+  }
+  .character {
+    display: none !important;
+  }
+}

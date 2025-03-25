@@ -38,10 +38,11 @@ function resetSlices(card) {
 // Основная функция перераспределения карточек в зависимости от ширины экрана
 function applyCardLayout() {
   const screenWidth = window.innerWidth;
+  const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
   const cards = document.querySelectorAll('.card.diagonal-slices');
   
   cards.forEach(card => {
-    // Сбросим все ранее назначенные inline-стили и обработчики
+    // Сброс ранее назначенных inline-стилей и обработчиков
     resetSlices(card);
     // После сброса получаем актуальный список слайсов
     const slices = card.querySelectorAll('.slice');
@@ -93,18 +94,20 @@ function applyCardLayout() {
       }
       
       function updateUniqueSliceLabels(hoveredIndex) {
-        slices.forEach((slice, i) => {
-          const label = slice.querySelector('.slice-label' + (i + 1));
-          if (!label) return;
-          if (i === hoveredIndex) {
-            label.style.bottom = '0';
-            label.style.opacity = '1';
-            label.style.height = '50px';
-          } else {
-            label.style.bottom = '-30px';
-            label.style.opacity = '0';
-          }
-        });
+        if (!isTouchDevice) {
+          slices.forEach((slice, i) => {
+            const label = slice.querySelector('.slice-label' + (i + 1));
+            if (!label) return;
+            if (i === hoveredIndex) {
+              label.style.bottom = '0';
+              label.style.opacity = '1';
+              label.style.height = '50px';
+            } else {
+              label.style.bottom = '-30px';
+              label.style.opacity = '0';
+            }
+          });
+        }
       }
       
       // Устанавливаем исходные clip-path и добавляем обработчики
@@ -119,137 +122,146 @@ function applyCardLayout() {
         slices.forEach((slice, i) => {
           setClipPath(slice, initialClipPaths[i]);
           const label = slice.querySelector('.slice-label' + (i + 1));
-          if (label) {
+          if (label && !isTouchDevice) {
             label.style.bottom = '-30px';
             label.style.opacity = '0';
             label.style.backgroundColor = 'transparent';
           }
         });
       });
+      
+      // Если сенсорное устройство – сразу выставляем финальные стили для меток
+      if (isTouchDevice) {
+        slices.forEach((slice, i) => {
+          const label = slice.querySelector('.slice-label' + (i + 1));
+          if (label) {
+            label.style.transition = 'none';
+            label.style.bottom = '0';
+            label.style.opacity = '1';
+            label.style.height = '50px';
+          }
+        });
+      }
     }
-// ===== Режим для экранов от 700 до 1099px (2×2) =====
-else if (screenWidth >= 700 && screenWidth <= 1099) {
-  const hoverOffset = 7;
-
-  // Начальные clip-path для 4-х слайсов (2 строки по 2 слайда):
-  // Строка 0: slice[0] (левый верх), slice[1] (правый верх)
-  // Строка 1: slice[2] (левый низ),  slice[3] (правый низ)
-  const initialClip = [
-    'polygon(0 0, 55% 0, 50% 100%, 0% 100%)',    // slice 0
-    'polygon(55% 0, 100% 0, 100% 100%, 50% 100%)', // slice 1
-    'polygon(0 0, 50% 0, 45% 100%, 0% 100%)',      // slice 2
-    'polygon(50% 0, 100% 0, 100% 100%, 45% 100%)'   // slice 3
-  ];
-
-  // Функция для сброса clip-path всех слайсов в исходное состояние
-  function reset2x2(slices) {
-    for (let i = 0; i < 4; i++) {
-      slices[i].style.clipPath = initialClip[i];
-    }
-  }
-
-  // Функция обновления clip-path для верхней строки (slice 0 и 1)
-  function updateTopRow(slices, hoveredIndex) {
-    if (hoveredIndex === 0) {
-      // При наведении на левый верх (slice 0)
-      slices[0].style.clipPath = 
-        `polygon(0 0, ${55 + hoverOffset}% 0, ${50 + hoverOffset}% 100%, 0% 100%)`;
-      slices[1].style.clipPath = 
-        `polygon(${55 + hoverOffset}% 0, 100% 0, 100% 100%, ${50 + hoverOffset}% 100%)`;
-    } else {
-      // При наведении на правый верх (slice 1)
-      slices[0].style.clipPath = 
-        `polygon(0 0, ${55 - hoverOffset}% 0, ${50 - hoverOffset}% 100%, 0% 100%)`;
-      slices[1].style.clipPath = 
-        `polygon(${55 - hoverOffset}% 0, 100% 0, 100% 100%, ${50 - hoverOffset}% 100%)`;
-    }
-  }
-
-  // Функция обновления clip-path для нижней строки (slice 2 и 3)
-  function updateBottomRow(slices, hoveredIndex) {
-    if (hoveredIndex === 2) {
-      // При наведении на левый низ (slice 2)
-      slices[2].style.clipPath =
-        `polygon(0 0, ${50 + hoverOffset}% 0, ${45 + hoverOffset}% 100%, 0% 100%)`;
-      slices[3].style.clipPath =
-        `polygon(${50 + hoverOffset}% 0, 100% 0, 100% 100%, ${45 + hoverOffset}% 100%)`;
-    } else {
-      // При наведении на правый низ (slice 3)
-      slices[2].style.clipPath =
-        `polygon(0 0, ${50 - hoverOffset}% 0, ${45 - hoverOffset}% 100%, 0% 100%)`;
-      slices[3].style.clipPath =
-        `polygon(${50 - hoverOffset}% 0, 100% 0, 100% 100%, ${45 - hoverOffset}% 100%)`;
-    }
-  }
-
-  // Получаем все слайды
-  const slices = card.querySelectorAll('.slice');
-
-  // Устанавливаем базовые стили для разбиения 2×2
-  slices.forEach((slice, i) => {
-    slice.style.position = 'absolute';
-    slice.style.left = '0';
-    slice.style.width = '100%';
-    slice.style.height = '50%';
-    slice.style.top = (i < 2 ? '0' : '50%');
-    slice.style.clipPath = initialClip[i];
-  });
-
-  // Добавляем обработчики наведения для каждого слайда
-  slices.forEach((slice, i) => {
-    slice.addEventListener('mouseenter', () => {
-      // Скрываем текст у всех слайсов
-      slices.forEach((s, j) => {
-        const lbl = s.querySelector('.slice-label' + (j + 1));
-        if (lbl) {
-          lbl.style.bottom = '-30px';
-          lbl.style.opacity = '0';
+    // ===== Режим для экранов от 700 до 1099px (2×2) =====
+    else if (screenWidth >= 700 && screenWidth <= 1099) {
+      const hoverOffset = 7;
+      const initialClip = [
+        'polygon(0 0, 55% 0, 50% 100%, 0% 100%)',
+        'polygon(55% 0, 100% 0, 100% 100%, 50% 100%)',
+        'polygon(0 0, 50% 0, 45% 100%, 0% 100%)',
+        'polygon(50% 0, 100% 0, 100% 100%, 45% 100%)'
+      ];
+      
+      function reset2x2(slices) {
+        for (let i = 0; i < 4; i++) {
+          slices[i].style.clipPath = initialClip[i];
         }
+      }
+      
+      function updateTopRow(slices, hoveredIndex) {
+        if (hoveredIndex === 0) {
+          slices[0].style.clipPath = 
+            `polygon(0 0, ${55 + hoverOffset}% 0, ${50 + hoverOffset}% 100%, 0% 100%)`;
+          slices[1].style.clipPath = 
+            `polygon(${55 + hoverOffset}% 0, 100% 0, 100% 100%, ${50 + hoverOffset}% 100%)`;
+        } else {
+          slices[0].style.clipPath = 
+            `polygon(0 0, ${55 - hoverOffset}% 0, ${50 - hoverOffset}% 100%, 0% 100%)`;
+          slices[1].style.clipPath = 
+            `polygon(${55 - hoverOffset}% 0, 100% 0, 100% 100%, ${50 - hoverOffset}% 100%)`;
+        }
+      }
+      
+      function updateBottomRow(slices, hoveredIndex) {
+        if (hoveredIndex === 2) {
+          slices[2].style.clipPath =
+            `polygon(0 0, ${50 + hoverOffset}% 0, ${45 + hoverOffset}% 100%, 0% 100%)`;
+          slices[3].style.clipPath =
+            `polygon(${50 + hoverOffset}% 0, 100% 0, 100% 100%, ${45 + hoverOffset}% 100%)`;
+        } else {
+          slices[2].style.clipPath =
+            `polygon(0 0, ${50 - hoverOffset}% 0, ${45 - hoverOffset}% 100%, 0% 100%)`;
+          slices[3].style.clipPath =
+            `polygon(${50 - hoverOffset}% 0, 100% 0, 100% 100%, ${45 - hoverOffset}% 100%)`;
+        }
+      }
+      
+      // Устанавливаем базовые стили для разбиения 2×2
+      slices.forEach((slice, i) => {
+        slice.style.position = 'absolute';
+        slice.style.left = '0';
+        slice.style.width = '100%';
+        slice.style.height = '50%';
+        slice.style.top = (i < 2 ? '0' : '50%');
+        slice.style.clipPath = initialClip[i];
       });
-      // Показываем label текущего слайда и задаем высоту 30px
-      const label = slice.querySelector('.slice-label' + (i + 1));
-      if (label) {
-        label.style.bottom = '0';
-        label.style.opacity = '1';
-        label.style.height = '30px';
+      
+      // Добавляем обработчики наведения для каждого слайда
+      slices.forEach((slice, i) => {
+        slice.addEventListener('mouseenter', () => {
+          if (!isTouchDevice) {
+            slices.forEach((s, j) => {
+              const lbl = s.querySelector('.slice-label' + (j + 1));
+              if (lbl) {
+                lbl.style.bottom = '-30px';
+                lbl.style.opacity = '0';
+              }
+            });
+            const label = slice.querySelector('.slice-label' + (i + 1));
+            if (label) {
+              label.style.bottom = '0';
+              label.style.opacity = '1';
+              label.style.height = '30px';
+            }
+          }
+          else {
+            // На сенсорных устройствах сразу делаем все метки видимыми
+            slices.forEach((s, j) => {
+              const lbl = s.querySelector('.slice-label' + (j + 1));
+              if (lbl) {
+                lbl.style.bottom = '0';
+                lbl.style.opacity = '1';
+                lbl.style.height = '30px';
+              }
+            });
+          }
+          reset2x2(slices);
+          if (i < 2) {
+            updateTopRow(slices, i);
+          } else {
+            updateBottomRow(slices, i);
+          }
+        });
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        reset2x2(slices);
+        slices.forEach((slice, i) => {
+          const label = slice.querySelector('.slice-label' + (i + 1));
+          if (label && !isTouchDevice) {
+            label.style.bottom = '-30px';
+            label.style.opacity = '0';
+            label.style.height = '';
+          }
+        });
+      });
+      
+      // Для сенсорных устройств сразу выставляем финальные стили для меток (в режиме 2×2)
+      if (isTouchDevice) {
+        slices.forEach((slice, i) => {
+          const label = slice.querySelector('.slice-label' + (i + 1));
+          if (label) {
+            label.style.transition = 'none';
+            label.style.bottom = '0';
+            label.style.opacity = '1';
+            label.style.height = '30px';
+          }
+        });
       }
-      reset2x2(slices);
-      if (i < 2) {
-        updateTopRow(slices, i);
-      } else {
-        updateBottomRow(slices, i);
-      }
-    });
-  });
-    
-  card.addEventListener('mouseleave', () => {
-    reset2x2(slices);
-    slices.forEach((slice, i) => {
-      const label = slice.querySelector('.slice-label' + (i + 1));
-      if (label) {
-        label.style.bottom = '-30px';
-        label.style.opacity = '0';
-        label.style.height = ''; // сброс высоты (или можно задать другое значение по умолчанию)
-      }
-    });
-  });  
-
-  // При уходе курсора с карточки сбрасываем clip-path и скрываем все label
-  card.addEventListener('mouseleave', () => {
-    reset2x2(slices);
-    slices.forEach((slice, i) => {
-      const label = slice.querySelector('.slice-label' + (i + 1));
-      if (label) {
-        label.style.bottom = '-30px';
-        label.style.opacity = '0';
-      }
-    });
-  });
-}
-
-// ===== Режим для экранов ≤ 699px (вертикальное 1×4 без диагональных разделений) =====
+    }
+    // ===== Режим для экранов ≤ 699px (вертикальное 1×4 без диагональных разделений) =====
     else {
-      // Задаём исходное положение: каждый слайс занимает 25% высоты
       slices.forEach((slice, i) => {
         slice.style.position = 'absolute';
         slice.style.left = '0';
@@ -262,7 +274,6 @@ else if (screenWidth >= 700 && screenWidth <= 1099) {
         slice.style.transition = 'height 0.3s ease, top 0.3s ease';
       });
       
-      // Функция для вертикального расширения слайсов при наведении с использованием scaleFactors
       function updateVerticalSlices(hoveredIndex) {
         const scaleFactors = [1.2, 0.9, 0.7, 0.5];
         const totalSlices = slices.length;
@@ -276,7 +287,7 @@ else if (screenWidth >= 700 && screenWidth <= 1099) {
         }
         // Рассчитываем новую высоту для каждого слайда
         slices.forEach((slice, i) => {
-          const newHeight = (factors[i] / totalFactor) * 100; // в %
+          const newHeight = (factors[i] / totalFactor) * 100;
           slice.style.height = newHeight + '%';
         });
         // Пересчитываем положение top для всех слайсов
@@ -285,20 +296,31 @@ else if (screenWidth >= 700 && screenWidth <= 1099) {
           slice.style.top = currentTop + '%';
           currentTop += parseFloat(slice.style.height);
         });
-        // Обновляем отображение label с нужной высотой
-        slices.forEach((slice, i) => {
-          const label = slice.querySelector('.slice-label' + (i + 1));
-          if (label) {
-            if (i === hoveredIndex) {
+        if (!isTouchDevice) {
+          slices.forEach((slice, i) => {
+            const label = slice.querySelector('.slice-label' + (i + 1));
+            if (label) {
+              if (i === hoveredIndex) {
+                label.style.bottom = '0';
+                label.style.opacity = '1';
+                label.style.height = '20px';
+              } else {
+                label.style.bottom = '-30px';
+                label.style.opacity = '0';
+              }
+            }
+          });
+        }
+        else {
+          slices.forEach((slice, i) => {
+            const label = slice.querySelector('.slice-label' + (i + 1));
+            if (label) {
               label.style.bottom = '0';
               label.style.opacity = '1';
               label.style.height = '20px';
-            } else {
-              label.style.bottom = '-30px';
-              label.style.opacity = '0';
             }
-          }
-        });
+          });
+        }
       }
         
       slices.forEach((slice, i) => {
@@ -312,18 +334,29 @@ else if (screenWidth >= 700 && screenWidth <= 1099) {
           slice.style.height = '25%';
           slice.style.top = (i * 25) + '%';
           const label = slice.querySelector('.slice-label' + (i + 1));
-          if (label) {
+          if (label && !isTouchDevice) {
             label.style.bottom = '-30px';
             label.style.opacity = '0';
-            label.style.height = ''; // сброс высоты
+            label.style.height = '';
           }
         });
       });
       
+      // На сенсорных устройствах сразу выставляем финальные стили для меток (в вертикальном режиме)
+      if (isTouchDevice) {
+        slices.forEach((slice, i) => {
+          const label = slice.querySelector('.slice-label' + (i + 1));
+          if (label) {
+            label.style.transition = 'none';
+            label.style.bottom = '0';
+            label.style.opacity = '1';
+            label.style.height = '20px';
+          }
+        });
+      }
     }
   });
 }
 
-// Применяем раскладку при загрузке и при изменении размера окна
 document.addEventListener('DOMContentLoaded', applyCardLayout);
 window.addEventListener('resize', applyCardLayout);
