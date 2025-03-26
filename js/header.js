@@ -288,7 +288,26 @@ hamburgerBtn.addEventListener('click', () => {
   const isMenuOpen = mainNav.classList.contains('open');
   mainNav.classList.toggle('open');
   hamburgerBtn.classList.toggle('open');
-  // Если меню закрывается на мобильном, сбрасываем все открытые подменю и их родительские .dropdown
+
+  if (window.matchMedia("(max-width:699px)").matches) {
+    if (!isMenuOpen) {
+      // Меню открывается – добавляем overlay
+      const overlay = document.createElement("div");
+      overlay.classList.add("nav-overlay");
+      overlay.addEventListener("click", () => {
+        mainNav.classList.remove("open");
+        hamburgerBtn.classList.remove("open");
+        overlay.remove();
+      });
+      document.body.appendChild(overlay);
+    } else {
+      // Меню закрывается – удаляем overlay, если он есть
+      const overlay = document.querySelector(".nav-overlay");
+      if (overlay) overlay.remove();
+    }
+  }
+
+  // Если меню закрывается на мобильном, сбрасываем открытые подменю
   if (isMenuOpen && window.matchMedia("(max-width:699px)").matches) {
     document.querySelectorAll('.nav-menu .submenu.open, .nav-menu .dropdown.open').forEach(el => {
       el.classList.remove('open');

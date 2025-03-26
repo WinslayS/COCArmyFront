@@ -1,3 +1,6 @@
+document.addEventListener('DOMContentLoaded', applyCardLayout);
+window.addEventListener('resize', applyCardLayout);
+
 // Обработчик скролла для декоративных элементов
 document.addEventListener('scroll', function() {
   const scrollY = window.scrollY;
@@ -357,6 +360,3 @@ function applyCardLayout() {
     }
   });
 }
-
-document.addEventListener('DOMContentLoaded', applyCardLayout);
-window.addEventListener('resize', applyCardLayout);
