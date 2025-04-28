@@ -6,7 +6,7 @@
     <link rel="icon" href="/images/banner/head.webp" type="image/webp">
     <title>Расстановки</title>
     <link rel="stylesheet" href="/style/base.css">
-    <link rel="stylesheet" href="/style/gallery.css">
+    <link rel="stylesheet" href="/style/base-main.css">
     <link rel="stylesheet" href="/style/header.css">
     <link rel="stylesheet" href="/style/modal.css">
 </head>
@@ -53,7 +53,6 @@
           Планировки <span class="arrow"></span>
         </a>
         <ul class="submenu">
-          <li><a href="/pages/base-upload.html">Загрузить</a></li>
           <li><a href="/pages/base-main.html">Основная</a></li>
           <li><a href="/pages/base-builder.html">Строитель</a></li>
           <li><a href="/pages/base-capital.html">Столица</a></li>
@@ -64,7 +63,6 @@
           Миксы <span class="arrow"></span>
         </a>
         <ul class="submenu">
-          <li><a href="/pages/army-create.html">Создать</a></li>
           <li><a href="/pages/army-main.html">Основная</a></li>
           <li><a href="/pages/army-builder.html">Строитель</a></li>
           <li><a href="/pages/army-capital.html">Столица</a></li>
@@ -86,20 +84,95 @@
   </nav>  
   <main>
     <div class="main-container">
-        <div class="filter-section">
-            <button id="filterPanelToggle" class="filter-toggle-button">Фильтры</button>
-            <div class="filter-panel">
-                <div class="filter-categories">
-                    <button class="filter-category" data-category="war">#Война</button>
-                    <button class="filter-category" data-category="resources">#Ресурсы</button>
-                    <button class="filter-category" data-category="decor">#Декор</button>
-                </div>
-                <div class="filter-statuses">
-                    <button class="filter-status" data-status="new">Новая</button>
-                    <button class="filter-status" data-status="updated">Обновлено</button>
-                </div>
+      <div class="filter-section">
+        <button id="filterPanelToggle" class="filter-toggle-button">Filters</button>
+        <div class="filter-panel">
+          <h3>Village</h3>
+          <div class="village-links">
+            <button class="btn-village-page" data-page="/pages/base-main.html">Main</button>
+            <button class="btn-village-page" data-page="/pages/base-builder.html">Builder</button>
+            <button class="btn-village-page" data-page="/pages/base-capital.html">Capital</button>
+          </div>
+          <h3>Town Hall</h3>
+          <div class="townhall-filters">
+            <button class="filter-townhall" data-th="3">
+              <img src="/images/bases/Main3.webp" alt="TH3">
+            </button>
+            <button class="filter-townhall" data-th="4">
+              <img src="/images/bases/Main4.webp" alt="TH4">
+            </button>
+            <button class="filter-townhall" data-th="5">
+              <img src="/images/bases/Main5.webp" alt="TH5">
+            </button>
+            <button class="filter-townhall" data-th="6">
+              <img src="/images/bases/Main6.webp" alt="TH6">
+            </button>
+            <button class="filter-townhall" data-th="7">
+              <img src="/images/bases/Main7.webp" alt="TH7">
+            </button>
+            <button class="filter-townhall" data-th="8">
+              <img src="/images/bases/Main8.webp" alt="TH8">
+            </button>
+            <button class="filter-townhall" data-th="9">
+              <img src="/images/bases/Main9.webp" alt="TH9">
+            </button>
+            <button class="filter-townhall" data-th="10">
+              <img src="/images/bases/Main10.webp" alt="TH10">
+            </button>
+            <button class="filter-townhall" data-th="11">
+              <img src="/images/bases/Main11.webp" alt="TH11">
+            </button>
+            <button class="filter-townhall" data-th="12">
+              <img src="/images/bases/Main12.webp" alt="TH12">
+            </button>
+            <button class="filter-townhall" data-th="13">
+              <img src="/images/bases/Main13.webp" alt="TH13">
+            </button>
+            <button class="filter-townhall" data-th="14">
+              <img src="/images/bases/Main14.webp" alt="TH14">
+            </button>
+            <button class="filter-townhall" data-th="15">
+              <img src="/images/bases/Main15.webp" alt="TH15">
+            </button>
+            <button class="filter-townhall" data-th="16">
+              <img src="/images/bases/Main16.webp" alt="TH16">
+            </button>
+            <button class="filter-townhall" data-th="17">
+              <img src="/images/bases/Main17.webp" alt="TH17">
+            </button>
+          </div>          
+          <h3>Tags</h3>
+          <div class="tag-filters">
+            <button class="filter-tag" data-tag="war">War</button>
+            <button class="filter-tag" data-tag="farm">Farm</button>
+            <button class="filter-tag" data-tag="decor">Decor</button>
+          </div>
+          <h3>Subtags</h3>
+          <div class="subtag-filters">
+            <div class="subtag-group general-subtags">
+              <button class="filter-subtag" data-subtag="anti2">Anti2</button>
+              <button class="filter-subtag" data-subtag="anti3">Anti3</button>
+              <button class="filter-subtag" data-subtag="progress">Progress</button>
             </div>
+            <div class="subtag-group spells">
+              <button class="filter-subtag" data-subtag="rage">Rage</button>
+              <button class="filter-subtag" data-subtag="poison">Poison</button>
+              <button class="filter-subtag" data-subtag="invis">Invis</button>
+            </div>
+            <div class="subtag-group inferno">
+              <button class="filter-subtag" data-subtag="inferno-single">Inferno-Single</button>
+              <button class="filter-subtag" data-subtag="inferno-multi">Inferno-Multi</button>
+            </div>
+          </div>
+          <h3>Sort by</h3>
+          <div class="sort-filters">
+            <button class="filter-sort" data-sort="last">Last</button>
+            <button class="filter-sort" data-sort="views">Views</button>
+            <button class="filter-sort" data-sort="uploaded">Uploaded</button>
+            <button class="filter-sort" data-sort="saved">Saved</button>
+          </div>
         </div>
+      </div>     
         <div class="gallery" id="gallery"></div>
     </div>
 <div class="modal" id="modal">
@@ -158,7 +231,7 @@
         <p>ТГ: <a href="https://t.me/winslays" target="_blank">winslays</a></p>
     </div>
 </footer>
-<script src="/js/render-layouts.js"></script>
+<script src="/js/base-main.js"></script>
 <script src="/js/header.js"></script>
 <script src="/js/filters.js"></script>
 <script src="/js/modal.js"></script>

@@ -219,22 +219,6 @@ main {
   justify-content: center;
   padding: 20px;
 }
-.footer-bottom {
-  background: #000;
-  color: #ddd;
-  padding: 80px;
-  text-align: center;
-  margin-top: 20px;
-}
-.footer-content a {
-  color: #ddd;
-  text-decoration: none;
-  transition: color 0.3s;
-}
-.footer-content a:hover {
-  color: #fff;
-}
-
 /* Темы (dark/light) */
 [data-theme="dark"] {
   background-color: #444444;

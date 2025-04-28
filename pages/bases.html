@@ -7,7 +7,7 @@
   <title>Советы</title>
   <link rel="stylesheet" href="/style/base.css">
   <link rel="stylesheet" href="/style/header.css">
-  <link rel="stylesheet" href="/style/trans.css">
+  <link rel="stylesheet" href="/style/bases.css">
 </head>
 <body>
   <header class="header-top">
@@ -52,7 +52,6 @@
           Планировки <span class="arrow"></span>
         </a>
         <ul class="submenu">
-          <li><a href="/pages/base-upload.html">Загрузить</a></li>
           <li><a href="/pages/base-main.html">Основная</a></li>
           <li><a href="/pages/base-builder.html">Строитель</a></li>
           <li><a href="/pages/base-capital.html">Столица</a></li>
@@ -63,7 +62,6 @@
           Миксы <span class="arrow"></span>
         </a>
         <ul class="submenu">
-          <li><a href="/pages/army-create.html">Создать</a></li>
           <li><a href="/pages/army-main.html">Основная</a></li>
           <li><a href="/pages/army-builder.html">Строитель</a></li>
           <li><a href="/pages/army-capital.html">Столица</a></li>
@@ -84,31 +82,73 @@
     </ul>
   </nav>  
   <main class="sections-container">
-      <section class="section-card">
-          <a href="/pages/base-upload.html" class="section-link">
-          <h2>Загрузить</h2>
-          <p>Загрузить свою планировку на сайт</p>
-      </a>
-      </section>
-      <section class="section-card">
-          <a href="/pages/base-main.html" class="section-link">
-          <h2>Основаня деревня</h2>
-          <p>Лучшее и уникальные планировки</p>
-      </a>
-      </section>
-      <section class="section-card">
-        <a href="/pages/base-builder.html" class="section-link">
-        <h2>Деревня строителя</h2>
-        <p>Лучшее и уникальные планировки</p>
-    </a>
+    <!-- Панель загрузки, разделённая на две равные части -->
+    <section class="upload-panel">
+      <!-- Левая часть: загрузка 3-х фотографий -->
+      <div class="upload-half upload-photos">
+        <h2>Загрузите до 3х изображений</h2>
+        <form id="photoUploadForm">
+          <input type="file" name="photo1" accept="image/*">
+          <input type="file" name="photo2" accept="image/*">
+          <input type="file" name="photo3" accept="image/*">
+        </form>
+      </div>
+      <!-- Правая часть: выбор категории и уровня -->
+      <div class="upload-half upload-details">
+        <h2>Выберите деревню и её уровень</h2>
+        <div class="category-selection">
+          <label>
+            <input type="radio" name="category" value="основная" checked> Основная
+          </label>
+          <label>
+            <input type="radio" name="category" value="строитель"> Строитель
+          </label>
+          <label>
+            <input type="radio" name="category" value="столица"> Столица
+          </label>
+        </div>
+        <div class="level-selection">
+          <label for="levelSelect">Выберите уровень:</label>
+          <select id="levelSelect" name="level">
+            <!-- Опции будут заполнены через JS -->
+          </select>
+        </div>
+        <button id="publishBtn">Опубликовать</button>
+      </div>
     </section>
-    <section class="section-card">
-      <a href="/pages/base-capital.html" class="section-link">
-      <h2>Столица</h2>
-      <p>Лучшее и уникальные планировки</p>
-  </a>
-  </section>
+  
+    <section class="feed-section">
+      <div class="feed" id="feed-main">
+        <h2>Основная</h2>
+        <div class="infinite-carousel">
+          <div class="carousel-track">
+            <!-- JS заполнит: Main17 … Main4 -->
+          </div>
+        </div>
+      </div>
+    
+      <div class="feed" id="feed-builder">
+        <h2>Строитель</h2>
+        <div class="infinite-carousel">
+          <div class="carousel-track">
+            <!-- JS заполнит: Builder10 … Builder4 -->
+          </div>
+        </div>
+      </div>
+    
+      <div class="feed" id="feed-capital">
+        <h2>Столица</h2>
+        <div class="infinite-carousel">
+          <div class="carousel-track">
+            <!-- JS заполнит ваши имена картинок в нужном порядке -->
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    
   </main>
+  
   <footer class="footer-bottom">
       <div class="footer-content">
         <p>Создатель: <strong>Kvane</strong></p>
@@ -117,5 +157,6 @@
       </div>
     </footer>
   <script src="/js/header.js"></script>
+  <script src="/js/bases.js"></script>
 </body>
 </html>

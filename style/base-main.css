@@ -1,0 +1,594 @@
+
+.main-container {
+    display: grid;
+    gap: 20px;
+    margin: 0 auto;
+    padding: 10px;
+    box-sizing: border-box;
+    grid-template-columns: 1fr; /* По умолчанию на 1 баннер */
+    flex: 1;
+}
+.gallery {
+    display: grid;
+    gap: 20px;
+    margin: 0 auto;
+    max-width: 100%;
+    justify-content: center;
+    align-content: start;
+    grid-template-columns: repeat(1, 1fr);
+}
+.main-container.fullscreen {
+    grid-template-columns: 1fr;
+}
+.gallery-item {
+    width: clamp(150px, 20vw, 300px); /* Минимум 180px, максимум 250px */
+    height: auto;
+    margin: 0 auto;
+    text-align: center; /* Центрирование контента */
+    box-sizing: border-box;
+}
+.item.placeholder {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    visibility: hidden; /* Скрываем заполнитель */
+    width: 100%; /* Делаем его размер соответствующим настоящим элементам */
+    height: auto;
+}
+.item {
+    position: relative;
+    text-align: center;
+    padding: 0 0 10px 0; /* Убираем отступы сверху и по бокам, оставляем снизу */
+    border-radius: 12px; /* Если хотите скругление для всей карточки */
+    margin: 0 auto;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    background-color: #2b2b2b;
+}
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.item img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0; /* Скругляем только верхние углы */
+    box-sizing: border-box;
+    padding: 0; /* Убираем дополнительный padding */
+}
+.item-text {
+    white-space: normal; /* Позволяет перенос текста */
+    word-wrap: break-word; /* Перенос длинных слов */
+    overflow: hidden; /* Скрытие текста за границами */
+}
+.photo-info {
+    font-size: var(--font-photo);
+    position: absolute;
+    top: 0px;
+    left: 6px;
+    font-weight: bold;
+    z-index: 1;
+    display: flex;
+    gap: 4px;
+    background: none;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 6px;
+}
+.item p {
+    font-size: var(--font-p); /* Увеличиваем размер шрифта */
+    font-weight: bold; /* Делаем текст жирным */
+    color: var(--white); /* Устанавливаем белый цвет */
+    margin: 10px 0; /* Добавляем отступы */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Легкая тень для читаемости */
+}
+.name-category {
+    display: flex;
+    align-items: center;
+}
+.name {
+    white-space: nowrap; /* Запрещаем перенос текста */
+    overflow: hidden; /* Обрезаем текст, который не помещается */
+    font-size: var(--font-category); /* Размер шрифта */
+}
+.profile-icon {
+    margin-right: 8px; /* Можно настроить по вкусу */
+}
+/* мини-теги под именем */
+.mini-subtags-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px; /* небольшой отступ между мини-тегами */
+    justify-content: center; /* или flex-start, если хотите слева */
+    margin-top: 4px; /* небольшой отступ сверху */
+    margin-bottom: 8px; /* отступ снизу, чтобы отделить от следующих элементов */
+  }
+  
+  .mini-subtag {
+    display: inline-block;
+    background: #444; 
+    color: #fff;
+    font-size: 0.8em; /* обычно меньше, чем основной текст */
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase; 
+    letter-spacing: 0.5px;
+    transition: background 0.2s ease;
+  }
+  .mini-subtag:hover {
+    background: #555;
+  }
+  
+  .item-stats {
+    position: absolute;
+    bottom: -20px; /* Отрицательное значение, чтобы блок выглядел "выступающим" за нижнюю границу карточки */
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 0.7em;
+    color: #ccc;
+  }
+  .stats-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+/* Оверлей, который по умолчанию скрыт */
+.hover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.hover-icons {
+    display: flex;
+    flex-direction: row;   /* Явно указываем горизонтальный ряд */
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+.hover-icons .icon {
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.img-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px 12px 0 0; /* Скругляем только верхние углы */
+}
+
+.img-wrapper img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+.img-wrapper:hover .hover-overlay {
+    opacity: 1;
+}
+.hover-icons .icon:hover {
+    transform: scale(1.1);
+}
+/* Блок для надписей и кнопок в верхней части изображения */
+.top-info {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    display: flex;
+    align-items: center;
+    /* Содержимое прижимается к правому краю */
+    justify-content: flex-end; 
+    z-index: 2;
+}
+
+/* Надпись "новая" */
+.new-label {
+    margin-right: auto; /* "Толкает" остальное вправо */
+    color: #fff;
+    font-size: 14px;
+    padding: 2px 6px;
+}
+
+/* Кнопка закладок */
+.bookmark-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.bookmark-button svg {
+    transition: fill 0.2s ease;
+}
+
+/* При активном состоянии закладка заливается белым */
+.bookmark-button.active svg {
+    fill: #ffffff;
+}
+.filters {
+    overflow-y: auto;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
+}
+.filters.filters-open {
+    transform: translateY(0);
+}
+/* ========== ОСНОВНОЕ ОФОРМЛЕНИЕ ФИЛЬТРОВ ========== */
+
+/* Общее оформление панели фильтров */
+.filter-section {
+    background-color: #2b2b2b;  /* более тёмный фон */
+    color: #fff;               /* белый текст */
+    border: 1px solid #444;    /* тонкая обводка */
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* отступы между блоками */
+  }
+  
+  /* Кнопка «Filters» (та, что открывает/скрывает фильтры) */
+  .filter-toggle-button {
+    font-size: var(--font-filter);
+    /* Остальное оформление остаётся */
+    background: #333;
+    color: #ff7043;
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    border: none;
+    cursor: pointer;
+  }
+  .filter-toggle-button:hover {
+    background: #444;   /* при ховере чуть светлее */
+  }
+  
+  /* Заголовки (Village, Town Hall, Tags, Subtags, Sort by) */
+  .filter-panel h3 {
+  font-size: var(--font-filter);
+  color: #fff;
+  margin: 0 0 5px; /* верх=0, низ=5px */
+  text-transform: uppercase;
+  letter-spacing: 0.5px; /* лёгкое расстояние между буквами */
+  font-weight: bold;
+  }
+  
+  /* Общие блоки для кнопок (village-links, townhall-filters, etc.) */
+  .village-links,
+  .townhall-filters,
+  .tag-filters,
+  .subtag-filters,
+  .sort-filters {
+    background: none;  /* прозрачно, чтобы смотреться в общем фоне */
+    display: flex;
+    flex-wrap: wrap;   /* кнопки переносятся */
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  /* Пример оформления кнопок для Main/Builder/Capital */
+  .village-links .btn-village-page {
+    font-size: var(--font-filter);
+    font-weight: normal; /* или bold, по вкусу */
+    background: #444;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .village-links .btn-village-page:hover {
+    background: #555;
+  }
+  .village-links .btn-village-page.active {
+    background: #ff7043; /* Цвет выделения, можно изменить */
+    transform: scale(1.05); /* Небольшое увеличение для акцента */
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  /* Пример для Town Hall (иконки) */
+  .filter-townhall {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    border-radius: 6px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+  }
+  .filter-townhall img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+  .filter-townhall:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 5px rgba(255,255,255,0.3);
+  }
+  .filter-townhall.active {
+    background: #ff7043;
+    transform: scale(1.08);
+    box-shadow: 0 0 8px rgba(255,255,255,0.5);
+  }
+  
+  /* Пример для Tag (war/farm/decor) */
+  .filter-tag {
+    font-size: var(--font-filter);
+    background: #444;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .filter-tag:hover {
+    background: #555;
+  }
+  .filter-tag.active {
+    background: #ff7043;
+    transform: scale(1.05);
+  }
+  
+  /* Пример для Subtags (anti2, etc.) */
+  .filter-subtag {
+    font-size: var(--font-filter);
+    background: #444;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+  }
+  .filter-subtag:hover {
+    background: #555;
+  }
+  .filter-subtag.active {
+    background: #ff7043;
+    transform: scale(1.05);
+  }
+  
+  /* Пример для Sort (last/views/uploaded/saved) */
+  .filter-sort {
+    font-size: var(--font-filter);
+    background: #444;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+  }
+  .filter-sort:hover {
+    background: #555;
+  }
+  .filter-sort.active {
+    background: #ff7043;
+    transform: scale(1.05);
+  }
+  
+@media (max-width: 699px) {
+    :root {
+        --font-p: 1em;
+        --font-category: 0.7em;    
+        --font-button: 0.6em;
+        --font-filter: 0.8em;
+        --font-photo: 0.6em; 
+    }
+    .category {
+        margin-left: 0; /* Убираем отступ, чтобы текст не смещался вправо */
+        text-align: left; /* Выравнивание текста влево */
+    }
+    .filter-section {
+        position: fixed;
+        bottom: 0;
+        left: 10px;
+        transform: translate(-50%, 100%);
+        transition: transform 0.3s ease-in-out;
+      }
+      .filter-section.show {
+        transform: translateY(0);
+    }
+}
+@media (min-width: 700px) and (max-width: 1199px) {
+    :root {
+        --font-p: 1.1em;
+        --font-category: 0.8em;    
+        --font-button: 0.8em;
+        --font-filter: 0.9em;
+        --font-photo: 0.7em; 
+    }
+    .category {
+        margin-left: 0; /* Убираем отступ, чтобы текст не смещался вправо */
+        text-align: left; /* Выравнивание текста влево */
+    }
+}
+@media (min-width: 1200px) {
+    :root {
+        --font-p: 1.2em;
+        --font-category: 0.9em;    
+        --font-button: 1em;
+        --font-filter: 1em;
+        --font-photo: 0.8em; 
+    }
+}
+@media (max-width: 379px) {
+    .main-container.filters-hidden {
+        grid-template-columns: 1fr; /* Галерея занимает всю ширину */
+    }
+    .gallery {
+        grid-template-columns: 1fr; /* Один баннер */
+    }
+    .filters {
+        position: fixed; /* Фильтры фиксируются снизу */
+        bottom: 0;
+        left: 0;
+        width: 100%; /* На всю ширину */
+        height: auto; /* Автоматическая высота */
+        transform: translateY(100%); /* Скрыть фильтры */
+        transition: transform 0.3s ease-in-out; /* Плавное появление */
+    }
+    .filters.filters-open {
+        transform: translateY(0); /* Показать фильтры */
+    }
+}
+@media (min-width: 380px) and (max-width: 699px) {
+    .main-container.filters-hidden {
+        grid-template-columns: 1fr; /* Галерея занимает всю ширину */
+    }
+    .gallery {
+        grid-template-columns: repeat(2, 1fr); /* 2 баннера */
+    }
+    .filters {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        transform: translateY(100%);
+        transition: transform 0.3s ease-in-out;
+    }
+    .filters.filters-open {
+        transform: translateY(0);
+    }
+}
+@media (min-width: 700px) and (max-width: 899px) {
+    .main-container {
+        grid-template-columns: 250px 1fr; /* Фильтры слева */
+    }
+    .gallery {
+        grid-template-columns: repeat(2, 1fr); /* 2 баннера */
+    }
+    .filters {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 250px;
+        height: 100%;
+        transition: transform 0.3s ease-in-out;
+    }
+    .filters.filters-open {
+        transform: translateX(0);
+    }
+}
+@media (min-width: 900px) and (max-width: 1199px) {
+    .main-container.filters-hidden {
+        grid-template-columns: 1fr; /* Галерея занимает всю ширину */
+    }
+    .main-container {
+        grid-template-columns: 250px 1fr; /* Фильтры слева */
+    }
+    .gallery {
+        grid-template-columns: repeat(3, 1fr); /* 3 баннера */
+    }
+    .filters {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 250px;
+        height: 100%;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+    }
+    .filters.filters-open {
+        transform: translateX(0);
+    }
+}
+@media (min-width: 1200px) and (max-width: 1499px) {
+    .main-container {
+        grid-template-columns: 250px 1fr; /* Фильтры слева */
+    }
+    .gallery {
+        grid-template-columns: repeat(3, 1fr); /* 3 баннера */
+    }
+    .filters {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 250px;
+        height: 100%;
+        transition: transform 0.3s ease-in-out;
+    }
+    .filters.filters-open {
+        transform: translateX(0);
+    }
+}
+@media (min-width: 1500px) {
+    .main-container {
+        grid-template-columns: 300px 1fr; /* Фильтры слева */
+    }
+    .gallery {
+        grid-template-columns: repeat(4, 1fr); /* 4 баннера */
+    }
+    .filters {
+        width: 300px;
+        transition: transform 0.3s ease-in-out;
+    }
+}
+.mobile-controls {
+    display: none;
+  }
+  
+  @media (hover: none) and (pointer: coarse) {
+    /* Отключаем эффекты hover */
+    .hover-overlay {
+      display: none;
+    }
+    .mobile-controls {
+      display: flex;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 15%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: space-around;
+      align-items: center;
+      z-index: 2;
+    }
+    .mobile-controls .icon {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  
+  .mobile-controls button {
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .mobile-controls svg {
+    background: none;
+    display: block;
+  }

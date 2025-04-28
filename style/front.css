@@ -1,8 +1,21 @@
 /* ----- Приветствие (не меняем) ----- */
 .greeting {
+  position: relative;
   text-align: center;
   height: 400px;
   margin-top: 80px;
+}
+.greeting::before {
+  content: "";
+  position: absolute;
+  top: 40%; /* центрирование по вертикали */
+  left: 50%; /* центрирование по горизонтали */
+  transform: translate(-50%, -50%);
+  width: 75%; /* ширина фона, можно регулировать */
+  height: 90%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  z-index: 0;
 }
 /* Эффект печатанья для заголовка */
 .greeting h2 {
@@ -10,17 +23,6 @@
   opacity: 0;
   transform: translateY(10px);
   animation: fadeIn 1s forwards;
-}
-/* Ключевые кадры эффекта печатания */
-@keyframes typing {
-  from { width: 0; }
-  to { width: 100%; }
-}
-
-/* Анимация мигания курсора */
-@keyframes blink-caret {
-  from, to { border-color: transparent; }
-  50% { border-color: #333; }
 }
 .greeting p {
   margin: 20px auto 0 auto;
@@ -728,7 +730,7 @@
     height: 250px;
   }
 }
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 500px) {
   .greeting h2 {
     font-size: 1.5em;
     max-width: 400px;
@@ -812,8 +814,7 @@
 /* Декор */
 .decor {
   opacity: 0;
-  animation: fadeInUp 1s forwards, levitate 5s ease-in-out infinite;
-  position: absolute;  /* так же, как и .card */
+  position: absolute;
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
@@ -822,45 +823,97 @@
 }
 .decor1 {
   background-image: url("/images/banner/dragon.webp");
+  animation: fadeInDecor1 1.2s forwards, levitateDecor1 5s ease-in-out infinite;
 }
 .decor2 {
   background-image: url("/images/banner/ball.webp");
+  animation: fadeInDecor2 1.5s forwards, levitateDecor2 6s ease-in-out infinite;
 }
 .decor3 {
   background-image: url("/images/banner/archer.webp");
+  animation: fadeInDecor3 1.3s forwards, levitateDecor3 4s ease-in-out infinite;
 }
 .decor4 {
   background-image: url("/images/banner/skeleton.webp");
+  animation: fadeInDecor4 1.4s forwards, levitateDecor4 5s ease-in-out infinite;
 }
 .decor5 {
   background-image: url("/images/banner/minion.webp");
+  animation: fadeInDecor5 1.6s forwards, levitateDecor5 7s ease-in-out infinite;
 }
 .decor6 {
   background-image: url("/images/banner/bomber.webp");
+  animation: fadeInDecor6 1.5s forwards, levitateDecor6 5s ease-in-out infinite;
 }
 .decor7 {
   background-image: url("/images/banner/witch.webp");
+  animation: fadeInDecor7 1.7s forwards, levitateDecor7 6s ease-in-out infinite;
 }
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Ключевые кадры для появления (fadeIn) */
+@keyframes fadeInDecor1 {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-@keyframes levitate {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-  100% {
-    transform: translateY(0);
-  }
+@keyframes fadeInDecor2 {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDecor3 {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDecor4 {
+  from { opacity: 0; transform: translateY(25px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDecor5 {
+  from { opacity: 0; transform: translateY(35px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDecor6 {
+  from { opacity: 0; transform: translateY(15px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDecor7 {
+  from { opacity: 0; transform: translateY(45px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Ключевые кадры для левитации */
+@keyframes levitateDecor1 {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+@keyframes levitateDecor2 {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0); }
+}
+@keyframes levitateDecor3 {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0); }
+}
+@keyframes levitateDecor4 {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+  100% { transform: translateY(0); }
+}
+@keyframes levitateDecor5 {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-18px); }
+  100% { transform: translateY(0); }
+}
+@keyframes levitateDecor6 {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+@keyframes levitateDecor7 {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-16px); }
+  100% { transform: translateY(0); }
 }
 /* Исходное состояние для карточек и декора */
 .card,
@@ -869,15 +922,22 @@
   transform: translateY(20px);
   /* Можно задать transition, если не используем ключевые кадры */
 }
-
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes levitate {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0); }
+}
 /* Когда элемент появится (класс in-view добавляется через JS) */
 .card.in-view {
   animation: fadeInUp 0.8s forwards;
 }
-
 /* Для декораций: сначала fadeInUp, затем левитация (задержка для второго эффекта) */
 .decor.in-view {
-  animation: fadeInUp 0.8s forwards, levitate 3s ease-in-out infinite 1s;
+  animation: fadeInUp 0.8s forwards;
 }
 
 /* Для поэтапного (стаггерного) появления можно добавить задержку через nth-child */

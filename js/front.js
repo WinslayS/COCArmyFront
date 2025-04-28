@@ -1,14 +1,6 @@
 document.addEventListener('DOMContentLoaded', applyCardLayout);
 window.addEventListener('resize', applyCardLayout);
 
-// Обработчик скролла для декоративных элементов
-document.addEventListener('scroll', function() {
-  const scrollY = window.scrollY;
-  document.querySelectorAll('.decor').forEach(function(elem) {
-    elem.style.transform = 'translateY(' + (scrollY * 0.1) + 'px)';
-  });
-});
-
 // IntersectionObserver для появления элементов при прокрутке (для всех разрешений)
 const observer = new IntersectionObserver((entries, observer) => {
   entries.forEach((entry, index) => {
