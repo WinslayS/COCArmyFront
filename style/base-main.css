@@ -5,7 +5,7 @@
     margin: 0 auto;
     padding: 10px;
     box-sizing: border-box;
-    grid-template-columns: 1fr; /* По умолчанию на 1 баннер */
+    grid-template-columns: 1fr;
     flex: 1;
 }
 .gallery {
@@ -21,25 +21,25 @@
     grid-template-columns: 1fr;
 }
 .gallery-item {
-    width: clamp(150px, 20vw, 300px); /* Минимум 180px, максимум 250px */
+    width: clamp(150px, 20vw, 300px);
     height: auto;
     margin: 0 auto;
-    text-align: center; /* Центрирование контента */
+    text-align: center;
     box-sizing: border-box;
 }
 .item.placeholder {
     background: transparent;
     border: none;
     box-shadow: none;
-    visibility: hidden; /* Скрываем заполнитель */
-    width: 100%; /* Делаем его размер соответствующим настоящим элементам */
+    visibility: hidden;
+    width: 100%;
     height: auto;
 }
 .item {
     position: relative;
     text-align: center;
-    padding: 0 0 10px 0; /* Убираем отступы сверху и по бокам, оставляем снизу */
-    border-radius: 12px; /* Если хотите скругление для всей карточки */
+    padding: 0 0 10px 0;
+    border-radius: 12px;
     margin: 0 auto;
     margin-bottom: 15px;
     display: flex;
@@ -60,14 +60,14 @@
     height: auto;
     aspect-ratio: 4/3;
     object-fit: cover;
-    border-radius: 12px 12px 0 0; /* Скругляем только верхние углы */
+    border-radius: 12px 12px 0 0;
     box-sizing: border-box;
-    padding: 0; /* Убираем дополнительный padding */
+    padding: 0;
 }
 .item-text {
-    white-space: normal; /* Позволяет перенос текста */
-    word-wrap: break-word; /* Перенос длинных слов */
-    overflow: hidden; /* Скрытие текста за границами */
+    white-space: normal;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 .photo-info {
     font-size: var(--font-photo);
@@ -84,39 +84,38 @@
     margin-top: 6px;
 }
 .item p {
-    font-size: var(--font-p); /* Увеличиваем размер шрифта */
-    font-weight: bold; /* Делаем текст жирным */
-    color: var(--white); /* Устанавливаем белый цвет */
-    margin: 10px 0; /* Добавляем отступы */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Легкая тень для читаемости */
+    font-size: var(--font-p);
+    font-weight: bold;
+    color: var(--white);
+    margin: 10px 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 .name-category {
     display: flex;
     align-items: center;
 }
 .name {
-    white-space: nowrap; /* Запрещаем перенос текста */
-    overflow: hidden; /* Обрезаем текст, который не помещается */
-    font-size: var(--font-category); /* Размер шрифта */
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: var(--font-category);
 }
 .profile-icon {
-    margin-right: 8px; /* Можно настроить по вкусу */
+    margin-right: 8px;
 }
-/* мини-теги под именем */
 .mini-subtags-line {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px; /* небольшой отступ между мини-тегами */
-    justify-content: center; /* или flex-start, если хотите слева */
-    margin-top: 4px; /* небольшой отступ сверху */
-    margin-bottom: 8px; /* отступ снизу, чтобы отделить от следующих элементов */
+    gap: 6px;
+    justify-content: center;
+    margin-top: 4px;
+    margin-bottom: 8px;
   }
   
   .mini-subtag {
     display: inline-block;
     background: #444; 
     color: #fff;
-    font-size: 0.8em; /* обычно меньше, чем основной текст */
+    font-size: 0.8em;
     padding: 2px 6px;
     border-radius: 4px;
     text-transform: uppercase; 
@@ -129,7 +128,7 @@
   
   .item-stats {
     position: absolute;
-    bottom: -20px; /* Отрицательное значение, чтобы блок выглядел "выступающим" за нижнюю границу карточки */
+    bottom: -20px;
     left: 0;
     width: 100%;
     display: flex;
@@ -143,8 +142,6 @@
     align-items: center;
     gap: 4px;
   }
-  
-/* Оверлей, который по умолчанию скрыт */
 .hover-overlay {
     position: absolute;
     top: 0;
@@ -160,7 +157,7 @@
 }
 .hover-icons {
     display: flex;
-    flex-direction: row;   /* Явно указываем горизонтальный ряд */
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     gap: 15px;
@@ -178,9 +175,8 @@
 .img-wrapper {
     position: relative;
     overflow: hidden;
-    border-radius: 12px 12px 0 0; /* Скругляем только верхние углы */
+    border-radius: 12px 12px 0 0;
 }
-
 .img-wrapper img {
     display: block;
     width: 100%;
@@ -192,7 +188,6 @@
 .hover-icons .icon:hover {
     transform: scale(1.1);
 }
-/* Блок для надписей и кнопок в верхней части изображения */
 .top-info {
     position: absolute;
     top: 8px;
@@ -200,32 +195,24 @@
     right: 8px;
     display: flex;
     align-items: center;
-    /* Содержимое прижимается к правому краю */
     justify-content: flex-end; 
     z-index: 2;
 }
-
-/* Надпись "новая" */
 .new-label {
-    margin-right: auto; /* "Толкает" остальное вправо */
+    margin-right: auto;
     color: #fff;
     font-size: 14px;
     padding: 2px 6px;
 }
-
-/* Кнопка закладок */
 .bookmark-button {
     background: transparent;
     border: none;
     cursor: pointer;
     pointer-events: auto;
 }
-
 .bookmark-button svg {
     transition: fill 0.2s ease;
 }
-
-/* При активном состоянии закладка заливается белым */
 .bookmark-button.active svg {
     fill: #ffffff;
 }
@@ -240,25 +227,19 @@
 .filters.filters-open {
     transform: translateY(0);
 }
-/* ========== ОСНОВНОЕ ОФОРМЛЕНИЕ ФИЛЬТРОВ ========== */
-
-/* Общее оформление панели фильтров */
 .filter-section {
-    background-color: #2b2b2b;  /* более тёмный фон */
-    color: #fff;               /* белый текст */
-    border: 1px solid #444;    /* тонкая обводка */
+    background-color: #2b2b2b;
+    color: #fff;
+    border: 1px solid #444;
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     display: flex;
     flex-direction: column;
-    gap: 10px; /* отступы между блоками */
+    gap: 10px;
   }
-  
-  /* Кнопка «Filters» (та, что открывает/скрывает фильтры) */
   .filter-toggle-button {
     font-size: var(--font-filter);
-    /* Остальное оформление остаётся */
     background: #333;
     color: #ff7043;
     font-weight: bold;
@@ -269,36 +250,30 @@
     cursor: pointer;
   }
   .filter-toggle-button:hover {
-    background: #444;   /* при ховере чуть светлее */
+    background: #444;
   }
-  
-  /* Заголовки (Village, Town Hall, Tags, Subtags, Sort by) */
   .filter-panel h3 {
   font-size: var(--font-filter);
   color: #fff;
-  margin: 0 0 5px; /* верх=0, низ=5px */
+  margin: 0 0 5px;
   text-transform: uppercase;
-  letter-spacing: 0.5px; /* лёгкое расстояние между буквами */
+  letter-spacing: 0.5px;
   font-weight: bold;
   }
-  
-  /* Общие блоки для кнопок (village-links, townhall-filters, etc.) */
   .village-links,
   .townhall-filters,
   .tag-filters,
   .subtag-filters,
   .sort-filters {
-    background: none;  /* прозрачно, чтобы смотреться в общем фоне */
+    background: none;
     display: flex;
-    flex-wrap: wrap;   /* кнопки переносятся */
+    flex-wrap: wrap;
     gap: 10px;
     margin-bottom: 10px;
   }
-  
-  /* Пример оформления кнопок для Main/Builder/Capital */
   .village-links .btn-village-page {
     font-size: var(--font-filter);
-    font-weight: normal; /* или bold, по вкусу */
+    font-weight: normal;
     background: #444;
     color: #fff;
     padding: 6px 12px;
@@ -311,11 +286,10 @@
     background: #555;
   }
   .village-links .btn-village-page.active {
-    background: #ff7043; /* Цвет выделения, можно изменить */
-    transform: scale(1.05); /* Небольшое увеличение для акцента */
+    background: #ff7043;
+    transform: scale(1.05);
     transition: background 0.2s ease, transform 0.2s ease;
   }
-  /* Пример для Town Hall (иконки) */
   .filter-townhall {
     background: transparent;
     border: none;
@@ -341,8 +315,6 @@
     transform: scale(1.08);
     box-shadow: 0 0 8px rgba(255,255,255,0.5);
   }
-  
-  /* Пример для Tag (war/farm/decor) */
   .filter-tag {
     font-size: var(--font-filter);
     background: #444;
@@ -360,8 +332,6 @@
     background: #ff7043;
     transform: scale(1.05);
   }
-  
-  /* Пример для Subtags (anti2, etc.) */
   .filter-subtag {
     font-size: var(--font-filter);
     background: #444;
@@ -378,8 +348,6 @@
     background: #ff7043;
     transform: scale(1.05);
   }
-  
-  /* Пример для Sort (last/views/uploaded/saved) */
   .filter-sort {
     font-size: var(--font-filter);
     background: #444;
@@ -396,7 +364,6 @@
     background: #ff7043;
     transform: scale(1.05);
   }
-  
 @media (max-width: 699px) {
     :root {
         --font-p: 1em;
@@ -406,8 +373,8 @@
         --font-photo: 0.6em; 
     }
     .category {
-        margin-left: 0; /* Убираем отступ, чтобы текст не смещался вправо */
-        text-align: left; /* Выравнивание текста влево */
+        margin-left: 0;
+        text-align: left;
     }
     .filter-section {
         position: fixed;
@@ -429,8 +396,8 @@
         --font-photo: 0.7em; 
     }
     .category {
-        margin-left: 0; /* Убираем отступ, чтобы текст не смещался вправо */
-        text-align: left; /* Выравнивание текста влево */
+        margin-left: 0;
+        text-align: left;
     }
 }
 @media (min-width: 1200px) {
@@ -444,30 +411,30 @@
 }
 @media (max-width: 379px) {
     .main-container.filters-hidden {
-        grid-template-columns: 1fr; /* Галерея занимает всю ширину */
+        grid-template-columns: 1fr;
     }
     .gallery {
-        grid-template-columns: 1fr; /* Один баннер */
+        grid-template-columns: 1fr;
     }
     .filters {
-        position: fixed; /* Фильтры фиксируются снизу */
+        position: fixed;
         bottom: 0;
         left: 0;
-        width: 100%; /* На всю ширину */
-        height: auto; /* Автоматическая высота */
-        transform: translateY(100%); /* Скрыть фильтры */
-        transition: transform 0.3s ease-in-out; /* Плавное появление */
+        width: 100%;
+        height: auto;
+        transform: translateY(100%);
+        transition: transform 0.3s ease-in-out;
     }
     .filters.filters-open {
-        transform: translateY(0); /* Показать фильтры */
+        transform: translateY(0);
     }
 }
 @media (min-width: 380px) and (max-width: 699px) {
     .main-container.filters-hidden {
-        grid-template-columns: 1fr; /* Галерея занимает всю ширину */
+        grid-template-columns: 1fr;
     }
     .gallery {
-        grid-template-columns: repeat(2, 1fr); /* 2 баннера */
+        grid-template-columns: repeat(2, 1fr);
     }
     .filters {
         position: fixed;
@@ -482,10 +449,10 @@
 }
 @media (min-width: 700px) and (max-width: 899px) {
     .main-container {
-        grid-template-columns: 250px 1fr; /* Фильтры слева */
+        grid-template-columns: 250px 1fr;
     }
     .gallery {
-        grid-template-columns: repeat(2, 1fr); /* 2 баннера */
+        grid-template-columns: repeat(2, 1fr);
     }
     .filters {
         position: fixed;
@@ -501,13 +468,13 @@
 }
 @media (min-width: 900px) and (max-width: 1199px) {
     .main-container.filters-hidden {
-        grid-template-columns: 1fr; /* Галерея занимает всю ширину */
+        grid-template-columns: 1fr;
     }
     .main-container {
-        grid-template-columns: 250px 1fr; /* Фильтры слева */
+        grid-template-columns: 250px 1fr;
     }
     .gallery {
-        grid-template-columns: repeat(3, 1fr); /* 3 баннера */
+        grid-template-columns: repeat(3, 1fr);
     }
     .filters {
         position: fixed;
@@ -524,10 +491,10 @@
 }
 @media (min-width: 1200px) and (max-width: 1499px) {
     .main-container {
-        grid-template-columns: 250px 1fr; /* Фильтры слева */
+        grid-template-columns: 250px 1fr;
     }
     .gallery {
-        grid-template-columns: repeat(3, 1fr); /* 3 баннера */
+        grid-template-columns: repeat(3, 1fr);
     }
     .filters {
         position: fixed;
@@ -543,10 +510,10 @@
 }
 @media (min-width: 1500px) {
     .main-container {
-        grid-template-columns: 300px 1fr; /* Фильтры слева */
+        grid-template-columns: 300px 1fr;
     }
     .gallery {
-        grid-template-columns: repeat(4, 1fr); /* 4 баннера */
+        grid-template-columns: repeat(4, 1fr);
     }
     .filters {
         width: 300px;
@@ -556,9 +523,7 @@
 .mobile-controls {
     display: none;
   }
-  
   @media (hover: none) and (pointer: coarse) {
-    /* Отключаем эффекты hover */
     .hover-overlay {
       display: none;
     }
@@ -579,7 +544,6 @@
       height: 24px;
     }
   }
-  
   .mobile-controls button {
     background: transparent;
     border: none;
@@ -587,7 +551,6 @@
     padding: 0;
     margin: 0;
   }
-  
   .mobile-controls svg {
     background: none;
     display: block;

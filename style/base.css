@@ -29,7 +29,7 @@ body {
 	padding: 0;
 	height: 100vh;
     background: var(--white);
-    background-attachment: fixed; /* Чтобы фон не прокручивался */
+    background-attachment: fixed;
     margin-top: 0;
 }
 h1 {

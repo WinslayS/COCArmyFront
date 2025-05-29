@@ -1,4 +1,3 @@
-/* ----- Приветствие (не меняем) ----- */
 .greeting {
   position: relative;
   text-align: center;
@@ -8,16 +7,15 @@
 .greeting::before {
   content: "";
   position: absolute;
-  top: 40%; /* центрирование по вертикали */
-  left: 50%; /* центрирование по горизонтали */
+  top: 40%;
+  left: 50%;
   transform: translate(-50%, -50%);
-  width: 75%; /* ширина фона, можно регулировать */
+  width: 75%;
   height: 90%;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 8px;
   z-index: 0;
 }
-/* Эффект печатанья для заголовка */
 .greeting h2 {
   margin-bottom: 10px;
   opacity: 0;
@@ -27,33 +25,27 @@
 .greeting p {
   margin: 20px auto 0 auto;
 }
-/* Эффект плавного появления для описания */
 .greeting p {
-  opacity: 0;                        /* начальное состояние – текст невидим */
-  transform: translateY(10px);       /* небольшой сдвиг вниз для эффекта появления */
-  animation: fadeIn 1s forwards 0.5s;   /* задержка 3s, чтобы дождаться завершения печатанья заголовка */
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeIn 1s forwards 0.5s;
 }
-
-/* Ключевые кадры для плавного появления */
 @keyframes fadeIn {
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
-
-/* Контейнер для всех карточек */
 .cards {
   opacity: 0;
   animation: fadeInUp 1s forwards 1s;
-  position: relative; /* чтобы дети могли быть position: absolute */
+  position: relative;
   width: 100%;
   min-height: 1800px;
 }
-/* Общие стили для карточек */
 .card {
   overflow: hidden; 
-  position: absolute; /* абсолютное позиционирование */
+  position: absolute;
   box-sizing: border-box;
   background: #c9c9c9;
   padding: 20px;
@@ -71,215 +63,182 @@
     max-width: 800px;
     font-size: 1.5em;
   }
-  /* 1. Планировки - большой блок слева, вплотную к границе */
-.card-bases {
-  top: 20px;
-  left: -10px;
-  height: 600px;
-  width: 70%;   /* подберите ширину */
-  z-index: 1;   /* если хотите, чтобы его перекрывали другие блоки */
+  .card-bases {
+    top: 20px;
+    left: -10px;
+    height: 600px;
+    width: 70%;
+    z-index: 1;
+  }
+  .card-advise {
+    top: 600px;
+    left: 45%;
+    width: 50%; 
+    height: 400px;
+    z-index: 2;
+  }
+  .card-mix {
+    top: 900px;
+    left: 10%;
+    width: 65%;
+    height: 500px;
+    z-index: 3;
+  }
+  .card-table {
+    top: 1350px;
+    left: 35%;
+    width: 50%;
+    height: 300px;
+    z-index: 1;
+  } 
+  .category-title {
+    position: absolute;
+    font-size: 4em;
+  }
+  .category-description {
+    position: absolute;
+    font-size: 1.8em;
+  }
+  .category-bases {
+    top: 100px;
+    left: 5%;
+  }
+  .description-bases {
+    top: 250px;
+    left: 10%;
+  }
+  .category-advise {
+    top: 60px;
+    left: 30%;
+  }
+  .description-advise {
+    top: 150px;
+    left: 10%;
+  }
+  .category-mix {
+    top: 70px;
+    left: 45%;
+  }
+  .description-mix {
+    top: 200px;
+    left: 10%;
+  }
+  .category-table {
+    top: 80px;
+    left: 30%;
+  }
+  .description-table {
+    top: 180px;
+    left: 5%;
+  }
+  .card-content p {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .card:hover .card-content p {
+    transform: translateY(-200%);
+    opacity: 0;
+  }
+  .card-content h3 {
+    transition: transform 0.3s ease;
+  }
+  .card:hover .card-content h3.category-bases {
+    transform: translateY(-100%);
+  }
+  .card:hover .card-content h3.category-advise {
+    transform: translate(-50%, +40%);
+  }
+  .card:hover .card-content h3.category-mix {
+    transform: translateY(-70%);
+  }
+  .card:hover .card-content h3.category-table {
+    transform: translate(+80%, +40%);
+  }
+  .slice-label1{
+    font-size: 1.4em;
+    left: 7%;
+    bottom: -30px;
+  }
+  .slice-label2 {
+    font-size: 1.4em;
+    left: 25%;
+    bottom: -30px;
+    }
+  .slice-label3 {
+    font-size: 1.4em;
+    left: 48%;
+    bottom: -30px;
+  }
+  .slice-label4 {
+    font-size: 1.4em;
+    left: 75%;
+    bottom: -30px;
+  }
+  .slice-label1::before {
+    left: -200%;
+    width: calc(100% + 500%);
+    height: 70px;
+    bottom: 0;
 }
-
-/* 2. Советы - ниже, смещён вправо и перекрывает Планировки */
-.card-advise {
-  top: 600px;   /* отступ сверху (примерное значение, регулируйте под макет) */
-  left: 45%;    /* немного вправо, чтобы перекрывать .card-bases */
-  width: 50%; 
-  height: 400px;
-  z-index: 2;   /* выше Планировок */
-}
-
-/* 3. Миксы - меньше, не касается экрана, частично перекрывает Советы */
-.card-mix {
-  top: 900px;   /* между Планировками и Советами */
-  left: 10%;    /* смещён от левого края, чтобы не касаться границ экрана */
-  width: 65%;
-  height: 500px;
-  z-index: 3;   /* ещё выше, чтобы «лежать» поверх Советов */
-}
-
-/* 4. ЛВК - под Миксами */
-.card-table {
-  top: 1350px;   /* ещё ниже, чем Советы и Миксы */
-  left: 35%;
-  width: 50%;
-  height: 300px;
-  z-index: 1;
-}
-/* Общий стиль заголовков */
-.category-title {
-  position: absolute;
-  font-size: 4em;
-}
-
-/* Общий стиль описаний */
-.category-description {
-  position: absolute;
-  font-size: 1.8em;
-}
-
-/* 1. Планировки */
-.category-bases {
-  top: 100px;
-  left: 5%;
-}
-
-.description-bases {
-  top: 250px;
-  left: 10%;
-}
-
-/* 2. Советы */
-.category-advise {
-  top: 60px;
-  left: 30%;
-}
-
-.description-advise {
-  top: 150px;
-  left: 10%;
-}
-
-/* 3. Миксы */
-.category-mix {
-  top: 70px;
-  left: 45%;
-}
-
-.description-mix {
-  top: 200px;
-  left: 10%;
-}
-
-/* 4. ЛВК */
-.category-table {
-  top: 80px;
-  left: 30%;
-}
-
-.description-table {
-  top: 180px;
-  left: 5%;
-}
-.card-content p {
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.card:hover .card-content p {
-  transform: translateY(-200%);
-  opacity: 0;
-}
-/* Общий стиль для всех заголовков h3 внутри .card-content */
-.card-content h3 {
-  transition: transform 0.3s ease;
-  /* При необходимости можно добавить начальное состояние transform: none; */
-}
-
-/* Для карточки "Планировки" - h3 поднимается вверх на 100% своей высоты */
-.card:hover .card-content h3.category-bases {
-  transform: translateY(-100%);
-}
-
-/* Для карточки "Советы" - h3 сдвигается влево и поднимается на 50% своей высоты */
-.card:hover .card-content h3.category-advise {
-  transform: translate(-50%, +40%);
-}
-
-/* Для карточки "Миксы" - h3 поднимается вверх на 50% своей высоты */
-.card:hover .card-content h3.category-mix {
-  transform: translateY(-70%);
-}
-
-/* Для карточки "ЛВК" - h3 сдвигается вправо на 100% своей ширины */
-.card:hover .card-content h3.category-table {
-  transform: translate(+80%, +40%);
-}
-.slice-label1{
-  font-size: 1.4em;
-  left: 7%;
-  bottom: -30px;
-}
-.slice-label2 {
-  font-size: 1.4em;
-  left: 25%;
-  bottom: -30px;
-}
-.slice-label3 {
-  font-size: 1.4em;
-  left: 48%;
-  bottom: -30px;
-}
-.slice-label4 {
-  font-size: 1.4em;
-  left: 75%;
-  bottom: -30px;
-}
-.slice-label1::before {
-  left: -200%;
-  width: calc(100% + 500%);
-  height: 70px;
-  bottom: 0;
-}
-.slice-label2::before {
-  left: -200%;
-  width: calc(100% + 500%);
-  height: 70px;
-  bottom: 0;
-}
-.slice-label3::before {
-  left: -200%;
-  width: calc(100% + 500%);
-  height: 70px;
-  bottom: 0;
-}
-.slice-label4::before {
-  left: -250%;
-  width: calc(100% + 600%);
-  height: 70px;
-  bottom: 0;
-}
-.decor1 {
-  top: -400px;
-  left: -100px;
-  width: 400px;
-  height: 400px;
-}
-.decor2 {
-  top: -450px;
-  left: 80%;
-  width: 300px;
-  height: 300px;
-}
-.decor3 {
-  top: 120px;
-  left: 75%;
-  width: 300px;
-  height: 500px;
-}
-.decor4 {
-  top: 720px;
-  left: 5%;
-  width: 300px;
-  height: 200px;
-}
-.decor5 {
-  top: 600px;
-  left: 15%;
-  width: 500px;
-  height: 200px;
-}
-.decor6 {
-  top: 1100px;
-  left: 75%;
-  width: 250px;
-  height: 250px;
-}
-.decor7 {
-  top: 1400px;
-  left: 7%;
-  width: 350px;
-  height: 350px;
-}
+  .slice-label2::before {
+    left: -200%;
+    width: calc(100% + 500%);
+    height: 70px;
+    bottom: 0;
+  }
+  .slice-label3::before {
+    left: -200%;
+    width: calc(100% + 500%);
+    height: 70px;
+    bottom: 0;
+  }
+  .slice-label4::before {
+    left: -250%;
+    width: calc(100% + 600%);
+    height: 70px;
+    bottom: 0;
+  }
+  .decor1 {
+    top: -400px;
+    left: -100px;
+    width: 400px;
+    height: 400px;
+  }
+  .decor2 {
+    top: -450px;
+    left: 80%;
+    width: 300px;
+    height: 300px;
+  }
+  .decor3 {
+    top: 120px;
+    left: 75%;
+    width: 300px;
+    height: 500px;
+  }
+  .decor4 {
+    top: 720px;
+    left: 5%;
+    width: 300px;
+    height: 200px;
+  }
+  .decor5 {
+    top: 600px;
+    left: 15%;
+    width: 500px;
+    height: 200px;
+  }
+  .decor6 {
+    top: 1100px;
+    left: 75%;
+    width: 250px;
+    height: 250px;
+  }
+  .decor7 {
+    top: 1400px;
+    left: 7%;
+    width: 350px;
+    height: 350px;
+  }
 }
 @media screen and (min-width: 700px) and (max-width: 1099px) {
   .greeting {
@@ -294,65 +253,50 @@
     max-width: 600px;
     font-size: 1.3em;
   }
-  /* 1. Планировки - большой блок слева, вплотную к границе */
   .card-bases {
     top: 20px;
     left: -10px;
     height: 600px;
-    width: 75%;   /* подберите ширину */
-    z-index: 2;   /* если хотите, чтобы его перекрывали другие блоки */
+    width: 75%;
+    z-index: 2;
   }
-  
-  /* 2. Советы - ниже, смещён вправо и перекрывает Планировки */
   .card-advise {
-    top: 600px;   /* отступ сверху (примерное значение, регулируйте под макет) */
-    left: 35%;    /* немного вправо, чтобы перекрывать .card-bases */
+    top: 600px;
+    left: 35%;
     width: 60%; 
     height: 300px;
-    z-index: 1;   /* выше Планировок */
+    z-index: 1;
   }
-  
-  /* 3. Миксы - меньше, не касается экрана, частично перекрывает Советы */
   .card-mix {
-    top: 850px;   /* между Планировками и Советами */
-    left: 5%;    /* смещён от левого края, чтобы не касаться границ экрана */
+    top: 850px;
+    left: 5%;
     width: 85%;
     height: 500px;
-    z-index: 3;   /* ещё выше, чтобы «лежать» поверх Советов */
+    z-index: 3;
   }
-  
-  /* 4. ЛВК - под Миксами */
   .card-table {
-    top: 1300px;   /* ещё ниже, чем Советы и Миксы */
+    top: 1300px;
     left: 25%;
     width: 60%;
     height: 300px;
     z-index: 1;
   }
-  /* Общий стиль заголовков */
   .category-title {
     position: absolute;
     font-size: 3em;
   }
-  
-  /* Общий стиль описаний */
   .category-description {
     position: absolute;
     font-size: 1.5em;
   }
-  
-  /* 1. Планировки */
   .category-bases {
     top: 150px;
     left: 5%;
   }
-  
   .description-bases {
     top: 350px;
     left: 15%;
   }
-  
-  /* 2. Советы */
   .category-advise {
     top: 20px;
     left: 15%;
@@ -362,24 +306,18 @@
     top: 100px;
     left: 10%;
   }
-  
-  /* 3. Миксы */
   .category-mix {
     top: 120px;
     left: 25%;
   }
-  
   .description-mix {
     top: 270px;
     left: 10%;
   }
-  
-  /* 4. ЛВК */
   .category-table {
     top: 70px;
     left: 30%;
   }
-  
   .description-table {
     top: 150px;
     left: 10%;
@@ -387,33 +325,22 @@
   .card-content p {
     transition: transform 0.3s ease, opacity 0.3s ease;
   }
-  
   .card:hover .card-content p {
     transform: translateY(-200%);
     opacity: 0;
   }
-  /* Общий стиль для всех заголовков h3 внутри .card-content */
   .card-content h3 {
     transition: transform 0.3s ease;
-    /* При необходимости можно добавить начальное состояние transform: none; */
   }
-  
-  /* Для карточки "Планировки" - h3 поднимается вверх на 100% своей высоты */
   .card:hover .card-content h3.category-bases {
     transform: translateY(-250%);
   }
-  
-  /* Для карточки "Советы" - h3 сдвигается влево и поднимается на 50% своей высоты */
   .card:hover .card-content h3.category-advise {
     transform: translate(-20%, +50%);
   }
-  
-  /* Для карточки "Миксы" - h3 поднимается вверх на 50% своей высоты */
   .card:hover .card-content h3.category-mix {
     transform: translateY(-170%);
   }
-  
-  /* Для карточки "ЛВК" - h3 сдвигается вправо на 100% своей ширины */
   .card:hover .card-content h3.category-table {
     transform: translate(+80%, +40%);
   }
@@ -517,95 +444,73 @@
     max-width: 400px;
     font-size: 1.1em;
   }
-  /* 1. Планировки - большой блок слева, вплотную к границе */
   .card-bases {
     top: 20px;
     left: -10px;
     height: 650px;
-    width: 90%;   /* подберите ширину */
-    z-index: 2;   /* если хотите, чтобы его перекрывали другие блоки */
+    width: 90%;
+    z-index: 2;
   }
-  
-  /* 2. Советы - ниже, смещён вправо и перекрывает Планировки */
   .card-advise {
-    top: 650px;   /* отступ сверху (примерное значение, регулируйте под макет) */
-    left: 25%;    /* немного вправо, чтобы перекрывать .card-bases */
+    top: 650px;
+    left: 25%;
     width: 80%; 
     height: 200px;
-    z-index: 1;   /* выше Планировок */
+    z-index: 1;
   }
-  
-  /* 3. Миксы - меньше, не касается экрана, частично перекрывает Советы */
   .card-mix {
-    top: 840px;   /* между Планировками и Советами */
-    left: 5%;    /* смещён от левого края, чтобы не касаться границ экрана */
+    top: 840px;
+    left: 5%;
     width: 90%;
     height: 550px;
-    z-index: 3;   /* ещё выше, чтобы «лежать» поверх Советов */
+    z-index: 3;
   }
-  
-  /* 4. ЛВК - под Миксами */
   .card-table {
-    top: 1370px;   /* ещё ниже, чем Советы и Миксы */
+    top: 1370px;
     left: 15%;
     width: 70%;
     height: 200px;
     z-index: 1;
   }
-  /* Общий стиль заголовков */
   .category-title {
     position: absolute;
     font-size: 1.5em;
   }
-  
-  /* Общий стиль описаний */
   .category-description {
     position: absolute;
     font-size: 1em;
   }
-  
-  /* 1. Планировки */
   .category-bases {
     top: 50px;
     left: 5%;
   }
-  
   .description-bases {
     top: 190px;
     max-width: 400px;
     left: 5%;
   }
-  
-  /* 2. Советы */
   .category-advise {
     top: 40px;
     left: 20%;
   }
-  
   .description-advise {
     top: 80px;
     left: 15%;
     max-width: 300px;
   }
-  
-  /* 3. Миксы */
   .category-mix {
     top: 40px;
     left: 60%;
   }
-  
   .description-mix {
     top: 160px;
     left: 25%;
     max-width: 400px;
   }
-  
-  /* 4. ЛВК */
   .category-table {
     top: 30px;
     left: 10%;
   }
-  
   .description-table {
     top: 80px;
     left: 10%;
@@ -613,33 +518,22 @@
   .card-content p {
     transition: transform 0.3s ease, opacity 0.3s ease;
   }
-  
   .card:hover .card-content p {
     transform: translateY(-200%);
     opacity: 0;
   }
-  /* Общий стиль для всех заголовков h3 внутри .card-content */
   .card-content h3 {
     transition: transform 0.3s ease;
-    /* При необходимости можно добавить начальное состояние transform: none; */
   }
-  
-  /* Для карточки "Планировки" - h3 поднимается вверх на 100% своей высоты */
   .card:hover .card-content h3.category-bases {
     transform: translateY(-150%);
   }
-  
-  /* Для карточки "Советы" - h3 сдвигается влево и поднимается на 50% своей высоты */
   .card:hover .card-content h3.category-advise {
     transform: translate(-10%, +80%);
   }
-  
-  /* Для карточки "Миксы" - h3 поднимается вверх на 50% своей высоты */
   .card:hover .card-content h3.category-mix {
     transform: translateY(-150%);
   }
-  
-  /* Для карточки "ЛВК" - h3 сдвигается вправо на 100% своей ширины */
   .card:hover .card-content h3.category-table {
     transform: translate(+280%, +140%);
   }
@@ -742,9 +636,9 @@
 }
 .card.card-advise .character {
   position: absolute;
-  left: 75%;               /* Располагаем левее центра – можно регулировать */
+  left: 75%;
   transform: translateX(-50%);
-  bottom: -100%;           /* Изначально скрыт под нижней границей карточки */
+  bottom: -100%;
   width: 200px;
   height: 350px;
   background-color: #333;
@@ -752,33 +646,25 @@
   z-index: 5;
   pointer-events: none;
 }
-
-/* === Начальное расположение для card-table === */
 .card.card-table .character {
   position: absolute;
-  left: 20%;               /* Располагаем правее центра – можно регулировать */
+  left: 20%;
   transform: translateX(-50%);
-  bottom: -100%;           /* Изначально скрыт под нижней границей карточки */
+  bottom: -100%;
   width: 300px;
   height: 300px;
   background-color: #333;
   transition: bottom 0.3s ease;
   z-index: 5;
 }
-
-/* === Ховер-состояние для card-advise: персонаж выезжает и левитирует === */
 .card.card-advise:hover .character {
   bottom: 0;
   animation: levitateCharacterAdvise 3s ease-in-out infinite;
 }
-
-/* === Ховер-состояние для card-table: персонаж выезжает и левитирует (с другим эффектом) === */
 .card.card-table:hover .character {
   bottom: 0;
   animation: levitateCharacterTable 3s ease-in-out infinite;
 }
-
-/* === Анимация для card-advise === */
 @keyframes levitateCharacterAdvise {
   0% {
     transform: translateX(-50%) translateY(0);
@@ -790,8 +676,6 @@
     transform: translateX(-50%) translateY(0);
   }
 }
-
-/* === Анимация для card-table === */
 @keyframes levitateCharacterTable {
   0% {
     transform: translateX(-50%) translateY(0);
@@ -803,7 +687,6 @@
     transform: translateX(-50%) translateY(0);
   }
 }
-/* Ссылки внутри слайсов делают всю область слайда кликабельной */
 .slice-link, .card-link {
   display: block;
   width: 100%;
@@ -811,7 +694,6 @@
   text-decoration: none;
   color: inherit;
 }
-/* Декор */
 .decor {
   opacity: 0;
   position: absolute;
@@ -849,7 +731,6 @@
   background-image: url("/images/banner/witch.webp");
   animation: fadeInDecor7 1.7s forwards, levitateDecor7 6s ease-in-out infinite;
 }
-/* Ключевые кадры для появления (fadeIn) */
 @keyframes fadeInDecor1 {
   from { opacity: 0; transform: translateY(30px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -878,8 +759,6 @@
   from { opacity: 0; transform: translateY(45px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
-/* Ключевые кадры для левитации */
 @keyframes levitateDecor1 {
   0% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
@@ -915,12 +794,10 @@
   50% { transform: translateY(-16px); }
   100% { transform: translateY(0); }
 }
-/* Исходное состояние для карточек и декора */
 .card,
 .decor {
   opacity: 0;
   transform: translateY(20px);
-  /* Можно задать transition, если не используем ключевые кадры */
 }
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(20px); }
@@ -931,28 +808,19 @@
   50% { transform: translateY(-20px); }
   100% { transform: translateY(0); }
 }
-/* Когда элемент появится (класс in-view добавляется через JS) */
 .card.in-view {
   animation: fadeInUp 0.8s forwards;
 }
-/* Для декораций: сначала fadeInUp, затем левитация (задержка для второго эффекта) */
 .decor.in-view {
   animation: fadeInUp 0.8s forwards;
 }
-
-/* Для поэтапного (стаггерного) появления можно добавить задержку через nth-child */
-/* Если порядок в HTML соответствует желаемой последовательности: */
 .cards .card:nth-child(1).in-view { animation-delay: 0.2s; }
 .cards .card:nth-child(2).in-view { animation-delay: 0.4s; }
 .cards .card:nth-child(3).in-view { animation-delay: 0.6s; }
 .cards .card:nth-child(4).in-view { animation-delay: 0.8s; }
-
 .cards .decor:nth-child(n+5).in-view { 
-  /* Если декоры идут после карточек, можно задать свою схему задержек */
   animation-delay: 0.3s;
 }
-
-/* Общий стиль для каждого слайда */
 .card.diagonal-slices .slice {
   position: absolute;
   top: 0;
@@ -968,11 +836,10 @@
 .card.diagonal-slices .card-content {
   position: relative;
   z-index: 10;
-  pointer-events: none; /* если нужно, чтобы клики проходили через текст */
+  pointer-events: none;
   padding: 20px;
   transition: transform 0.3s ease;
 }
-
 .card-bases.diagonal-slices .slice.slice1 {
   background: url("/images/banner/base-upload.webp") center/cover;
 }
@@ -1009,7 +876,6 @@
 .card.card-table .character {
   background: url("/images/banner/lava.webp") no-repeat center/contain;
 }
-/*Слайсы текст*/
 .card.diagonal-slices .slice {
   z-index: 0;
 }
@@ -1066,7 +932,6 @@
   opacity: 1;
   z-index: -1;
 }
-
 @media (hover: none) and (pointer: coarse) {
   .card:hover .card-content p,
   .card:hover .card-content h3 {

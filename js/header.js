@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const dropdownLinks = document.querySelectorAll('.nav-menu .dropdown > a');
   const dropdownItems = document.querySelectorAll('.nav-menu li.dropdown');
 
-  // Список подменю для десктопной панели
   const submenus = {
     "/pages/bases.html": [
       { text: "Основная", href: "/pages/base-main.html" },
@@ -24,10 +23,8 @@ document.addEventListener('DOMContentLoaded', function () {
     ]
   };
 
-  let currentPanel = null; // для десктопа
+  let currentPanel = null;
   let hideTimeout = null;
-
-  // ======== Десктопная логика (hover) ========
 
   function isMouseOverAllowed(e) {
     const margin = 20;
@@ -73,7 +70,6 @@ document.addEventListener('DOMContentLoaded', function () {
       delete currentPanel.dataset.closing;
     }
 
-    // Подсветка активного пункта
     dropdownItems.forEach(item => item.classList.remove('active'));
     dropdownLinks.forEach(link => {
       if (link.getAttribute('href') === key) {
@@ -98,7 +94,6 @@ document.addEventListener('DOMContentLoaded', function () {
       currentPanel = newPanel;
     }
 
-    // Закрываем остальные панели
     const panels = dropdownMenuContainer.querySelectorAll('.dropdown-panel');
     panels.forEach(panel => {
       if (panel.dataset.key !== key) {
@@ -135,7 +130,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  // Функция для планирования закрытия панели
   function scheduleClose(panel) {
     panel.dataset.closing = "true";
     panel._closeTimer = setTimeout(() => {
@@ -148,10 +142,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 450);
   }
 
-  // ======== Обновлённый обработчик mousemove для десктопа ========
   document.addEventListener('mousemove', function (e) {
     if (isMouseOverAllowed(e)) {
-      // Если курсор в допустимой зоне – отменяем запланированное закрытие
       if (hideTimeout) {
         clearTimeout(hideTimeout);
         hideTimeout = null;
@@ -169,14 +161,12 @@ document.addEventListener('DOMContentLoaded', function () {
             scheduleClose(currentPanel);
           }
           hideTimeout = null;
-        }, 150); // задержка 150 мс для плавного закрытия
+        }, 150);
       }
     }
   });
 
-  // ======== Мобильная логика (клик) ========
   dropdownLinks.forEach(link => {
-    // Десктоп — hover
     link.addEventListener('mouseenter', function () {
       if (!window.matchMedia("(max-width:699px)").matches) {
         const key = link.getAttribute('href');
@@ -184,7 +174,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   
-    // Мобильный — клик с закрытием остальных подменю
     link.addEventListener('click', function (e) {
       if (window.matchMedia("(max-width:699px)").matches) {
         e.preventDefault();
@@ -192,7 +181,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const submenu = parentDropdown.querySelector('.submenu');
         if (submenu) {
           if (!submenu.classList.contains('open')) {
-            // Закрываем все открытые подменю, отличные от текущего
             document.querySelectorAll('.nav-menu .dropdown').forEach(item => {
               if (item !== parentDropdown) {
                 const otherSubmenu = item.querySelector('.submenu');
@@ -202,16 +190,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
               }
             });
-            // Открываем текущее подменю и добавляем класс для анимации стрелочки
             submenu.classList.add('open');
             parentDropdown.classList.add('open');
           } else {
-            // Если уже открыто — закрываем
             submenu.classList.remove('open');
             parentDropdown.classList.remove('open');
           }
         }
-        // Если открыта десктопная панель — закрываем её
         if (currentPanel) {
           hideDropdown();
         }
@@ -220,22 +205,9 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
-// ==== Остальная часть (тема, язык, гамбургер) без изменений ====
 document.addEventListener("DOMContentLoaded", function () {
-  const themeToggle = document.getElementById("theme-toggle");
-
-  function setTheme(mode) {
-    document.body.dataset.theme = mode;
-    localStorage.setItem("theme", mode);
-  }
-
-  themeToggle.addEventListener("click", function () {
-    const currentTheme = localStorage.getItem("theme") || "dark";
-    setTheme(currentTheme === "dark" ? "light" : "dark");
-  });
-
-  const savedTheme = localStorage.getItem("theme") || "dark";
-  setTheme(savedTheme);
+  document.body.dataset.theme = "dark";
+  localStorage.setItem("theme", "dark");
 });
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -278,7 +250,6 @@ document.addEventListener("DOMContentLoaded", function () {
   setLanguage(savedLang);
 });
 
-// ==== Гамбургер + сброс подменю ====
 const hamburgerBtn = document.getElementById('hamburgerBtn');
 const mainNav = document.getElementById('mainNav');
 
@@ -289,7 +260,6 @@ hamburgerBtn.addEventListener('click', () => {
 
   if (window.matchMedia("(max-width:699px)").matches) {
     if (!isMenuOpen) {
-      // Меню открывается – добавляем overlay
       const overlay = document.createElement("div");
       overlay.classList.add("nav-overlay");
       overlay.addEventListener("click", () => {
@@ -299,13 +269,11 @@ hamburgerBtn.addEventListener('click', () => {
       });
       document.body.appendChild(overlay);
     } else {
-      // Меню закрывается – удаляем overlay, если он есть
       const overlay = document.querySelector(".nav-overlay");
       if (overlay) overlay.remove();
     }
   }
 
-  // Если меню закрывается на мобильном, сбрасываем открытые подменю
   if (isMenuOpen && window.matchMedia("(max-width:699px)").matches) {
     document.querySelectorAll('.nav-menu .submenu.open, .nav-menu .dropdown.open').forEach(el => {
       el.classList.remove('open');
@@ -325,14 +293,12 @@ window.addEventListener('resize', () => {
     disableTransitionTemporarily(mainNav, 50);
     mainNav.classList.remove('open');
     hamburgerBtn.classList.remove('open');
-    // Сбрасываем состояние всех открытых подменю и родительских .dropdown
     document.querySelectorAll('.nav-menu .submenu.open, .nav-menu .dropdown.open').forEach(el => {
       el.classList.remove('open');
     });
   } else {
     mainNav.classList.remove('open');
     hamburgerBtn.classList.remove('open');
-    // Также сбрасываем мобильные раскрытия при переходе на десктоп
     document.querySelectorAll('.nav-menu .submenu.open, .nav-menu .dropdown.open').forEach(el => {
       el.classList.remove('open');
     });

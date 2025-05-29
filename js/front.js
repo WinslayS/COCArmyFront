@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', applyCardLayout);
 window.addEventListener('resize', applyCardLayout);
 
-// IntersectionObserver для появления элементов при прокрутке (для всех разрешений)
 const observer = new IntersectionObserver((entries, observer) => {
   entries.forEach((entry, index) => {
     if (entry.isIntersecting) {
@@ -18,32 +17,25 @@ document.querySelectorAll('.card, .decor').forEach(elem => {
   observer.observe(elem);
 });
 
-// Функция для сброса inline-стилей у слайсов
 function resetSlices(card) {
   const slices = card.querySelectorAll('.slice');
   slices.forEach(slice => {
-    // Удаляем все inline-стили, чтобы не накапливались изменения
     slice.removeAttribute('style');
-    // Если у слайда есть обработчики, лучше заменить его клоном
     const clone = slice.cloneNode(true);
     slice.parentNode.replaceChild(clone, slice);
   });
 }
 
-// Основная функция перераспределения карточек в зависимости от ширины экрана
 function applyCardLayout() {
   const screenWidth = window.innerWidth;
   const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
   const cards = document.querySelectorAll('.card.diagonal-slices');
   
   cards.forEach(card => {
-    // Сброс ранее назначенных inline-стилей и обработчиков
     resetSlices(card);
-    // После сброса получаем актуальный список слайсов
     const slices = card.querySelectorAll('.slice');
     if (slices.length < 4) return;
     
-    // ===== Режим для экранов ≥ 1100px (оригинальный 1×4) =====
     if (screenWidth >= 1100) {
       const hoverOffset = 8;
       const initialClipPaths = [
@@ -105,7 +97,6 @@ function applyCardLayout() {
         }
       }
       
-      // Устанавливаем исходные clip-path и добавляем обработчики
       slices.forEach((slice, i) => {
         setClipPath(slice, initialClipPaths[i]);
         slice.addEventListener('mouseenter', () => {
@@ -125,7 +116,6 @@ function applyCardLayout() {
         });
       });
       
-      // Если сенсорное устройство – сразу выставляем финальные стили для меток
       if (isTouchDevice) {
         slices.forEach((slice, i) => {
           const label = slice.querySelector('.slice-label' + (i + 1));
@@ -138,7 +128,6 @@ function applyCardLayout() {
         });
       }
     }
-    // ===== Режим для экранов от 700 до 1099px (2×2) =====
     else if (screenWidth >= 700 && screenWidth <= 1099) {
       const hoverOffset = 7;
       const initialClip = [
@@ -182,7 +171,6 @@ function applyCardLayout() {
         }
       }
       
-      // Устанавливаем базовые стили для разбиения 2×2
       slices.forEach((slice, i) => {
         slice.style.position = 'absolute';
         slice.style.left = '0';
@@ -192,7 +180,6 @@ function applyCardLayout() {
         slice.style.clipPath = initialClip[i];
       });
       
-      // Добавляем обработчики наведения для каждого слайда
       slices.forEach((slice, i) => {
         slice.addEventListener('mouseenter', () => {
           if (!isTouchDevice) {
@@ -211,7 +198,6 @@ function applyCardLayout() {
             }
           }
           else {
-            // На сенсорных устройствах сразу делаем все метки видимыми
             slices.forEach((s, j) => {
               const lbl = s.querySelector('.slice-label' + (j + 1));
               if (lbl) {
@@ -242,7 +228,6 @@ function applyCardLayout() {
         });
       });
       
-      // Для сенсорных устройств сразу выставляем финальные стили для меток (в режиме 2×2)
       if (isTouchDevice) {
         slices.forEach((slice, i) => {
           const label = slice.querySelector('.slice-label' + (i + 1));
@@ -255,7 +240,6 @@ function applyCardLayout() {
         });
       }
     }
-    // ===== Режим для экранов ≤ 699px (вертикальное 1×4 без диагональных разделений) =====
     else {
       slices.forEach((slice, i) => {
         slice.style.position = 'absolute';
@@ -263,9 +247,7 @@ function applyCardLayout() {
         slice.style.width = '100%';
         slice.style.height = '25%';
         slice.style.top = (i * 25) + '%';
-        // Убираем любые clip-path
         slice.style.clipPath = 'none';
-        // Добавляем плавную анимацию для высоты и top
         slice.style.transition = 'height 0.3s ease, top 0.3s ease';
       });
       
@@ -280,12 +262,10 @@ function applyCardLayout() {
           factors[i] = factor;
           totalFactor += factor;
         }
-        // Рассчитываем новую высоту для каждого слайда
         slices.forEach((slice, i) => {
           const newHeight = (factors[i] / totalFactor) * 100;
           slice.style.height = newHeight + '%';
         });
-        // Пересчитываем положение top для всех слайсов
         let currentTop = 0;
         slices.forEach(slice => {
           slice.style.top = currentTop + '%';
@@ -337,7 +317,6 @@ function applyCardLayout() {
         });
       });
       
-      // На сенсорных устройствах сразу выставляем финальные стили для меток (в вертикальном режиме)
       if (isTouchDevice) {
         slices.forEach((slice, i) => {
           const label = slice.querySelector('.slice-label' + (i + 1));

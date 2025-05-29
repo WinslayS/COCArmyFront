@@ -1,8 +1,6 @@
-/* === Базовые стили шапки === */
 main {
-  margin-top: 70px !important; /* отступ под фиксированную шапку */
+  margin-top: 70px !important;
 }
-
 .header-top {
   position: fixed;
   width: 90%;
@@ -13,35 +11,26 @@ main {
   left: 50%;
   transform: translateX(-50%);
 }
-
 .header-top.scrolled {
   background: rgba(0, 0, 0, 0.85);
   height: 60px;
 }
-
-/* Контейнер в шапке */
 .header-row {
   position: relative;
   display: flex;
   align-items: center;
-  height: 70px; /* базовая высота шапки */
+  height: 70px;
   padding: 0 20px;
   z-index: 1000;
 }
-
-/* Логотип */
 .logo img {
   height: 40px;
 }
-
-/* Блок иконок (справа) */
 .menu-icons {
-  margin-left: auto; /* «отжимает» иконки вправо */
+  margin-left: auto;
   display: flex;
   gap: 15px;
 }
-
-/* Кнопки-иконки */
 .icon-button {
   background: none;
   border: none;
@@ -57,11 +46,9 @@ main {
   height: 24px;
   fill: currentColor;
 }
-
-/* === Мобильное меню (до 699px) — панель, выезжающая вниз === */
 .nav-menu {
   position: fixed;
-  top: -100%; /* спрятано за верхней границей */
+  top: -100%;
   left: 0;
   width: 100%;
   background: rgba(0, 0, 0, 0.8);
@@ -70,23 +57,23 @@ main {
   transition: top 0.4s ease;
   z-index: 1001;
   padding: 10px 0;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 .nav-menu.open {
-  top: 70px; /* при открытии опускается под шапку */
+  top: 70px;
 }
 .nav-menu ul {
-  flex-direction: column; /* вертикальный список на мобильном */
+  flex-direction: column;
   gap: 10px;
   margin: 0 20px;
   padding: 0;
   list-style: none;
 }
-
 .nav-menu li {
   position: relative;
   margin-right: 20px;
 }
-/* Только верхний <ul> внутри .nav-menu */
 .nav-menu > ul {
   display: flex;
   flex-direction: column;
@@ -94,12 +81,9 @@ main {
   padding: 0;
   list-style: none;
 }
-
-/* На уровне li также можно задать отступы */
 .nav-menu > ul > li {
   margin-right: 20px;
 }
-/* Ссылки в меню */
 .nav-menu a {
   color: rgba(255,255,255,0.6);
   text-decoration: none;
@@ -108,8 +92,6 @@ main {
 .nav-menu a:hover {
   color: #fff;
 }
-
-/* Дополнительные эффекты для dropdown */
 .nav-menu .dropdown > a {
   color: rgba(255,255,255,0.6);
   transition: color 0.3s, opacity 0.3s;
@@ -121,8 +103,6 @@ main {
 .nav-menu li:not(.dropdown):hover > a {
   color: #fff;
 }
-
-/* === Контейнер для выпадающих панелей (dropdown-menu) === */
 .dropdown-menu {
   position: absolute;
   top: 70px;
@@ -131,9 +111,9 @@ main {
   z-index: 2000;
   overflow: visible;
 }
-
-/* Отдельная панель подменю */
 .dropdown-panel {
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
   position: absolute;
   top: 0;
   left: 0;
@@ -149,7 +129,6 @@ main {
   align-items: center;
   justify-content: flex-start;
   padding: 0 20px;
-  z-index: 1;
 }
 .dropdown-panel.active {
   transform: scaleY(1);
@@ -168,10 +147,8 @@ main {
 .dropdown-panel a:hover {
   color: #fff;
 }
-
-/* Гамбургер (кнопка открытия мобильного меню) */
 .hamburger {
-  display: none; /* скрыт по умолчанию на десктопе */
+  display: none;
   cursor: pointer;
   color: rgba(255,255,255,0.6);
   position: relative;
@@ -210,8 +187,6 @@ main {
   opacity: 1;
   transform: translateY(0);
 }
-
-/* === Контент и футер (не меняем) === */
 .content-menu {
   display: flex;
   flex-wrap: wrap;
@@ -219,7 +194,6 @@ main {
   justify-content: center;
   padding: 20px;
 }
-/* Темы (dark/light) */
 [data-theme="dark"] {
   background-color: #444444;
   color: white;
@@ -235,20 +209,16 @@ main {
   list-style: none;
   padding-left: 20px;
 }
-/* При добавлении .open показываем подменю */
 .dropdown.open .submenu {
   display: flex;
-  flex-direction: column; /* если нужен столбец */
+  flex-direction: column;
 }
 .dropdown.open .arrow {
   transform: rotate(180deg);
 }
-/* ============= MEDIA QUERIES ============= */
 .no-transition {
   transition: none !important;
 }
-
-/* --- Мобильные устройства (до 699px) --- */
 @media (max-width: 699px) {
   .header-top {
     width: 100%;
@@ -287,7 +257,7 @@ main {
     transition: max-height 0.3s ease;
   }
   .dropdown.open .submenu {
-    max-height: 300px; /* Подберите значение, подходящее для вашего контента */
+    max-height: 300px;
   }
   .arrow {
     display: inline-block;
@@ -311,15 +281,18 @@ main {
   }
   .nav-overlay {
     position: fixed;
-    top: 70px; /* ниже шапки */
+    top: 70px;
     left: 0;
     width: 100%;
-    height: calc(100% - 70px); /* покрывает остальную часть экрана */
+    height: calc(100% - 70px);
     background: transparent;
-    z-index: 998; /* ниже nav-menu (который z-index: 999) */
+    z-index: 998;
   }
 }
 @media (min-width: 700px) and (max-width: 999px)  {
+  .header-top {
+    border-radius: 20px;
+  }
   .header-row {
     padding: 0 20px;
     height: 70px;
@@ -359,8 +332,10 @@ main {
     display: none !important;
   }
 }
-/* --- Десктоп (от 700px и выше) --- */
 @media (min-width: 1000px) {
+    .header-top {
+    border-radius: 20px;
+  }
   .header-row {
     padding: 0 20px;
     height: 70px;

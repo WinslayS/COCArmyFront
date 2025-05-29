@@ -12,37 +12,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     const closeModal = document.getElementById('closeModal');
     const fullscreenModal = document.getElementById('fullscreenModal');
 
-    const TAP_MOVEMENT_THRESHOLD = 10; // порог в пикселях
+    const TAP_MOVEMENT_THRESHOLD = 10;
 
-    // -------------------------------
-    // ПАРАМЕТРЫ ДЛЯ ЗУМА
-    // -------------------------------
     let scale = 1;
-    // Вместо offsetX/Y напрямую используем "raw" для накопления.
+
     let rawOffsetX = 0;
     let rawOffsetY = 0;
 
-    // Для отрисовки (если нужно где-то хранить «текущие»):
     let offsetX = 0;
     let offsetY = 0;
 
     const MIN_SCALE = 1;
     const MAX_SCALE = 5;
-    const MID_SCALE = 2.5;  // для кнопки «приближения»
+    const MID_SCALE = 2.5;
 
-    // Коэффициент «упругости» при перетаскивании за границы:
-    // Чем ближе к 1 – тем меньше сопротивление, можно тащить дальше.
     const ELASTIC_PULL = 0.3; 
 
-    // Базовые размеры фоновой картинки (scale=1)
     let baseWidth = 0;
     let baseHeight = 0;
 
-    // Флаги для перетаскивания
     let isDragging = false;
     let startX = 0, startY = 0;
 
-    // Свайпы
     let isPotentialSwipe = false;
     let isHorizontalSwipe = false;
     let isVerticalSwipe = false;
@@ -52,13 +43,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const SWIPE_CLOSE_THRESHOLD = 80;
     const SWIPE_DEADZONE = 10;
 
-    // Двойной клик
     let clickCount = 0;
     let doubleClickTimer = null;
     const DOUBLE_CLICK_DELAY = 300;
     let doubleTapLock = false;
 
-    // Pinch
     let pointers = [];
     let pinchStartDistance = 0;
     let pinchStartScale = 1;
@@ -66,7 +55,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     let pinchStartOffsetY = 0;
     let pinchStartCenter = { x: 0, y: 0 };
 
-    // Список изображений и данные
     let currentImageIndex = 0;
     let imagesList = [];
     let layoutsData = [];
@@ -83,9 +71,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let inertiaAnimationFrame = null;
 
-    // -------------------------------
-    // ЗАГРУЗКА ДАННЫХ
-    // -------------------------------
     try {
         const layoutsResponse = await fetch('/data/layouts.json');
         layoutsData = await layoutsResponse.json();
@@ -95,9 +80,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Ошибка загрузки JSON:', error);
     }
 
-    // -------------------------------
-    // ФУНКЦИИ ДЛЯ ЗУМА / ФОТО
-    // -------------------------------
     function startZoomAnimation() {
         slideCurrent.classList.add('zoom-animating');
         slideCurrent.addEventListener('transitionend', function handler() {
@@ -119,7 +101,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Отрисовка (применяем упругость, если isPointerMove, иначе жёстко)
     function updateBackground(isPointerMove = false) {
         const finalW = baseWidth * scale;
         const finalH = baseHeight * scale;
@@ -131,7 +112,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         let dispX = rawOffsetX;
         let dispY = rawOffsetY;
 
-        // Если зажаты указатели (drag/pinch) — применяем упругую формулу:
         if (isPointerMove && finalW > containerW) {
             if (rawOffsetX > maxOffsetX) {
                 let excess = rawOffsetX - maxOffsetX;
@@ -151,7 +131,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
 
-        // Если не перетаскиваем — жёстко ограничиваем:
         if (!isPointerMove) {
             if (finalW > containerW) {
                 dispX = Math.max(-maxOffsetX, Math.min(dispX, maxOffsetX));
@@ -183,10 +162,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         zoomSlider.style.setProperty('--slider-fill', `${fillPercent}%`);
     }
 
-    // -------------------------------
-    // КНОПКА БЫСТРОГО ПРИБЛИЖЕНИЯ
-    // -------------------------------
-    // УБИРАЕМ resetZoomParams(), чтобы не сбрасывать offsets каждый раз
     resetZoomButton.addEventListener('pointerdown', () => {
         startZoomAnimation();
         if (scale === 1) {
@@ -194,13 +169,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             scale = 1;
         }
-        // Не сбрасываем rawOffset, чтобы сохранить текущее смещение
         updateBackground(false);
     });
 
-    // -------------------------------
-    // ПОЛЗУНОК ЗУМА
-    // -------------------------------
     zoomSlider.addEventListener('input', (e) => {
         startZoomAnimation();
         let newScale = parseFloat(e.target.value);
@@ -209,9 +180,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateBackground(false);
     });
 
-    // -------------------------------
-    // ЗАГРУЗКА / ОТОБРАЖЕНИЕ ИЗОБРАЖЕНИЙ
-    // -------------------------------
     function resetZoomParams() {
         scale = 1;
         rawOffsetX = 0;
@@ -300,9 +268,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // -------------------------------
-    // ОТКРЫТИЕ МОДАЛКИ
-    // -------------------------------
     const images = document.querySelectorAll('.zoomable');
     images.forEach((img) => {
         img.addEventListener('click', () => {
@@ -399,11 +364,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // -------------------------------
-    // ЗУМ КОЛЁСИКОМ
-    // -------------------------------
     slideCurrent.addEventListener('wheel', (e) => {
-        // Если происходит свайп, отменяем зум
         if (isPotentialSwipe || isHorizontalSwipe || isVerticalSwipe) return;
         e.preventDefault();
         startZoomAnimation();
@@ -425,9 +386,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateBackground(false);
     }, { passive: false });    
 
-    // -------------------------------
-    // DRAG / PINCH / SWIPE
-    // -------------------------------
     imageStage.addEventListener('pointerdown', onPointerDown);
     imageStage.addEventListener('pointermove', onPointerMove);
     imageStage.addEventListener('pointerup', onPointerUp);
@@ -450,9 +408,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         imageStage.setPointerCapture(e.pointerId);
         pointers.push({ id: e.pointerId, x: e.clientX, y: e.clientY });
-    
-        // Если появилось два указателя, отключаем режим свайпа,
-        // чтобы обрабатывать жест как pinch
+
         if (pointers.length === 2) {
             isPotentialSwipe = false;
             isDragging = false;
@@ -464,7 +420,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
         
-        // Если только один палец:
         if (scale > 1) {
             isDragging = true;
             isPotentialSwipe = false;
@@ -495,7 +450,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 break;
             }
         }
-        // Pinch
         if (pointers.length === 2 && !(isPotentialSwipe || isHorizontalSwipe || isVerticalSwipe)) {
             const currentDistance = getPinchDistance(pointers[0], pointers[1]);
             const currentPinchCenter = getPinchCenter(pointers[0], pointers[1]);
@@ -514,7 +468,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             updateBackground(true);
             return;
         }
-        // Drag
         if (isDragging) {
             const dx = e.clientX - startX;
             const dy = e.clientY - startY;
@@ -522,7 +475,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             rawOffsetX += dx;
             rawOffsetY += dy;
             
-            // Рассчитываем скорость на основе времени между событиями
             const now = Date.now();
             const dt = now - lastMoveTime;
             if (dt > 0) {
@@ -536,7 +488,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             updateBackground(true);
         }
-        // Свайпы
         else if (isPotentialSwipe) {
             const dx = e.clientX - swipeStartX;
             const dy = e.clientY - swipeStartY;
@@ -547,7 +498,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     } else {
                         isVerticalSwipe = true;
                     }
-                    // Сброс инерционных скоростей при распознавании свайпа
                     velocityX = 0;
                     velocityY = 0;
                 }
@@ -580,12 +530,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             pinchStartDistance = 0;
         }
         
-        // Вычисляем перемещение от начальной точки
         const dx = e.clientX - startX;
         const dy = e.clientY - startY;
         const moveDistance = Math.sqrt(dx * dx + dy * dy);
     
-        // Если перемещение мало, считаем это тапом
         if (moveDistance < TAP_MOVEMENT_THRESHOLD) {
             clickCount++;
             if (clickCount === 1) {
@@ -598,11 +546,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 handleDoublePress(e);
                 doubleTapLock = true;
                 setTimeout(() => { doubleTapLock = false; }, 300);
-                return; // завершаем обработку
+                return;
             }
         }
     
-        // Дальше стандартная логика для drag/свайпа
         if (isDragging) {
             isDragging = false;
             const limitedVelX = Math.max(-MAX_VELOCITY, Math.min(velocityX, MAX_VELOCITY));
@@ -639,26 +586,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         snapBackToBounds();
     }
 
-    // -------------------------------
-    // ФУНКЦИЯ SNAP-BACK С ОДИНАКОВОЙ АНИМАЦИЕЙ
-    // -------------------------------
     function snapBackToBounds() {
-        // Устанавливаем фиксированный transition, чтобы вернуть в границы за одно и то же время.
         slideCurrent.style.transition = 'background-position 0.3s ease';
-        // Вызываем updateBackground(false) для жёсткого ограничения rawOffset
         updateBackground(false);
         slideCurrent.addEventListener('transitionend', function handler() {
             slideCurrent.removeEventListener('transitionend', handler);
-            // Снимаем transition
             slideCurrent.style.transition = 'none';
             isSnapBackActive = false;
         }, { once: true });
         isSnapBackActive = true;
     }
 
-    // -------------------------------
-    // СВАЙП НА СЛАЙДЫ
-    // -------------------------------
     function finishHorizontalSwipe(dx) {
         if (isSwipeAnimating) return;
         isSwipeAnimating = true;
@@ -729,9 +667,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // -------------------------------
-    // Pinch-утилиты, double click
-    // -------------------------------
     function getPinchDistance(p1, p2) {
         const dx = p2.x - p1.x;
         const dy = p2.y - p1.y;
@@ -751,7 +686,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const centerY = rect.top + rect.height / 2;
         let newScale;
         if (scale === 1) {
-            // При приближении – вычисляем смещение относительно точки клика
             newScale = MID_SCALE;
             const ds = newScale - scale;
             const dx = e.clientX - centerX;
@@ -759,17 +693,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             rawOffsetX -= dx * ds;
             rawOffsetY -= dy * ds;
         } else {
-            // При отдалении – сбрасываем смещения и флаг перетаскивания
             newScale = 1;
-            resetZoomParams();    // сбрасывает scale, rawOffsetX и rawOffsetY
-            isDragging = false;   // обязательно сбрасываем перетаскивание
+            resetZoomParams();
+            isDragging = false;
         }
         scale = newScale;
         updateBackground(false);
-        resetSwipeState(); // сбрасываем состояния свайпа/драга
+        resetSwipeState();
     }               
 
-    // fullscreenchange
     document.addEventListener('fullscreenchange', () => {
         if (modal.classList.contains('show')) {
             if (document.fullscreenElement) {
@@ -784,7 +716,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });    
 
-    // ESC / стрелки
     window.addEventListener('keydown', (e) => {
         if (modal.classList.contains('show')) {
             if (e.key === 'ArrowRight') {

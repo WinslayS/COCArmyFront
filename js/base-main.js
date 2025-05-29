@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1) Загружаем данные из JSON
     fetch('/data/layouts.json')
       .then(response => {
         if (!response.ok) {
@@ -9,26 +8,19 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .then(data => {
         const gallery = document.getElementById('gallery');
-        gallery.innerHTML = ''; // Очистка перед добавлением
-  
-        // 2) Рендерим карточки
+        gallery.innerHTML = '';
         data.forEach(item => {
-          // Превращаем массив subtags в строку, чтобы добавить в data-subtags
           const subtagString = Array.isArray(item.subtags)
             ? item.subtags.join(" ")
             : "";
-  
-          // Если запись помечена как новая
           const newLabelHTML = (item.status === 'new')
             ? `<span class="new-label">новая</span>`
             : '';
-  // 1. Активируем кнопку village "Main"
   const defaultVillageBtn = document.querySelector(".village-links .btn-village-page[data-page='/pages/base-main.html']");
   if (defaultVillageBtn) {
     defaultVillageBtn.classList.add("active");
   }
-  
-  // 2. По умолчанию выбираем TH = 17, если другой не выбран
+
   if (!currentTH) {
     currentTH = "17";
     const defaultTHBtn = document.querySelector(`.filter-townhall[data-th="17"]`);
@@ -36,8 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
       defaultTHBtn.classList.add("active");
     }
   }
-  
-  // 3. По умолчанию сортировка "last"
+
   if (!currentSortKey) {
     currentSortKey = "last";
     const defaultSortBtn = document.querySelector(`.filter-sort[data-sort="last"]`);
@@ -45,15 +36,11 @@ document.addEventListener("DOMContentLoaded", () => {
       defaultSortBtn.classList.add("active");
     }
   }
-  // Генерация основного тега
-const tagHTML = item.tag ? `<span class="mini-subtag">${item.tag}</span>` : "";
 
-// Генерация подтегов (например, выводим не более 3)
+const tagHTML = item.tag ? `<span class="mini-subtag">${item.tag}</span>` : "";
 const subtagHTML = Array.isArray(item.subtags)
   ? item.subtags.slice(0, 3).map(subtag => `<span class="mini-subtag">${subtag}</span>`).join("")
   : "";
-
-          // Генерируем HTML для одной карточки
           const html = `
             <div class="item"
                  data-id="${item.id}"
@@ -64,7 +51,6 @@ const subtagHTML = Array.isArray(item.subtags)
                  data-uploaded="${item.uploaded || 0}"
                  data-saved="${item.saved || 0}"
                  data-link="${item.link || ''}">
-  
               <div class="img-wrapper">
                 <div class="top-info">
                   ${newLabelHTML}
@@ -74,7 +60,6 @@ const subtagHTML = Array.isArray(item.subtags)
                     </svg>
                   </button>
                 </div>
-  
                 <img
                   src="${item.thumbnail}"
                   alt="Расстановка ${item.id}"
@@ -114,7 +99,6 @@ const subtagHTML = Array.isArray(item.subtags)
         </button>
       </div>
     </div>
-  
               <div class="name-category">
                 <div class="profile-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#e3e3e3">
@@ -148,26 +132,21 @@ const subtagHTML = Array.isArray(item.subtags)
     </div>
             </div>
           `;
-  
           gallery.innerHTML += html;
         });
-  
-        // 3) Сообщаем, что рендер завершён
         document.dispatchEvent(new Event('layoutsRendered'));
       })
       .catch(err => {
         console.error('Ошибка при загрузке layouts.json:', err);
       });
   });
-  
-  // 4) Выровнять количество элементов в галерее
+
   document.addEventListener("layoutsRendered", () => {
     const gallery = document.querySelector(".gallery");
     const items = gallery.querySelectorAll(".item");
-    const minItemsPerRow = 4; // Минимальное количество элементов в ряду
+    const minItemsPerRow = 4;
     const currentRowCount = Math.ceil(items.length / minItemsPerRow);
     const totalItemsNeeded = currentRowCount * minItemsPerRow;
-  
     if (items.length < totalItemsNeeded) {
       for (let i = items.length; i < totalItemsNeeded; i++) {
         const placeholder = document.createElement("div");
@@ -177,8 +156,7 @@ const subtagHTML = Array.isArray(item.subtags)
       }
     }
   });
-  
-  // 5) Логика для кнопок «закладки»
+
   document.addEventListener("layoutsRendered", () => {
     const defaultBookmarkSVG = `
       <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="#e3e3e3">
@@ -191,7 +169,7 @@ const subtagHTML = Array.isArray(item.subtags)
   
     document.querySelectorAll('.bookmark-button').forEach(button => {
       button.addEventListener('click', (e) => {
-        e.stopPropagation(); // чтобы клик не всплывал дальше (не открывал что-то ещё)
+        e.stopPropagation();
         if (button.classList.contains('active')) {
           button.classList.remove('active');
           button.innerHTML = defaultBookmarkSVG;
@@ -202,23 +180,20 @@ const subtagHTML = Array.isArray(item.subtags)
       });
     });
   });
-  
-  // 6) Делегирующий обработчик для кнопок в оверлее: .icon.open, .icon.download, .icon.share
+
   document.addEventListener("layoutsRendered", () => {
     document.addEventListener('click', (event) => {
-      // Кнопка "Открыть" (просмотр в modal.js)
       const openBtn = event.target.closest('.icon.open');
       if (openBtn) {
         const itemEl = openBtn.closest('.item');
         if (!itemEl) return;
         const zoomableImage = itemEl.querySelector('img.zoomable');
         if (zoomableImage) {
-          zoomableImage.click(); // Триггерим тот же обработчик, что и при клике по img
+          zoomableImage.click();
         }
         return;
       }
-  
-      // Кнопка "Загрузить" => по факту "открыть ссылку в новой вкладке"
+
       const downloadBtn = event.target.closest('.icon.download');
       if (downloadBtn) {
         const itemEl = downloadBtn.closest('.item');
@@ -229,17 +204,13 @@ const subtagHTML = Array.isArray(item.subtags)
         }
         return;
       }
-  
-      // Кнопка "Поделиться"
+
       const shareBtn = event.target.closest('.icon.share');
       if (shareBtn) {
         const itemEl = shareBtn.closest('.item');
         if (!itemEl) return;
-  
         const shareLink = itemEl.dataset.link || window.location.href;
         const shareTitle = itemEl.querySelector('.name')?.textContent || 'Моя база';
-  
-        // Попытка поделиться через Web Share API
         if (navigator.share) {
           navigator.share({
             title: `База: ${shareTitle}`,
@@ -251,7 +222,6 @@ const subtagHTML = Array.isArray(item.subtags)
             console.error('Ошибка при шаринге:', err);
           });
         } else {
-          // Фолбэк, если браузер не поддерживает Web Share API
           alert(`Поделитесь ссылкой: ${shareLink}`);
         }
         return;

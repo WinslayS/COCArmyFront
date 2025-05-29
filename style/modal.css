@@ -31,11 +31,11 @@
     animation: modalClose 0.3s ease-in-out forwards;
 }
 .modal img {
-    max-width: 100%; /* Ограничение ширины */
-    max-height: 70vh; /* Ограничение высоты для больших экранов */
-    object-fit: cover; /* Сохранение пропорций */
-    border-radius: 10px; /* Закругленные углы */
-    transition: transform 0.3s ease-in-out; /* Анимация масштабирования */
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.3s ease-in-out;
 }
 :fullscreen .modal-content {
     width: 100vw;
@@ -54,81 +54,80 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    justify-content: flex-start; /* Интерфейс сверху, а миниатюры внизу */
+    justify-content: flex-start;
     padding: 0;
     background-color: rgba(0, 0, 0, 0.7);
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
-    box-shadow: none; /* Убираем тень */
+    box-shadow: none;
     border-radius: 12px;
-    filter: brightness(var(--modal-brightness, 1)); /* если используется для прочих целей */
+    filter: brightness(var(--modal-brightness, 1));
     transition: transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
-    will-change: transform; /* Оптимизация для производительности */
-    touch-action: none;     /* Отключаем системный скролл/зум внутри */
-    user-select: none;      /* Запрещаем выделение текста при перетаскивании */
+    will-change: transform;
+    touch-action: none;
+    user-select: none;
     cursor: grab; 
 }
 .image-stage-wrapper {
     width: 100%;
-    flex: 1 1 auto; /* Позволяет обёртке занимать всю доступную высоту, заданную родителем */
+    flex: 1 1 auto;
     position: relative;
     overflow: hidden;
 }
 .controls-area {
-    position: absolute; /* Фиксируем под рамкой */
-    bottom: -90px; /* Опускаем ниже рамки */
-    left: 50%; /* Центрируем */
-    transform: translateX(-50%); /* Выравниваем по центру */
+    position: absolute;
+    bottom: -90px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
     justify-content: center;
-    gap: 15px; /* Добавляем расстояние между элементами */
-    width: 100%; /* Растягиваем на всю ширину */
-    z-index: 1000; /* Поверх фона */
+    gap: 15px;
+    width: 100%;
+    z-index: 1000;
 }
 .thumbnails {
     display: flex;
     justify-content: center;
-    gap: 15px; /* Расстояние между миниатюрами */
-    background: none; /* Убираем фон */
+    gap: 15px;
+    background: none;
 }
 .thumbnails img {
     width: 80px;
     height: 70px;
     border-radius: 8px;
-    object-fit: cover; /* Квадратное отображение */
+    object-fit: cover;
     cursor: pointer;
     transition: transform 0.3s ease, border-color 0.3s ease;
-    border: 2px solid transparent; /* Граница по умолчанию */
+    border: 2px solid transparent;
 }
 .thumbnails img:hover {
-border-color: rgba(255, 255, 255, 0.5); /* Подсветка активной миниатюры */
+border-color: rgba(255, 255, 255, 0.5);
 }
 .thumbnails img.active {
-    transform: scale(1.1); /* Увеличение при наведении */
-    border-color: rgb(255, 255, 255); /* Подсветка активной миниатюры */
-
+    transform: scale(1.1);
+    border-color: rgb(255, 255, 255);
 }
 .preview-area {
     position: relative;
     width: 100%;
     height: auto;
-    overflow: hidden; /* Скрываем изображение за границами */
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 15px; /* Закругляем углы */
-    background: transparent; /* Убираем фон */
-    pointer-events: auto; /* Включаем интерактивность */
+    border-radius: 15px;
+    background: transparent;
+    pointer-events: auto;
 }
 .preview-area img {
     max-width: 100%;
     max-height: 100%;
-    object-fit: contain; /* Сохраняем пропорции и ограничиваем размер */
+    object-fit: contain;
     position: relative;
-    z-index: 1; /* Убедитесь, что изображение перекрывает только нужные области */
-    transition: transform 0.3s ease; /* Плавная анимация изменения масштаба */
-    transform-origin: center; /* Масштабирование относительно центра */
+    z-index: 1;
+    transition: transform 0.3s ease;
+    transform-origin: center;
 }
 .modal img:active {
     cursor: grabbing;
@@ -142,7 +141,6 @@ border-color: rgba(255, 255, 255, 0.5); /* Подсветка активной �
     width: 100%;
     justify-content: space-between;
 }
-/* Спиннер-оверлей, по умолчанию скрыт (opacity: 0, pointer-events: none) */
 .spinner-overlay {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -151,15 +149,13 @@ border-color: rgba(255, 255, 255, 0.5); /* Подсветка активной �
     justify-content: center;
     background: rgba(0, 0, 0, 0.7);
     opacity: 0;
-    pointer-events: none; /* чтобы клики проходили сквозь, пока он скрыт */
+    pointer-events: none;
     transition: opacity 0.2s ease;
   }
-  /* Само «loading» состояние: показываем оверлей */
   .modal-content.loading .spinner-overlay {
     opacity: 1;
-    pointer-events: all; /* если хотите, чтобы нельзя было кликать сквозь */
+    pointer-events: all;
   }
-  /* Пример простого "крутящегося" кружочка */
   .spinner-overlay::after {
     content: "";
     width: 40px;
@@ -179,7 +175,7 @@ border-color: rgba(255, 255, 255, 0.5); /* Подсветка активной �
     z-index: 7001
 }
 .control-button {
-    background: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
+    background: rgba(0, 0, 0, 0.5);
     border: none;
     padding: 2px 8px;
     font-size: 20px;
@@ -188,36 +184,36 @@ border-color: rgba(255, 255, 255, 0.5); /* Подсветка активной �
     transition: all 0.3s ease;
 }
 .control-button:hover {
-    background: rgba(0, 0, 0, 0.8); /* Более яркий фон при наведении */
-    transform: scale(1.1); /* Легкое увеличение */
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
 }
 .control-button:active {
-    transform: scale(1.05); /* Уменьшение эффекта при нажатии */
+    transform: scale(1.05);
 }
 #zoomSlider {
     position: relative;
     z-index: 7000;
-    width: 100%; /* Ползунок растягивается на всю ширину контейнера */
-    height: 10px; /* Высота трека */
+    width: 100%;
+    height: 10px;
     appearance: none;
-    background: rgba(255, 255, 255, 0.2); /* Полупрозрачный трек */
-    border-radius: 4px; /* Закругленные углы */
-    cursor: pointer; /* Указатель для интерактивности */
-    overflow: hidden; /* Скрываем содержимое за границами */
-    outline: none; /* Убираем стандартные границы */
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
 }
 #zoomSliderContainer {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.5); /* Совпадает с кнопкой */
-    border-radius: 6px; /* Закруглённые углы */
-    padding: 2px 8px; /* Отступы вокруг ползунка */
-    height: 28px; /* Высота, как у кнопки */
-    width: 150px; /* Ширина прямоугольника */
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 6px;
+    padding: 2px 8px;
+    height: 28px;
+    width: 150px;
 }
 #zoomSlider:hover {
-    background: rgba(255, 255, 255, 0.4); /* Более заметный трек при наведении */
+    background: rgba(255, 255, 255, 0.4);
 }
 #zoomSlider::before {
     content: '';
@@ -225,22 +221,22 @@ border-color: rgba(255, 255, 255, 0.5); /* Подсветка активной �
     top: 0;
     left: 0;
     height: 100%;
-    width: var(--slider-fill, 0%); /* Ширина заполненной части */
-    background: rgba(255, 255, 255, 0.6); /* Цвет заполненной части */
-    border-radius: 4px; /* Закругляем углы заполнения */
+    width: var(--slider-fill, 0%);
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 4px;
 }
 #zoomSlider::-webkit-slider-thumb {
     appearance: none;
-    width: 0; /* Убираем точку */
+    width: 0;
     height: 0;
 }
 #zoomSlider::-moz-range-thumb {
     appearance: none;
-    width: 0; /* Убираем точку */
+    width: 0;
     height: 0;
 }
-body.modal-open { /* Добавьте этот стиль для фона при открытии модального окна */
-	overflow: hidden; /* Отключает прокрутку страницы */
+body.modal-open {
+	overflow: hidden;
 	position: relative;
 }
 body.modal-open::before {
@@ -250,7 +246,6 @@ body.modal-open::before {
     left: 0;
     width: 100%;
     height: 100%;
-    /* вместо rgba(0,0,0,0.4) используем black, а прозрачность вычисляем через переменную */
     background: black;
     backdrop-filter: blur(8px);
     z-index: 998;
@@ -263,7 +258,7 @@ body.modal-open::before {
 }
 .modal-open {
     overflow: hidden;
-    touch-action: none; /* Блокирует взаимодействие */
+    touch-action: none;
 }
 .image-stage {
     position: relative;
@@ -274,11 +269,10 @@ body.modal-open::before {
     background-size: contain;
     overflow: hidden;
     border-radius: 12px;
-    /* никакого overflow, пусть slides могут выезжать за границы */
   }
   .slide {
     position: absolute;
-    inset: 0; /* top:0, left:0, width:100%, height:100% */
+    inset: 0;
     top: 0; left: 0;
     width: 100%;
     height: 100%;
@@ -286,17 +280,14 @@ body.modal-open::before {
     background-size: contain; 
     background-position: center;
     background-repeat: no-repeat;
-    transition: transform 0.3s ease; /* для плавного анимирования */
+    transition: transform 0.3s ease;
   }
-  /* Допустим, "next" начинается справа за пределами экрана */
   .slide.next {
     transform: translateX(100%);
   }
   .modal-content.swipe-closing {
-    /* плавный уход + исчезновение */
     transition: transform 0.3s ease, opacity 0.3s ease;
     opacity: 0;
-    /* transform будет ставиться динамически (translateY(-100%) или (100%)) */
   }
   .slide.current {
     border-radius: 12px;

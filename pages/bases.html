@@ -82,73 +82,69 @@
     </ul>
   </nav>  
   <main class="sections-container">
-    <!-- Панель загрузки, разделённая на две равные части -->
-    <section class="upload-panel">
-      <!-- Левая часть: загрузка 3-х фотографий -->
-      <div class="upload-half upload-photos">
-        <h2>Загрузите до 3х изображений</h2>
-        <form id="photoUploadForm">
+<section class="upload-panel">
+  <div class="upload-panel__header">
+    <h2>Загрузка</h2>
+  </div>
+
+  <div class="upload-panel__body">
+    <div class="upload-panel__photos">
+      <form id="photoUploadForm" class="photo-grid">
+        <div class="photo-slot">
           <input type="file" name="photo1" accept="image/*">
+        </div>
+        <div class="photo-slot">
           <input type="file" name="photo2" accept="image/*">
+        </div>
+        <div class="photo-slot photo-slot--large">
           <input type="file" name="photo3" accept="image/*">
-        </form>
-      </div>
-      <!-- Правая часть: выбор категории и уровня -->
-      <div class="upload-half upload-details">
-        <h2>Выберите деревню и её уровень</h2>
-        <div class="category-selection">
-          <label>
-            <input type="radio" name="category" value="основная" checked> Основная
-          </label>
-          <label>
-            <input type="radio" name="category" value="строитель"> Строитель
-          </label>
-          <label>
-            <input type="radio" name="category" value="столица"> Столица
-          </label>
         </div>
-        <div class="level-selection">
-          <label for="levelSelect">Выберите уровень:</label>
-          <select id="levelSelect" name="level">
-            <!-- Опции будут заполнены через JS -->
-          </select>
-        </div>
-        <button id="publishBtn">Опубликовать</button>
+      </form>
+    </div>
+    <div class="upload-panel__params">
+      <div class="category-buttons">
+        <button type="button" data-category="основная" class="category-btn active">Основная</button>
+        <button type="button" data-category="строитель" class="category-btn">Строитель</button>
+        <button type="button" data-category="столица" class="category-btn">Столица</button>
       </div>
-    </section>
+      <div class="level-select">
+        <select id="levelSelect" name="level"></select>
+      </div>
+      <div class="tags-inputs">
+        <input type="text" name="tag1" placeholder="Тег 1">
+        <input type="text" name="tag2" placeholder="Тег 2">
+        <input type="text" name="tag3" placeholder="Тег 3">
+      </div>
+      <button id="publishBtn" class="upload-btn">Опубликовать</button>
+    </div>
+  </div>
+</section>
   
     <section class="feed-section">
       <div class="feed" id="feed-main">
         <h2>Основная</h2>
         <div class="infinite-carousel">
           <div class="carousel-track">
-            <!-- JS заполнит: Main17 … Main4 -->
           </div>
         </div>
       </div>
-    
       <div class="feed" id="feed-builder">
         <h2>Строитель</h2>
         <div class="infinite-carousel">
           <div class="carousel-track">
-            <!-- JS заполнит: Builder10 … Builder4 -->
           </div>
         </div>
       </div>
-    
       <div class="feed" id="feed-capital">
         <h2>Столица</h2>
         <div class="infinite-carousel">
           <div class="carousel-track">
-            <!-- JS заполнит ваши имена картинок в нужном порядке -->
           </div>
         </div>
       </div>
     </section>
     
-    
   </main>
-  
   <footer class="footer-bottom">
       <div class="footer-content">
         <p>Создатель: <strong>Kvane</strong></p>

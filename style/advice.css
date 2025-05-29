@@ -1,7 +1,7 @@
 .advice-section {
     font-family: var(--main-font);
     font-size: 12px;
-    line-height: 1.6; /* Увеличиваем расстояние между строками */
+    line-height: 1.6;
     color: #333;
     padding: 20px;
     background-color: #fff8f0;
@@ -10,24 +10,20 @@
     margin: 20px auto;
     max-width: 800px;
 }
-
 .advice-section p {
-    margin-bottom: 15px; /* Отступы между параграфами */
+    margin-bottom: 15px;
 }
-
 .advice-section ul {
-    margin-left: 20px; /* Отступ для списка */
+    margin-left: 20px;
     margin-bottom: 15px;
     padding-left: 20px;
-    list-style-type: disc; /* Маркеры для списка */
+    list-style-type: disc;
 }
-
 .advice-section li {
-    margin-bottom: 10px; /* Отступ между элементами списка */
+    margin-bottom: 10px;
 }
-
 .advice-section strong {
-    color: #ff7043; /* Выделение важных элементов */
+    color: #ff7043;
 }
 .sections-container {
     display: flex;
@@ -37,7 +33,6 @@
     max-width: 1200px;
     margin: 20px auto;
 }
-
 .section-card {
     width: 30%;
     min-width: 280px;
@@ -50,25 +45,22 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
 }
-
 .section-card:hover {
     transform: translateY(-8px) scale(1.05);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
-
 .section-card h2 {
     color: #e43b04;
     font-size: 1.8em;
     margin-bottom: 10px;
 }
-
 .section-card p {
     font-size: 1.2em;
     color: #333;
 }
 .section-card a {
     text-decoration: none;
-    color: inherit; /* Наследует цвет текста */
-    display: block; /* Делает ссылку блочным элементом */
-    height: 100%; /* Охватывает всю секцию */
+    color: inherit;
+    display: block;
+    height: 100%;
 }

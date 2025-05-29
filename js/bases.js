@@ -2,8 +2,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const categoryRadios = document.querySelectorAll('input[name="category"]');
   const levelSelect = document.getElementById('levelSelect');
   const publishBtn = document.getElementById('publishBtn');
-
-  // --- 1. Логика выбора уровней для "основная" и "строитель"
   function populateLevels(category) {
     let start, end;
     if (category === 'основная') {
@@ -28,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
       levelSelect.appendChild(option);
     }
   }
-  
+
   const defaultCategory = document.querySelector('input[name="category"]:checked').value;
   populateLevels(defaultCategory);
   
@@ -43,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
     alert('Публикация отправлена!');
   });
   
-  // --- 2. Функции заполнения ленты изображений в каруселях
   function populateFeedByRange(feedId, start, end, prefix) {
     const track = document.querySelector(`#${feedId} .carousel-track`);
     track.innerHTML = '';
@@ -66,14 +63,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Заполняем ленты:
-  //  - Основная: Main4.webp ... Main17.webp
   populateFeedByRange('feed-main', 4, 17, 'Main');
   
-  //  - Строитель: Builder4.webp ... Builder10.webp
   populateFeedByRange('feed-builder', 4, 10, 'Builder');
   
-  //  - Столица: уникальные имена файлов
   const capitalNames = [
     'Capital',
     'Barbarian',
@@ -87,20 +80,16 @@ document.addEventListener('DOMContentLoaded', function() {
   ];
   populateFeedByNames('feed-capital', capitalNames);
   
-  // --- 3. Инициализация бесконечной карусели для каждого блока
   function initializeCarousel(carouselElement) {
     const track = carouselElement.querySelector('.carousel-track');
     let slides = Array.from(track.children);
     
-    // Если слайдов мало, пропускаем инициализацию
     if (slides.length < 2) return;
     
-    // Вычисляем ширину слайда (с учётом margin-right)
     const firstSlide = slides[0];
     const slideStyle = getComputedStyle(firstSlide);
     const slideWidth = firstSlide.getBoundingClientRect().width + parseFloat(slideStyle.marginRight);
     
-    // Клонируем первый и последний слайды
     const firstClone = slides[0].cloneNode(true);
     firstClone.id = 'firstClone';
     const lastClone = slides[slides.length - 1].cloneNode(true);
@@ -109,12 +98,10 @@ document.addEventListener('DOMContentLoaded', function() {
     track.insertBefore(lastClone, firstSlide);
     track.appendChild(firstClone);
     
-    // Обновляем список слайдов и устанавливаем стартовый индекс
     slides = Array.from(track.children);
     let currentIndex = 1;
     track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
     
-    // Обработчики для стрелок
     const leftArrow = carouselElement.querySelector('.arrow.left');
     const rightArrow = carouselElement.querySelector('.arrow.right');
     
@@ -132,7 +119,6 @@ document.addEventListener('DOMContentLoaded', function() {
       track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
     });
     
-    // При окончании перехода (transitionend) проверяем, если мы на клонах — мгновенно перепрыгиваем к оригиналу
     track.addEventListener('transitionend', () => {
       slides = Array.from(track.children);
       if (slides[currentIndex].id === 'lastClone') {
@@ -148,7 +134,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Инициализируем карусели для всех блоков
   const carouselMain = document.querySelector('#feed-main .carousel');
   const carouselBuilder = document.querySelector('#feed-builder .carousel');
   const carouselCapital = document.querySelector('#feed-capital .carousel');
