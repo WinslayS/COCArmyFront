@@ -26,23 +26,33 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentPanel = null;
   let hideTimeout = null;
 
-  function isMouseOverAllowed(e) {
-    const margin = 20;
-    const allowedElements = Array.from(dropdownLinks);
-    if (currentPanel) allowedElements.push(currentPanel);
-    for (const el of allowedElements) {
-      const rect = el.getBoundingClientRect();
-      if (
-        e.clientX >= rect.left - margin &&
-        e.clientX <= rect.right + margin &&
-        e.clientY >= rect.top - margin &&
-        e.clientY <= rect.bottom + margin
-      ) {
-        return true;
-      }
+function isMouseOverAllowed(e) {
+  const margin = -20;
+
+  for (const link of dropdownLinks) {
+    const rect = link.getBoundingClientRect();
+    if (
+      e.clientX >= rect.left &&
+      e.clientX <= rect.right &&
+      e.clientY >= rect.top &&
+      e.clientY <= rect.bottom
+    ) {
+      return true;
     }
-    return false;
   }
+  if (currentPanel) {
+    const rect = currentPanel.getBoundingClientRect();
+    if (
+      e.clientX >= rect.left - margin &&
+      e.clientX <= rect.right + margin &&
+      e.clientY >= rect.top - margin &&
+      e.clientY <= rect.bottom + margin
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
 
   function createPanel(key) {
     const panel = document.createElement('div');
