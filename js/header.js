@@ -19,8 +19,9 @@ document.addEventListener('DOMContentLoaded', function () {
       { text: "Герои", href: "/pages/advice-heroes.html" },
       { text: "Подкрепления", href: "/pages/advice-reinforcements.html" },
       { text: "Атаки", href: "/pages/advice-armies.html" },
-      { text: "Строительство", href: "/pages/advice-bases.html" }
-    ]
+      { text: "Строительство", href: "/pages/advice-bases.html" },
+      { text: "Осадные машины", href: "/pages/advice-machines.html" }
+    ],
   };
 
   let currentPanel = null;
