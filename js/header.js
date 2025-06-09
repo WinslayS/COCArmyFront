@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
       { text: "Подкрепления", href: "/pages/advice-reinforcements.html" },
       { text: "Атаки", href: "/pages/advice-armies.html" },
       { text: "Строительство", href: "/pages/advice-bases.html" },
-      { text: "Осадные машины", href: "/pages/advice-machines.html" }
+      { text: "Осадные машины", href: "/pages/advice-machines.html" },
+      { text: "Ресурсы", href: "/pages/advice-resources.html" }
     ],
   };
 
