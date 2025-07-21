@@ -6,11 +6,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const submenus = {
     "/pages/bases.html": [
+      { text: "Загрузить", href: "/pages/bases.html" },
       { text: "Основная", href: "/pages/base-main.html" },
       { text: "Строитель", href: "/pages/base-builder.html" },
       { text: "Столица", href: "/pages/base-capital.html" }
     ],
     "/pages/armies.html": [
+      { text: "Загрузить", href: "/pages/armies.html" },
       { text: "Основная", href: "/pages/army-main.html" },
       { text: "Строитель", href: "/pages/army-builder.html" },
       { text: "Столица", href: "/pages/army-capital.html" }
