@@ -1,6 +1,7 @@
 // bases.js
+// Объединённая логика бесконечной карусели с корректным drag/inertia и поддержкой touch
+
 document.addEventListener('DOMContentLoaded', () => {
-  // ваши списки
   const lists = {
     'feed-main':    Array.from({ length: 15 }, (_, i) => `main${17 - i}`),
     'feed-builder': Array.from({ length:  8 }, (_, i) => `builder${10 - i}`),
@@ -10,141 +11,158 @@ document.addEventListener('DOMContentLoaded', () => {
   function createCard(name) {
     const card = document.createElement('div');
     card.className = 'card';
-    const imgW = document.createElement('div');
-    imgW.className = 'image-wrapper';
+
+    const imgWrapper = document.createElement('div');
+    imgWrapper.className = 'image-wrapper';
     const img = document.createElement('img');
     img.src = `/images/bases/${name}.webp`;
     img.alt = name;
     img.style.pointerEvents = 'none';
-    imgW.appendChild(img);
+    imgWrapper.appendChild(img);
+
     const label = document.createElement('div');
     label.className = 'label';
     label.textContent = name;
-    card.append(imgW, label);
+
+    card.append(imgWrapper, label);
     return card;
   }
 
   function initCarousel(feedId, items) {
     const track    = document.getElementById(feedId);
-    const windowEl = track.parentElement;  // .carousel-window
+    const windowEl = track.parentElement; // .carousel-window
 
-    // 1) вставляем оригиналы и клонируем по кругу
+    // 1) Заполняем оригинальными карточками и клонируем в обе стороны
     items.forEach(name => track.appendChild(createCard(name)));
-    const orig = Array.from(track.children);
-    const N    = orig.length;
-    orig.slice().reverse().forEach(c => track.insertBefore(c.cloneNode(true), track.firstChild));
-    orig.forEach(c => track.appendChild(c.cloneNode(true)));
+    const originals = Array.from(track.children);
+    const N = originals.length;
+    // клонируем заслоном в начало (reverse для сохранения порядка)
+    originals.slice().reverse().forEach(c => track.insertBefore(c.cloneNode(true), track.firstChild));
+    // клонируем прямым порядком в конец
+    originals.forEach(c => track.appendChild(c.cloneNode(true)));
 
-    // 2) готовим размеры
+    // 2) Вычисляем размеры
     const gap   = parseInt(getComputedStyle(track).gap) || 0;
-    const cardW = orig[0].offsetWidth;
+    const cardW = originals[0].offsetWidth;
     const step  = cardW + gap;
     const total = step * N;
 
-    // 3) стартовая позиция
-    let pos = total;
-    track.style.transform = `translateX(${-pos}px)`;
+    // 3) Ставим scroll на оригинальные
+    windowEl.scrollLeft = total;
 
-    // 4) переменные для drag+inertia
-    let isDown      = false;
-    let startX      = 0;
-    let basePos     = pos;
-    let velocity    = 0;
-    let lastTime    = 0;
-    let lastPointer = 0;
-    let rafId       = null;
+    // 4) Переменные для drag/inertia
+    let lockAxis = null;      // 'x' или 'y'
+    let pointerId = null;
+    let isDragging = false;
+    let startX = 0, startY = 0, scrollStart = 0;
+    let velocity = 0, lastTime = 0, lastPos = 0;
+    let rafId;
+    let wasHorizontal = false;
 
-    // 5) wrap‑around helper
+    // Разрешаем вертикальный скролл страницы
+    windowEl.style.touchAction = 'pan-y';
+
     function wrap() {
-      if (pos < 0)       pos += total;
-      else if (pos > total*2) pos -= total;
+      if (windowEl.scrollLeft <= 0)            windowEl.scrollLeft += total;
+      else if (windowEl.scrollLeft >= total*2) windowEl.scrollLeft -= total;
     }
 
-    // 6) анимация при перетягивании
     function animate() {
+      if (!isDragging) return;
       wrap();
-      track.style.transform = `translateX(${-pos}px)`;
-      if (isDown) rafId = requestAnimationFrame(animate);
+      rafId = requestAnimationFrame(animate);
     }
 
-    // 7) обработчики
-    windowEl.addEventListener('pointerdown', e => {
-      // любой указатель — мышь или тач
-      isDown      = true;
-      startX      = e.clientX;
-      basePos     = pos;
-      lastTime    = e.timeStamp;
-      lastPointer = e.clientX;
-      velocity    = 0;
-      track.style.transition = 'none';
-      windowEl.classList.add('dragging');
-      rafId = requestAnimationFrame(animate);
-      windowEl.setPointerCapture(e.pointerId);
-      e.preventDefault();
-    });
-
-windowEl.addEventListener('pointermove', e => {
-  if (!isDown) return;
-  const dx = e.clientX - startX;
-  // инвертируем направление:
-  pos = basePos - dx;
-
-  // пересчёт мгновенной скорости: тоже инвертируем знак
-  const dt = e.timeStamp - lastTime || 1;
-  velocity = (lastPointer - e.clientX) / dt;
-  lastTime    = e.timeStamp;
-  lastPointer = e.clientX;
-});
-
-
-    windowEl.addEventListener('pointerup', e => {
-      if (!isDown) return;
-      isDown = false;
-      windowEl.releasePointerCapture(e.pointerId);
+    function endDrag(e) {
+      if (pointerId === null || e.pointerId !== pointerId) return;
+      windowEl.releasePointerCapture(pointerId);
       windowEl.classList.remove('dragging');
       cancelAnimationFrame(rafId);
-
-      // уменьшаем стартовый импульс чуть сильнее
-      velocity *= 0.5;
-
-      // параметры инерции
-      const decay = 0.8;
-      const minV  = 0.02;
-
-      // плавная инерция
-      function inertiaStep() {
-        if (Math.abs(velocity) > minV) {
-          pos += velocity * 16;    // 16ms ~ 1 кадр
-          velocity *= decay;
-          wrap();
-          track.style.transition = 'none';
-          track.style.transform  = `translateX(${-pos}px)`;
-          rafId = requestAnimationFrame(inertiaStep);
-        } else {
-          // выровнять к ближайшей карточке (опционально)
-          const snapTo = Math.round(pos / step) * step;
-          track.style.transition = 'transform 0.3s ease';
-          pos = snapTo;
-          wrap();
-          track.style.transform = `translateX(${-pos}px)`;
-        }
+      pointerId = null;
+      lockAxis = null;
+      if (wasHorizontal) {
+        // инерция
+        let v = velocity * 0.7;
+        const decay = 0.9, minV = 0.02;
+        (function inertia() {
+          if (Math.abs(v) > minV) {
+            windowEl.scrollLeft -= v * 16;
+            v *= decay;
+            wrap();
+            rafId = requestAnimationFrame(inertia);
+          }
+        })();
       }
-      rafId = requestAnimationFrame(inertiaStep);
+      wasHorizontal = false;
+      isDragging = false;
+    }
+
+    windowEl.addEventListener('pointerdown', e => {
+      // начинаем взаимодействие
+      lockAxis = null;
+      pointerId = e.pointerId;
+      startX = e.clientX;
+      startY = e.clientY;
+      scrollStart = windowEl.scrollLeft;
+      lastTime = e.timeStamp;
+      lastPos = e.clientX;
+      velocity = 0;
+      wasHorizontal = false;
+      isDragging = false;
+      windowEl.setPointerCapture(pointerId);
     });
 
-    // 8) клавиши без автоповтора
+    windowEl.addEventListener('pointermove', e => {
+      if (e.pointerId !== pointerId) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (!lockAxis) {
+        if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
+          lockAxis = 'x';
+          wasHorizontal = true;
+          isDragging = true;
+          windowEl.classList.add('dragging');
+          cancelAnimationFrame(rafId);
+          animate();
+        } else if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) {
+          lockAxis = 'y';
+          windowEl.releasePointerCapture(pointerId);
+          pointerId = null;
+          return;
+        } else {
+          return;
+        }
+      }
+      if (lockAxis === 'x') {
+        e.preventDefault();
+        windowEl.scrollLeft = scrollStart - dx;
+        const dt = e.timeStamp - lastTime || 1;
+        velocity = (e.clientX - lastPos) / dt;
+        lastTime = e.timeStamp;
+        lastPos = e.clientX;
+      }
+    });
+
+    // Окончание drag для любых сценариев
+    windowEl.addEventListener('pointerup', endDrag);
+    windowEl.addEventListener('pointercancel', endDrag);
+    document.addEventListener('pointerup', endDrag);
+    document.addEventListener('pointercancel', endDrag);
+
+    // Wrap для nативного scroll (тач)
+    windowEl.addEventListener('scroll', () => {
+      if (lockAxis === 'x') return;
+      wrap();
+    });
+
+    // клавиши ←→ без автоповтора
     windowEl.tabIndex = 0;
-windowEl.addEventListener('keydown', e => {
-  if ((e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') || e.repeat) return;
-  const dir = e.key === 'ArrowLeft' ? -1 : 1;
-  // было pos += dir * step
-  pos -= dir * step;      // инвертируем знак
-  wrap();
-  track.style.transition = 'transform 0.3s ease';
-  track.style.transform  = `translateX(${-pos}px)`;
-});
+    windowEl.addEventListener('keydown', e => {
+      if ((e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') || e.repeat) return;
+      const dir = e.key === 'ArrowLeft' ? -1 : 1;
+      windowEl.scrollBy({ left: dir * step, behavior: 'smooth' });
+    });
   }
 
-  // 9) инициализируем
   Object.entries(lists).forEach(([id, arr]) => initCarousel(id, arr));
 });
