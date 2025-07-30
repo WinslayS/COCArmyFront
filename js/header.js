@@ -25,8 +25,173 @@ document.addEventListener('DOMContentLoaded', function () {
     ],
   };
 
-  let currentPanel = null;
-  let hideTimeout = null;
+// --- в самом верху вашего DOMContentLoaded ---
+let isLoggedIn = false;
+const profileContainer = document.querySelector('.profile-container');
+const toggleBtn       = document.getElementById('profile-toggle');
+const panelUl         = document.querySelector('.profile-panel ul');
+const loginModal      = document.getElementById('login-modal');
+const btnConfirmLogin = document.getElementById('confirm-login');
+const btnCancelLogin  = document.getElementById('cancel-login');
+
+// Функция перерисовки пункта меню профиля
+function renderProfileMenu() {
+  panelUl.innerHTML = '';  // очищаем
+
+  if (!isLoggedIn) {
+    // единственная кнопка "Войти"
+    const li = document.createElement('li');
+    const btn = document.createElement('button');
+    btn.id = 'login-btn';
+    btn.textContent = 'Войти';
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      loginModal.classList.remove('hidden');
+    });
+    li.appendChild(btn);
+    panelUl.appendChild(li);
+
+  } else {
+    // три пункта: Профиль, Настройки, Выйти
+    const items = [
+      { type: 'link', text: 'Профиль',   href: '/pages/profile.html' },
+      { type: 'link', text: 'Настройки', href: '/pages/settings.html' },
+      { type: 'btn',  text: 'Выйти',     id:   'logout-btn' }
+    ];
+
+    items.forEach(item => {
+      const li = document.createElement('li');
+      if (item.type === 'link') {
+        const a = document.createElement('a');
+        a.href = item.href;
+        a.textContent = item.text;
+        li.appendChild(a);
+      } else {
+        const btn = document.createElement('button');
+        btn.id = item.id;
+        btn.textContent = item.text;
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          isLoggedIn = false;
+          renderProfileMenu();
+          profileContainer.classList.remove('active');
+        });
+        li.appendChild(btn);
+      }
+      panelUl.appendChild(li);
+    });
+  }
+}
+
+// Показываем/скрываем панель профиля
+toggleBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  profileContainer.classList.toggle('active');
+});
+
+// Клик вне — закрыть панель
+document.addEventListener('click', () => {
+  profileContainer.classList.remove('active');
+});
+
+// Обработчики модалки входа
+btnConfirmLogin.addEventListener('click', () => {
+  isLoggedIn = true;
+  loginModal.classList.add('hidden');
+  renderProfileMenu();
+});
+btnCancelLogin.addEventListener('click', () => {
+  loginModal.classList.add('hidden');
+});
+
+// Инициализация
+renderProfileMenu();
+
+// --- внутри вашего DOMContentLoaded, после инициализации профиля ---
+
+const langContainer = document.querySelector('.lang-container');
+const langToggleBtn = document.getElementById('language-toggle');
+const langPanel     = document.querySelector('.lang-panel');
+
+// 1) по клику на иконку языка – показать/скрыть панель
+langContainer.addEventListener('click', e => {
+  e.stopPropagation();
+  // при открытии панели языка можно закрыть профиль
+  document.querySelector('.profile-container').classList.remove('active');
+  langContainer.classList.toggle('active');
+});
+
+// 2) по клику в любом другом месте – прятать панель
+document.addEventListener('click', () => {
+  langContainer.classList.remove('active');
+});
+
+// 3) по клику на кнопку выбора языка внутри панели
+langPanel.querySelectorAll('button[data-lang]').forEach(btn => {
+  btn.addEventListener('click', e => {
+    const newLang = btn.dataset.lang;    // "ru", "en" или "de"
+    setLanguage(newLang);                // ваша функция из второго блока
+    langContainer.classList.remove('active');
+  });
+});
+
+// текущий язык (из localStorage или вариант по умолчанию)
+let currentLang = localStorage.getItem('lang') || 'ru';
+let translations = {};
+
+// 1) Функция загрузки JSON‑файла через динамический import
+async function loadTranslations(lang) {
+  try {
+    const res = await fetch(`/data/lang/${lang}.json`);
+    if (!res.ok) throw new Error(res.statusText);
+    translations = await res.json();
+  } catch (err) {
+    console.error(`Ошибка загрузки переводов для "${lang}":`, err);
+    translations = {};  // на случай ошибки
+  }
+}
+
+// 2) Утилита для получения перевода по ключу
+function t(key) {
+  return translations[key] ?? key;
+}
+
+// 3) Функция обхода DOM и вставки переводов
+async function applyTranslations() {
+  await loadTranslations(currentLang);
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+
+  // 3b) Если нужно перевести placeholder, title и пр.
+  document.querySelectorAll('[data-i18n-attr]').forEach(el => {
+    // формат: data-i18n-attr="placeholder:input.name;title:button.save"
+    el.dataset.i18nAttr
+      .split(';')
+      .forEach(pair => {
+        const [attr, mapKey] = pair.split(':');
+        if (attr && mapKey) el.setAttribute(attr, t(mapKey));
+      });
+  });
+}
+
+// 4a) Обработчик клика по выбору языка
+document.querySelectorAll('button[data-lang]').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const newLang = btn.dataset.lang;         // 'ru' или 'en'
+    if (newLang === currentLang) return;
+    currentLang = newLang;
+    localStorage.setItem('lang', newLang);
+    await applyTranslations();
+    document.querySelector('.lang-container').classList.remove('active');
+  });
+});
+
+// 4b) Вызвать первоначальный рендер при загрузке
+window.addEventListener('DOMContentLoaded', () => {
+  applyTranslations();
+  // … ваша остальная инициализация (меню, профиль и т.д.)
+});
 
 function isMouseOverAllowed(e) {
   const margin = -20;
@@ -251,12 +416,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       });
   }
-
-  langToggle.addEventListener("click", function () {
-    const currentLang = localStorage.getItem("language") || "ru";
-    const newLang = currentLang === "ru" ? "en" : "ru";
-    setLanguage(newLang);
-  });
 
   const savedLang = localStorage.getItem("language") || navigator.language.slice(0, 2) || "ru";
   setLanguage(savedLang);
