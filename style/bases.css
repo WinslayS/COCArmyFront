@@ -111,12 +111,10 @@
 }
 .carousel-window {
   width: 100%;
-  overflow-x: auto;
+  overflow-x: hidden;       
   overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  touch-action: none;       
   cursor: grab;
-  position: relative;
 }
 .carousel-window::-webkit-scrollbar {
   display: none;
