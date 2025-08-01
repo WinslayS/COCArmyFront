@@ -24,7 +24,10 @@ document.addEventListener('DOMContentLoaded', function () {
       { text: "Ресурсы", href: "/pages/advice-resources.html" }
     ],
   };
-
+  
+  let currentPanel = null;
+  let hideTimeout = null;
+  
 // --- в самом верху вашего DOMContentLoaded ---
 let isLoggedIn = false;
 const profileContainer = document.querySelector('.profile-container');
