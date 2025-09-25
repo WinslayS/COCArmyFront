@@ -8,7 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
     "/pages/bases.html": [
       { text: "Основная", href: "/pages/base-main.html" },
       { text: "Строитель", href: "/pages/base-builder.html" },
-      { text: "Столица", href: "/pages/base-capital.html" }
+      { text: "Столица", href: "/pages/base-capital.html" },
+      { text: "Загрузить", href: "/pages/base-upload.html" }
     ],
     "/pages/armies.html": [
       { text: "Основная", href: "/pages/army-main.html" },

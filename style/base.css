@@ -46,11 +46,14 @@ html, body {
     max-width: 100%;
 }
 .footer-bottom {
+    width: 90%;
     background: #000;
     color: #ddd;
     padding: 80px;
     text-align: center;
     margin-top: 20px;
+    margin: 10px auto;
+    border-radius: 20px;
   }
   .footer-content a {
     color: #ddd;
@@ -60,3 +63,10 @@ html, body {
   .footer-content a:hover {
     color: #fff;
   }
+@media (max-width: 699px) {
+    .footer-bottom {
+        width: 100%;
+        margin: 0 auto;
+        border-radius: 0;
+    }
+}
