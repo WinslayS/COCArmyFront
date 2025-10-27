@@ -7,6 +7,7 @@
     <title>Миксы</title>
     <link rel="stylesheet" href="/style/base.css">
     <link rel="stylesheet" href="/style/header.css">
+    <link rel="stylesheet" href="/style/base-upload.css">
 </head>
 <body>
   <header class="header-top">
@@ -81,7 +82,43 @@
     </ul>
   </nav>  
     <main>
-      <h2>Ожидайте в будущем</h2>
+<section class="upload-panel">
+  <div class="upload-panel__header">
+    <h2>Загрузка</h2>
+  </div>
+
+  <div class="upload-panel__body">
+    <div class="upload-panel__photos">
+      <form id="photoUploadForm" class="photo-grid">
+        <div class="photo-slot">
+          <input type="file" name="photo1" accept="image/*">
+        </div>
+        <div class="photo-slot">
+          <input type="file" name="photo2" accept="image/*">
+        </div>
+        <div class="photo-slot photo-slot--large">
+          <input type="file" name="photo3" accept="image/*">
+        </div>
+      </form>
+    </div>
+    <div class="upload-panel__params">
+      <div class="category-buttons">
+        <button type="button" data-category="основная" class="category-btn active">Основная</button>
+        <button type="button" data-category="строитель" class="category-btn">Строитель</button>
+        <button type="button" data-category="столица" class="category-btn">Столица</button>
+      </div>
+      <div class="level-select">
+        <select id="levelSelect" name="level"></select>
+      </div>
+      <div class="tags-inputs">
+        <input type="text" name="tag1" placeholder="Тег 1">
+        <input type="text" name="tag2" placeholder="Тег 2">
+        <input type="text" name="tag3" placeholder="Тег 3">
+      </div>
+      <button id="publishBtn" class="upload-btn">Опубликовать</button>
+    </div>
+  </div>
+</section>
     </main>
     <footer class="footer-bottom">
         <div class="footer-content">
