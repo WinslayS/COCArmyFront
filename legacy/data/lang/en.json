@@ -1,0 +1,8 @@
+{
+  "button.login": "Login",
+  "button.logout": "Logout",
+  "nav.profile": "Profile",
+  "nav.settings": "Settings",
+  "title.home": "Home",
+  "greeting.hello": "Hello, user!"
+}

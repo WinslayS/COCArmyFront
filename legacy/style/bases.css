@@ -1,0 +1,55 @@
+.sections-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto;
+}
+.carousel-window {
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  touch-action: none;
+  cursor: grab;
+}
+.carousel-window::-webkit-scrollbar {
+  display: none;
+}
+.carousel-window.dragging {
+  cursor: grabbing;
+}
+.carousel-track {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+}
+.carousel-track .card {
+  flex: 0 0 250px;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+  background: #f5f5f5;
+  border-radius: 12px;
+  overflow: hidden;
+  scroll-snap-align: start;
+}
+.card .image-wrapper {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+.card .image-wrapper img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+.card .label {
+  flex: 0 0 15%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #333;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
