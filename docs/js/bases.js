@@ -1,6 +1,3 @@
-// bases.js
-// Объединённая логика бесконечной карусели с корректным drag/inertia и поддержкой touch
-
 document.addEventListener("DOMContentLoaded", () => {
   const lists = {
     "feed-main": Array.from({ length: 15 }, (_, i) => `main${17 - i}`),
@@ -40,31 +37,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function initCarousel(feedId, items) {
     const track = document.getElementById(feedId);
-    const windowEl = track.parentElement; // .carousel-window
+    const windowEl = track.parentElement;
 
-    // 1) Заполняем оригинальными карточками и клонируем в обе стороны
     items.forEach((name) => track.appendChild(createCard(name)));
     const originals = Array.from(track.children);
     const N = originals.length;
-    // клонируем заслоном в начало (reverse для сохранения порядка)
     originals
       .slice()
       .reverse()
       .forEach((c) => track.insertBefore(c.cloneNode(true), track.firstChild));
-    // клонируем прямым порядком в конец
     originals.forEach((c) => track.appendChild(c.cloneNode(true)));
 
-    // 2) Вычисляем размеры
     const gap = parseInt(getComputedStyle(track).gap) || 0;
     const cardW = originals[0].offsetWidth;
     const step = cardW + gap;
     const total = step * N;
 
-    // 3) Ставим scroll на оригинальные
     windowEl.scrollLeft = total;
 
-    // 4) Переменные для drag/inertia
-    let lockAxis = null; // 'x' или 'y'
+    let lockAxis = null;
     let pointerId = null;
     let isDragging = false;
     let startX = 0,
@@ -76,7 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let rafId;
     let wasHorizontal = false;
 
-    // Разрешаем вертикальный скролл страницы
     windowEl.style.touchAction = "pan-y";
 
     function wrap() {
@@ -98,7 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
       pointerId = null;
       lockAxis = null;
       if (wasHorizontal) {
-        // инерция
         let v = velocity * 0.7;
         const decay = 0.9,
           minV = 0.02;
@@ -116,7 +105,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     windowEl.addEventListener("pointerdown", (e) => {
-      // начинаем взаимодействие
       lockAxis = null;
       pointerId = e.pointerId;
       startX = e.clientX;
@@ -161,19 +149,16 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Окончание drag для любых сценариев
     windowEl.addEventListener("pointerup", endDrag);
     windowEl.addEventListener("pointercancel", endDrag);
     document.addEventListener("pointerup", endDrag);
     document.addEventListener("pointercancel", endDrag);
 
-    // Wrap для nативного scroll (тач)
     windowEl.addEventListener("scroll", () => {
       if (lockAxis === "x") return;
       wrap();
     });
 
-    // клавиши ←→ без автоповтора
     windowEl.tabIndex = 0;
     windowEl.addEventListener("keydown", (e) => {
       if ((e.key !== "ArrowLeft" && e.key !== "ArrowRight") || e.repeat) return;
