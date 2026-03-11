@@ -1,56 +1,66 @@
 document.addEventListener("DOMContentLoaded", () => {
-    fetch('/data/layouts.json')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+  fetch("/data/layouts.json")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const gallery = document.getElementById("gallery");
+      gallery.innerHTML = "";
+      data.forEach((item) => {
+        const subtagString = Array.isArray(item.subtags)
+          ? item.subtags.join(" ")
+          : "";
+        const newLabelHTML =
+          item.status === "new" ? `<span class="new-label">новая</span>` : "";
+        const defaultVillageBtn = document.querySelector(
+          ".village-links .btn-village-page[data-page='/pages/base-main.html']"
+        );
+        if (defaultVillageBtn) {
+          defaultVillageBtn.classList.add("active");
         }
-        return response.json();
-      })
-      .then(data => {
-        const gallery = document.getElementById('gallery');
-        gallery.innerHTML = '';
-        data.forEach(item => {
-          const subtagString = Array.isArray(item.subtags)
-            ? item.subtags.join(" ")
-            : "";
-          const newLabelHTML = (item.status === 'new')
-            ? `<span class="new-label">новая</span>`
-            : '';
-  const defaultVillageBtn = document.querySelector(".village-links .btn-village-page[data-page='/pages/base-main.html']");
-  if (defaultVillageBtn) {
-    defaultVillageBtn.classList.add("active");
-  }
 
-  if (!currentTH) {
-    currentTH = "17";
-    const defaultTHBtn = document.querySelector(`.filter-townhall[data-th="17"]`);
-    if (defaultTHBtn) {
-      defaultTHBtn.classList.add("active");
-    }
-  }
+        if (!currentTH) {
+          currentTH = "17";
+          const defaultTHBtn = document.querySelector(
+            `.filter-townhall[data-th="17"]`
+          );
+          if (defaultTHBtn) {
+            defaultTHBtn.classList.add("active");
+          }
+        }
 
-  if (!currentSortKey) {
-    currentSortKey = "last";
-    const defaultSortBtn = document.querySelector(`.filter-sort[data-sort="last"]`);
-    if (defaultSortBtn) {
-      defaultSortBtn.classList.add("active");
-    }
-  }
+        if (!currentSortKey) {
+          currentSortKey = "last";
+          const defaultSortBtn = document.querySelector(
+            `.filter-sort[data-sort="last"]`
+          );
+          if (defaultSortBtn) {
+            defaultSortBtn.classList.add("active");
+          }
+        }
 
-const tagHTML = item.tag ? `<span class="mini-subtag">${item.tag}</span>` : "";
-const subtagHTML = Array.isArray(item.subtags)
-  ? item.subtags.slice(0, 3).map(subtag => `<span class="mini-subtag">${subtag}</span>`).join("")
-  : "";
-          const html = `
+        const tagHTML = item.tag
+          ? `<span class="mini-subtag">${item.tag}</span>`
+          : "";
+        const subtagHTML = Array.isArray(item.subtags)
+          ? item.subtags
+              .slice(0, 3)
+              .map((subtag) => `<span class="mini-subtag">${subtag}</span>`)
+              .join("")
+          : "";
+        const html = `
             <div class="item"
                  data-id="${item.id}"
-                 data-th="${item.th || ''}"
-                 data-tag="${item.tag || ''}"
+                 data-th="${item.th || ""}"
+                 data-tag="${item.tag || ""}"
                  data-subtags="${subtagString}"
                  data-views="${item.views || 0}"
                  data-uploaded="${item.uploaded || 0}"
                  data-saved="${item.saved || 0}"
-                 data-link="${item.link || ''}">
+                 data-link="${item.link || ""}">
               <div class="img-wrapper">
                 <div class="top-info">
                   ${newLabelHTML}
@@ -65,7 +75,7 @@ const subtagHTML = Array.isArray(item.subtags)
                   alt="Расстановка ${item.id}"
                   class="zoomable"
                   data-id="${item.id}"
-                  data-full-image="${item.fullImage || ''}">
+                  data-full-image="${item.fullImage || ""}">
   
                 <div class="hover-overlay">
                   <div class="hover-icons">
@@ -132,100 +142,103 @@ const subtagHTML = Array.isArray(item.subtags)
     </div>
             </div>
           `;
-          gallery.innerHTML += html;
-        });
-        document.dispatchEvent(new Event('layoutsRendered'));
-      })
-      .catch(err => {
-        console.error('Ошибка при загрузке layouts.json:', err);
+        gallery.innerHTML += html;
       });
-  });
+      document.dispatchEvent(new Event("layoutsRendered"));
+    })
+    .catch((err) => {
+      console.error("Ошибка при загрузке layouts.json:", err);
+    });
+});
 
-  document.addEventListener("layoutsRendered", () => {
-    const gallery = document.querySelector(".gallery");
-    const items = gallery.querySelectorAll(".item");
-    const minItemsPerRow = 4;
-    const currentRowCount = Math.ceil(items.length / minItemsPerRow);
-    const totalItemsNeeded = currentRowCount * minItemsPerRow;
-    if (items.length < totalItemsNeeded) {
-      for (let i = items.length; i < totalItemsNeeded; i++) {
-        const placeholder = document.createElement("div");
-        placeholder.className = "item placeholder";
-        placeholder.style.visibility = "hidden";
-        gallery.appendChild(placeholder);
-      }
+document.addEventListener("layoutsRendered", () => {
+  const gallery = document.querySelector(".gallery");
+  const items = gallery.querySelectorAll(".item");
+  const minItemsPerRow = 4;
+  const currentRowCount = Math.ceil(items.length / minItemsPerRow);
+  const totalItemsNeeded = currentRowCount * minItemsPerRow;
+  if (items.length < totalItemsNeeded) {
+    for (let i = items.length; i < totalItemsNeeded; i++) {
+      const placeholder = document.createElement("div");
+      placeholder.className = "item placeholder";
+      placeholder.style.visibility = "hidden";
+      gallery.appendChild(placeholder);
     }
-  });
+  }
+});
 
-  document.addEventListener("layoutsRendered", () => {
-    const defaultBookmarkSVG = `
+document.addEventListener("layoutsRendered", () => {
+  const defaultBookmarkSVG = `
       <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="#e3e3e3">
         <path d="M200-120v-665q0-24 18-42t42-18h440q24 0 42 18t18 42v665L480-240 200-120Zm60-91 220-93 220 93v-574H260v574Z"/>
       </svg>`;
-    const filledBookmarkSVG = `
+  const filledBookmarkSVG = `
       <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="#e3e3e3">
         <path d="M200-120v-656.67q0-27 19.83-46.83 19.84-19.83 46.84-19.83h426.66q27 0 46.84 19.83Q760-803.67 760-776.67V-120L480-240 200-120Z"/>
       </svg>`;
-  
-    document.querySelectorAll('.bookmark-button').forEach(button => {
-      button.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (button.classList.contains('active')) {
-          button.classList.remove('active');
-          button.innerHTML = defaultBookmarkSVG;
-        } else {
-          button.classList.add('active');
-          button.innerHTML = filledBookmarkSVG;
-        }
-      });
+
+  document.querySelectorAll(".bookmark-button").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (button.classList.contains("active")) {
+        button.classList.remove("active");
+        button.innerHTML = defaultBookmarkSVG;
+      } else {
+        button.classList.add("active");
+        button.innerHTML = filledBookmarkSVG;
+      }
     });
   });
+});
 
-  document.addEventListener("layoutsRendered", () => {
-    document.addEventListener('click', (event) => {
-      const openBtn = event.target.closest('.icon.open');
-      if (openBtn) {
-        const itemEl = openBtn.closest('.item');
-        if (!itemEl) return;
-        const zoomableImage = itemEl.querySelector('img.zoomable');
-        if (zoomableImage) {
-          zoomableImage.click();
-        }
-        return;
+document.addEventListener("layoutsRendered", () => {
+  document.addEventListener("click", (event) => {
+    const openBtn = event.target.closest(".icon.open");
+    if (openBtn) {
+      const itemEl = openBtn.closest(".item");
+      if (!itemEl) return;
+      const zoomableImage = itemEl.querySelector("img.zoomable");
+      if (zoomableImage) {
+        zoomableImage.click();
       }
+      return;
+    }
 
-      const downloadBtn = event.target.closest('.icon.download');
-      if (downloadBtn) {
-        const itemEl = downloadBtn.closest('.item');
-        if (!itemEl) return;
-        const linkUrl = itemEl.dataset.link;
-        if (linkUrl) {
-          window.open(linkUrl, '_blank');
-        }
-        return;
+    const downloadBtn = event.target.closest(".icon.download");
+    if (downloadBtn) {
+      const itemEl = downloadBtn.closest(".item");
+      if (!itemEl) return;
+      const linkUrl = itemEl.dataset.link;
+      if (linkUrl) {
+        window.open(linkUrl, "_blank");
       }
+      return;
+    }
 
-      const shareBtn = event.target.closest('.icon.share');
-      if (shareBtn) {
-        const itemEl = shareBtn.closest('.item');
-        if (!itemEl) return;
-        const shareLink = itemEl.dataset.link || window.location.href;
-        const shareTitle = itemEl.querySelector('.name')?.textContent || 'Моя база';
-        if (navigator.share) {
-          navigator.share({
+    const shareBtn = event.target.closest(".icon.share");
+    if (shareBtn) {
+      const itemEl = shareBtn.closest(".item");
+      if (!itemEl) return;
+      const shareLink = itemEl.dataset.link || window.location.href;
+      const shareTitle =
+        itemEl.querySelector(".name")?.textContent || "Моя база";
+      if (navigator.share) {
+        navigator
+          .share({
             title: `База: ${shareTitle}`,
             text: `Смотри, какая классная база!`,
-            url: shareLink
-          }).then(() => {
-            console.log('Успешно поделились');
-          }).catch((err) => {
-            console.error('Ошибка при шаринге:', err);
+            url: shareLink,
+          })
+          .then(() => {
+            console.log("Успешно поделились");
+          })
+          .catch((err) => {
+            console.error("Ошибка при шаринге:", err);
           });
-        } else {
-          alert(`Поделитесь ссылкой: ${shareLink}`);
-        }
-        return;
+      } else {
+        alert(`Поделитесь ссылкой: ${shareLink}`);
       }
-    });
+      return;
+    }
   });
-  
+});

@@ -1,318 +1,335 @@
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    background: transparent;
-    z-index: 5000;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  z-index: 5000;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
 }
 .modal.show {
-    display: flex;
-    opacity: 1;
+  display: flex;
+  opacity: 1;
 }
 .modal.show .modal-content {
-    animation: modalOpen 0.3s ease-out;
+  animation: modalOpen 0.3s ease-out;
 }
 @keyframes modalOpen {
-    from { transform: scale(0.5); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 @keyframes modalClose {
-    from { transform: scale(1); opacity: 1; }
-    to { transform: scale(0.5); opacity: 0; }
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.5);
+    opacity: 0;
+  }
 }
 .modal.closing .modal-content {
-    animation: modalClose 0.3s ease-in-out forwards;
+  animation: modalClose 0.3s ease-in-out forwards;
 }
 .modal img {
-    max-width: 100%;
-    max-height: 70vh;
-    object-fit: cover;
-    border-radius: 10px;
-    transition: transform 0.3s ease-in-out;
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: cover;
+  border-radius: 10px;
+  transition: transform 0.3s ease-in-out;
 }
 :fullscreen .modal-content {
-    width: 100vw;
-    height: 100vh;
-    max-width: none;
-    max-height: none;
-    transition: width 0.3s ease, height 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  transition: width 0.3s ease, height 0.3s ease, transform 0.3s ease,
+    opacity 0.3s ease;
 }
 .modal-content {
-    position: relative;
-    width: 100%;
-    max-width: 80%;
-    height: 100%;
-    max-height: 80%;
-    visibility: visible;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    padding: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
-    box-shadow: none;
-    border-radius: 12px;
-    filter: brightness(var(--modal-brightness, 1));
-    transition: transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
-    will-change: transform;
-    touch-action: none;
-    user-select: none;
-    cursor: grab; 
+  position: relative;
+  width: 100%;
+  max-width: 80%;
+  height: 100%;
+  max-height: 80%;
+  visibility: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  box-shadow: none;
+  border-radius: 12px;
+  filter: brightness(var(--modal-brightness, 1));
+  transition: transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
+  will-change: transform;
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
 }
 .image-stage-wrapper {
-    width: 100%;
-    flex: 1 1 auto;
-    position: relative;
-    overflow: hidden;
+  width: 100%;
+  flex: 1 1 auto;
+  position: relative;
+  overflow: hidden;
 }
 .controls-area {
-    position: absolute;
-    bottom: -90px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    width: 100%;
-    z-index: 1000;
+  position: absolute;
+  bottom: -90px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+  z-index: 1000;
 }
 .thumbnails {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    background: none;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  background: none;
 }
 .thumbnails img {
-    width: 80px;
-    height: 70px;
-    border-radius: 8px;
-    object-fit: cover;
-    cursor: pointer;
-    transition: transform 0.3s ease, border-color 0.3s ease;
-    border: 2px solid transparent;
+  width: 80px;
+  height: 70px;
+  border-radius: 8px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  border: 2px solid transparent;
 }
 .thumbnails img:hover {
-border-color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 .thumbnails img.active {
-    transform: scale(1.1);
-    border-color: rgb(255, 255, 255);
+  transform: scale(1.1);
+  border-color: rgb(255, 255, 255);
 }
 .preview-area {
-    position: relative;
-    width: 100%;
-    height: auto;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 15px;
-    background: transparent;
-    pointer-events: auto;
+  position: relative;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 15px;
+  background: transparent;
+  pointer-events: auto;
 }
 .preview-area img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    position: relative;
-    z-index: 1;
-    transition: transform 0.3s ease;
-    transform-origin: center;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+  transform-origin: center;
 }
 .modal img:active {
-    cursor: grabbing;
+  cursor: grabbing;
 }
 .modal-controls {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    z-index: 6000;
-    width: 100%;
-    justify-content: space-between;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 6000;
+  width: 100%;
+  justify-content: space-between;
 }
 .spinner-overlay {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.7);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.modal-content.loading .spinner-overlay {
+  opacity: 1;
+  pointer-events: all;
+}
+.spinner-overlay::after {
+  content: "";
+  width: 40px;
+  height: 40px;
+  border: 4px solid #888;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
-  .modal-content.loading .spinner-overlay {
-    opacity: 1;
-    pointer-events: all;
-  }
-  .spinner-overlay::after {
-    content: "";
-    width: 40px;
-    height: 40px;
-    border: 4px solid #888;
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
+}
 .zoom-controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    z-index: 7001
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 7001;
 }
 .control-button {
-    background: rgba(0, 0, 0, 0.5);
-    border: none;
-    padding: 2px 8px;
-    font-size: 20px;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: all 0.3s ease;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  padding: 2px 8px;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 .control-button:hover {
-    background: rgba(0, 0, 0, 0.8);
-    transform: scale(1.1);
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.1);
 }
 .control-button:active {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 #zoomSlider {
-    position: relative;
-    z-index: 7000;
-    width: 100%;
-    height: 10px;
-    appearance: none;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    cursor: pointer;
-    overflow: hidden;
-    outline: none;
+  position: relative;
+  z-index: 7000;
+  width: 100%;
+  height: 10px;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
 }
 #zoomSliderContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 6px;
-    padding: 2px 8px;
-    height: 28px;
-    width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+  padding: 2px 8px;
+  height: 28px;
+  width: 150px;
 }
 #zoomSlider:hover {
-    background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.4);
 }
 #zoomSlider::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: var(--slider-fill, 0%);
-    background: rgba(255, 255, 255, 0.6);
-    border-radius: 4px;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: var(--slider-fill, 0%);
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 4px;
 }
 #zoomSlider::-webkit-slider-thumb {
-    appearance: none;
-    width: 0;
-    height: 0;
+  appearance: none;
+  width: 0;
+  height: 0;
 }
 #zoomSlider::-moz-range-thumb {
-    appearance: none;
-    width: 0;
-    height: 0;
+  appearance: none;
+  width: 0;
+  height: 0;
 }
 body.modal-open {
-	overflow: hidden;
-	position: relative;
+  overflow: hidden;
+  position: relative;
 }
 body.modal-open::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: black;
-    backdrop-filter: blur(8px);
-    z-index: 998;
-    opacity: calc(var(--overlay-opacity, 1) * 0.8);
-    transition: opacity 0.3s ease-in-out;
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  backdrop-filter: blur(8px);
+  z-index: 998;
+  opacity: calc(var(--overlay-opacity, 1) * 0.8);
+  transition: opacity 0.3s ease-in-out;
 }
 .modal-open .gallery {
-    filter: blur(var(--gallery-blur, 4px));
-    transition: filter 0.3s ease-in-out;
+  filter: blur(var(--gallery-blur, 4px));
+  transition: filter 0.3s ease-in-out;
 }
 .modal-open {
-    overflow: hidden;
-    touch-action: none;
+  overflow: hidden;
+  touch-action: none;
 }
 .image-stage {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    overflow: hidden;
-    border-radius: 12px;
-  }
-  .slide {
-    position: absolute;
-    inset: 0;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 12px;
-    background-size: contain; 
-    background-position: center;
-    background-repeat: no-repeat;
-    transition: transform 0.3s ease;
-  }
-  .slide.next {
-    transform: translateX(100%);
-  }
-  .modal-content.swipe-closing {
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    opacity: 0;
-  }
-  .slide.current {
-    border-radius: 12px;
-    overflow: hidden; 
-    transform: translateX(0);
-    z-index: 2;
-  }
-  .slide.next {
-    transform: translateX(100%);
-    z-index: 1;
-  }
-  .slide.prev {
-    transform: translateX(-100%);
-    z-index: 1;
-  }
-  .slide.current.zoom-animating {
-    transition: background-size 0.3s ease, background-position 0.3s ease !important;
-  }
-  .action-buttons {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-  .slide.current.snap-back-transition {
-    transition: background-position 0.3s ease, background-size 0.3s ease !important;
-  }
-
-  
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  overflow: hidden;
+  border-radius: 12px;
+}
+.slide {
+  position: absolute;
+  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 0.3s ease;
+}
+.slide.next {
+  transform: translateX(100%);
+}
+.modal-content.swipe-closing {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+.slide.current {
+  border-radius: 12px;
+  overflow: hidden;
+  transform: translateX(0);
+  z-index: 2;
+}
+.slide.next {
+  transform: translateX(100%);
+  z-index: 1;
+}
+.slide.prev {
+  transform: translateX(-100%);
+  z-index: 1;
+}
+.slide.current.zoom-animating {
+  transition: background-size 0.3s ease, background-position 0.3s ease !important;
+}
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.slide.current.snap-back-transition {
+  transition: background-position 0.3s ease, background-size 0.3s ease !important;
+}

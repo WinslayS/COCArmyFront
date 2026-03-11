@@ -1,27 +1,34 @@
-// bases.js
-// Объединённая логика бесконечной карусели с корректным drag/inertia и поддержкой touch
-
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   const lists = {
-    'feed-main':    Array.from({ length: 15 }, (_, i) => `main${17 - i}`),
-    'feed-builder': Array.from({ length:  8 }, (_, i) => `builder${10 - i}`),
-    'feed-capital': ['capital','barbarian','wizard','lagoon','quarry','dragon','workshop','skeleton','goblin']
+    "feed-main": Array.from({ length: 15 }, (_, i) => `main${17 - i}`),
+    "feed-builder": Array.from({ length: 8 }, (_, i) => `builder${10 - i}`),
+    "feed-capital": [
+      "capital",
+      "barbarian",
+      "wizard",
+      "lagoon",
+      "quarry",
+      "dragon",
+      "workshop",
+      "skeleton",
+      "goblin",
+    ],
   };
 
   function createCard(name) {
-    const card = document.createElement('div');
-    card.className = 'card';
+    const card = document.createElement("div");
+    card.className = "card";
 
-    const imgWrapper = document.createElement('div');
-    imgWrapper.className = 'image-wrapper';
-    const img = document.createElement('img');
+    const imgWrapper = document.createElement("div");
+    imgWrapper.className = "image-wrapper";
+    const img = document.createElement("img");
     img.src = `/images/bases/${name}.webp`;
     img.alt = name;
-    img.style.pointerEvents = 'none';
+    img.style.pointerEvents = "none";
     imgWrapper.appendChild(img);
 
-    const label = document.createElement('div');
-    label.className = 'label';
+    const label = document.createElement("div");
+    label.className = "label";
     label.textContent = name;
 
     card.append(imgWrapper, label);
@@ -29,42 +36,42 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function initCarousel(feedId, items) {
-    const track    = document.getElementById(feedId);
-    const windowEl = track.parentElement; // .carousel-window
+    const track = document.getElementById(feedId);
+    const windowEl = track.parentElement;
 
-    // 1) Заполняем оригинальными карточками и клонируем в обе стороны
-    items.forEach(name => track.appendChild(createCard(name)));
+    items.forEach((name) => track.appendChild(createCard(name)));
     const originals = Array.from(track.children);
     const N = originals.length;
-    // клонируем заслоном в начало (reverse для сохранения порядка)
-    originals.slice().reverse().forEach(c => track.insertBefore(c.cloneNode(true), track.firstChild));
-    // клонируем прямым порядком в конец
-    originals.forEach(c => track.appendChild(c.cloneNode(true)));
+    originals
+      .slice()
+      .reverse()
+      .forEach((c) => track.insertBefore(c.cloneNode(true), track.firstChild));
+    originals.forEach((c) => track.appendChild(c.cloneNode(true)));
 
-    // 2) Вычисляем размеры
-    const gap   = parseInt(getComputedStyle(track).gap) || 0;
+    const gap = parseInt(getComputedStyle(track).gap) || 0;
     const cardW = originals[0].offsetWidth;
-    const step  = cardW + gap;
+    const step = cardW + gap;
     const total = step * N;
 
-    // 3) Ставим scroll на оригинальные
     windowEl.scrollLeft = total;
 
-    // 4) Переменные для drag/inertia
-    let lockAxis = null;      // 'x' или 'y'
+    let lockAxis = null;
     let pointerId = null;
     let isDragging = false;
-    let startX = 0, startY = 0, scrollStart = 0;
-    let velocity = 0, lastTime = 0, lastPos = 0;
+    let startX = 0,
+      startY = 0,
+      scrollStart = 0;
+    let velocity = 0,
+      lastTime = 0,
+      lastPos = 0;
     let rafId;
     let wasHorizontal = false;
 
-    // Разрешаем вертикальный скролл страницы
-    windowEl.style.touchAction = 'pan-y';
+    windowEl.style.touchAction = "pan-y";
 
     function wrap() {
-      if (windowEl.scrollLeft <= 0)            windowEl.scrollLeft += total;
-      else if (windowEl.scrollLeft >= total*2) windowEl.scrollLeft -= total;
+      if (windowEl.scrollLeft <= 0) windowEl.scrollLeft += total;
+      else if (windowEl.scrollLeft >= total * 2) windowEl.scrollLeft -= total;
     }
 
     function animate() {
@@ -76,14 +83,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function endDrag(e) {
       if (pointerId === null || e.pointerId !== pointerId) return;
       windowEl.releasePointerCapture(pointerId);
-      windowEl.classList.remove('dragging');
+      windowEl.classList.remove("dragging");
       cancelAnimationFrame(rafId);
       pointerId = null;
       lockAxis = null;
       if (wasHorizontal) {
-        // инерция
         let v = velocity * 0.7;
-        const decay = 0.9, minV = 0.02;
+        const decay = 0.9,
+          minV = 0.02;
         (function inertia() {
           if (Math.abs(v) > minV) {
             windowEl.scrollLeft -= v * 16;
@@ -97,8 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
       isDragging = false;
     }
 
-    windowEl.addEventListener('pointerdown', e => {
-      // начинаем взаимодействие
+    windowEl.addEventListener("pointerdown", (e) => {
       lockAxis = null;
       pointerId = e.pointerId;
       startX = e.clientX;
@@ -112,20 +118,20 @@ document.addEventListener('DOMContentLoaded', () => {
       windowEl.setPointerCapture(pointerId);
     });
 
-    windowEl.addEventListener('pointermove', e => {
+    windowEl.addEventListener("pointermove", (e) => {
       if (e.pointerId !== pointerId) return;
       const dx = e.clientX - startX;
       const dy = e.clientY - startY;
       if (!lockAxis) {
         if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy)) {
-          lockAxis = 'x';
+          lockAxis = "x";
           wasHorizontal = true;
           isDragging = true;
-          windowEl.classList.add('dragging');
+          windowEl.classList.add("dragging");
           cancelAnimationFrame(rafId);
           animate();
         } else if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) {
-          lockAxis = 'y';
+          lockAxis = "y";
           windowEl.releasePointerCapture(pointerId);
           pointerId = null;
           return;
@@ -133,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
       }
-      if (lockAxis === 'x') {
+      if (lockAxis === "x") {
         e.preventDefault();
         windowEl.scrollLeft = scrollStart - dx;
         const dt = e.timeStamp - lastTime || 1;
@@ -143,24 +149,21 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Окончание drag для любых сценариев
-    windowEl.addEventListener('pointerup', endDrag);
-    windowEl.addEventListener('pointercancel', endDrag);
-    document.addEventListener('pointerup', endDrag);
-    document.addEventListener('pointercancel', endDrag);
+    windowEl.addEventListener("pointerup", endDrag);
+    windowEl.addEventListener("pointercancel", endDrag);
+    document.addEventListener("pointerup", endDrag);
+    document.addEventListener("pointercancel", endDrag);
 
-    // Wrap для nативного scroll (тач)
-    windowEl.addEventListener('scroll', () => {
-      if (lockAxis === 'x') return;
+    windowEl.addEventListener("scroll", () => {
+      if (lockAxis === "x") return;
       wrap();
     });
 
-    // клавиши ←→ без автоповтора
     windowEl.tabIndex = 0;
-    windowEl.addEventListener('keydown', e => {
-      if ((e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') || e.repeat) return;
-      const dir = e.key === 'ArrowLeft' ? -1 : 1;
-      windowEl.scrollBy({ left: dir * step, behavior: 'smooth' });
+    windowEl.addEventListener("keydown", (e) => {
+      if ((e.key !== "ArrowLeft" && e.key !== "ArrowRight") || e.repeat) return;
+      const dir = e.key === "ArrowLeft" ? -1 : 1;
+      windowEl.scrollBy({ left: dir * step, behavior: "smooth" });
     });
   }
 
