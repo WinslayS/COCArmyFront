@@ -1,74 +1,20 @@
 {
-  "1": [
-    "/images/main/9a.webp",
-    "/images/main/9b.webp"
-  ],
-  "2": [
-    "/images/main/10a.webp",
-    "/images/main/10b.webp"
-  ],
-  "3": [
-    "/images/main/3a.webp",
-    "/images/main/3b.webp",
-    "/images/main/3c.webp"
-  ],
-  "4": [
-    "/images/main/4a.webp",
-    "/images/main/4b.webp",
-    "/images/main/4c.webp"
-  ],
-  "5": [
-    "/images/main/5a.webp",
-    "/images/main/5b.webp",
-    "/images/main/5c.webp"
-  ],
-  "6": [
-    "/images/main/6a.webp",
-    "/images/main/6b.webp",
-    "/images/main/6c.webp"
-  ],
-  "7": [
-    "/images/main/7a.webp",
-    "/images/main/7b.webp",
-    "/images/main/7c.webp"
-  ],
-  "8": [
-    "/images/main/8a.webp",
-    "/images/main/8b.webp",
-    "/images/main/8c.webp"
-  ],
-  "9": [
-    "/images/main/9a.webp",
-    "/images/main/9b.webp"
-  ],
-  "10": [
-    "/images/main/10a.webp",
-    "/images/main/10b.webp"
-  ],
-  "11": [
-    "/images/main/11a.webp",
-    "/images/main/11b.webp"
-  ],
-  "12": [
-    "/images/main/12a.webp",
-    "/images/main/12b.webp"
-  ],
-  "13": [
-    "/images/main/13a.webp",
-    "/images/main/13b.webp"
-  ],
-  "14": [
-    "/images/main/14a.webp",
-    "/images/main/14b.webp"
-  ],
-  "15": [
-    "/images/main/15a.webp",
-    "/images/main/15b.webp"
-  ],
-  "16": [
-    "/images/main/16a.webp",
-    "/images/main/16b.webp"
-  ],
+  "1": ["/images/main/9a.webp", "/images/main/9b.webp"],
+  "2": ["/images/main/10a.webp", "/images/main/10b.webp"],
+  "3": ["/images/main/3a.webp", "/images/main/3b.webp", "/images/main/3c.webp"],
+  "4": ["/images/main/4a.webp", "/images/main/4b.webp", "/images/main/4c.webp"],
+  "5": ["/images/main/5a.webp", "/images/main/5b.webp", "/images/main/5c.webp"],
+  "6": ["/images/main/6a.webp", "/images/main/6b.webp", "/images/main/6c.webp"],
+  "7": ["/images/main/7a.webp", "/images/main/7b.webp", "/images/main/7c.webp"],
+  "8": ["/images/main/8a.webp", "/images/main/8b.webp", "/images/main/8c.webp"],
+  "9": ["/images/main/9a.webp", "/images/main/9b.webp"],
+  "10": ["/images/main/10a.webp", "/images/main/10b.webp"],
+  "11": ["/images/main/11a.webp", "/images/main/11b.webp"],
+  "12": ["/images/main/12a.webp", "/images/main/12b.webp"],
+  "13": ["/images/main/13a.webp", "/images/main/13b.webp"],
+  "14": ["/images/main/14a.webp", "/images/main/14b.webp"],
+  "15": ["/images/main/15a.webp", "/images/main/15b.webp"],
+  "16": ["/images/main/16a.webp", "/images/main/16b.webp"],
   "17": [
     "/images/main/17a.webp",
     "/images/main/17b.webp",
@@ -119,30 +65,12 @@
     "/images/main/26b.webp",
     "/images/main/26c.webp"
   ],
-  "27": [
-    "/images/main/27a.webp",
-    "/images/main/27b.webp"
-  ],
-  "28": [
-    "/images/main/28a.webp",
-    "/images/main/28b.webp"
-  ],
-  "29": [
-    "/images/main/29a.webp",
-    "/images/main/29b.webp"
-  ],
-  "30": [
-    "/images/main/30a.webp",
-    "/images/main/30b.webp"
-  ],
-  "31": [
-    "/images/main/31a.webp",
-    "/images/main/31b.webp"
-  ],
-  "32": [
-    "/images/main/32a.webp",
-    "/images/main/32b.webp"
-  ],
+  "27": ["/images/main/27a.webp", "/images/main/27b.webp"],
+  "28": ["/images/main/28a.webp", "/images/main/28b.webp"],
+  "29": ["/images/main/29a.webp", "/images/main/29b.webp"],
+  "30": ["/images/main/30a.webp", "/images/main/30b.webp"],
+  "31": ["/images/main/31a.webp", "/images/main/31b.webp"],
+  "32": ["/images/main/32a.webp", "/images/main/32b.webp"],
   "33": [
     "/images/main/33a.webp",
     "/images/main/33b.webp",
@@ -288,228 +216,60 @@
     "/images/main/61b.webp",
     "/images/main/61c.webp"
   ],
-  "62": [
-    "/images/main/62a.webp",
-    "/images/main/62b.webp"
-  ],
-  "63": [
-    "/images/main/63a.webp",
-    "/images/main/63b.webp"
-  ],
-  "64": [
-    "/images/main/64a.webp",
-    "/images/main/64b.webp"
-  ],
-  "65": [
-    "/images/main/65a.webp",
-    "/images/main/65b.webp"
-  ],
-  "66": [
-    "/images/main/66a.webp",
-    "/images/main/66b.webp"
-  ],
-  "67": [
-    "/images/main/67a.webp",
-    "/images/main/67b.webp"
-  ],
-  "68": [
-    "/images/main/68a.webp",
-    "/images/main/68b.webp"
-  ],
-  "69": [
-    "/images/main/69a.webp",
-    "/images/main/69b.webp"
-  ],
-  "70": [
-    "/images/main/70a.webp",
-    "/images/main/70b.webp"
-  ],
-  "71": [
-    "/images/main/71a.webp",
-    "/images/main/71b.webp"
-  ],
-  "72": [
-    "/images/main/72a.webp",
-    "/images/main/72b.webp"
-  ],
-  "73": [
-    "/images/main/73a.webp",
-    "/images/main/73b.webp"
-  ],
-  "74": [
-    "/images/main/74a.webp",
-    "/images/main/74b.webp"
-  ],
-  "75": [
-    "/images/main/75a.webp",
-    "/images/main/75b.webp"
-  ],
-  "76": [
-    "/images/main/76a.webp",
-    "/images/main/76b.webp"
-  ],
-  "77": [
-    "/images/main/77a.webp",
-    "/images/main/77b.webp"
-  ],
-  "78": [
-    "/images/main/78a.webp",
-    "/images/main/78b.webp"
-  ],
-  "79": [
-    "/images/main/79a.webp",
-    "/images/main/79b.webp"
-  ],
-  "80": [
-    "/images/main/80a.webp",
-    "/images/main/80b.webp"
-  ],
-  "81": [
-    "/images/main/81a.webp",
-    "/images/main/81b.webp"
-  ],
-  "82": [
-    "/images/main/82a.webp",
-    "/images/main/82b.webp"
-  ],
-  "83": [
-    "/images/main/83a.webp",
-    "/images/main/83b.webp"
-  ],
-  "84": [
-    "/images/main/84a.webp",
-    "/images/main/84b.webp"
-  ],
-  "85": [
-    "/images/main/85a.webp",
-    "/images/main/85b.webp"
-  ],
-  "86": [
-    "/images/main/86a.webp",
-    "/images/main/86b.webp"
-  ],
-  "87": [
-    "/images/main/87a.webp",
-    "/images/main/87b.webp"
-  ],
-  "88": [
-    "/images/main/88a.webp",
-    "/images/main/88b.webp"
-  ],
-  "89": [
-    "/images/main/89a.webp",
-    "/images/main/89b.webp"
-  ],
-  "90": [
-    "/images/main/90a.webp",
-    "/images/main/90b.webp"
-  ],
-  "91": [
-    "/images/main/91a.webp",
-    "/images/main/91b.webp"
-  ],
-  "92": [
-    "/images/main/92a.webp",
-    "/images/main/92b.webp"
-  ],
-  "93": [
-    "/images/main/93a.webp",
-    "/images/main/93b.webp"
-  ],
-  "94": [
-    "/images/main/94a.webp",
-    "/images/main/94b.webp"
-  ],
-  "95": [
-    "/images/main/95a.webp",
-    "/images/main/95b.webp"
-  ],
-  "96": [
-    "/images/main/96a.webp",
-    "/images/main/96b.webp"
-  ],
-  "97": [
-    "/images/main/97a.webp",
-    "/images/main/97b.webp"
-  ],
-  "98": [
-    "/images/main/98a.webp",
-    "/images/main/98b.webp"
-  ],
-  "99": [
-    "/images/main/99a.webp",
-    "/images/main/99b.webp"
-  ],
-  "100": [
-    "/images/main/100a.webp",
-    "/images/main/100b.webp"
-  ],
-  "101": [
-    "/images/main/101a.webp",
-    "/images/main/101b.webp"
-  ],
-  "102": [
-    "/images/main/102a.webp",
-    "/images/main/102b.webp"
-  ],
-  "103": [
-    "/images/main/103a.webp",
-    "/images/main/103b.webp"
-  ],
-  "104": [
-    "/images/main/104a.webp",
-    "/images/main/104b.webp"
-  ],
-  "105": [
-    "/images/main/105a.webp",
-    "/images/main/105b.webp"
-  ],
-  "106": [
-    "/images/main/106a.webp",
-    "/images/main/106b.webp"
-  ],
-  "107": [
-    "/images/main/107a.webp",
-    "/images/main/107b.webp"
-  ],
-  "108": [
-    "/images/main/108a.webp",
-    "/images/main/108b.webp"
-  ],
-  "109": [
-    "/images/main/109a.webp",
-    "/images/main/109b.webp"
-  ],
-  "110": [
-    "/images/main/110a.webp",
-    "/images/main/110b.webp"
-  ],
-  "111": [
-    "/images/main/111a.webp",
-    "/images/main/111b.webp"
-  ],
-  "112": [
-    "/images/main/112a.webp",
-    "/images/main/112b.webp"
-  ],
-  "113": [
-    "/images/main/113a.webp",
-    "/images/main/113b.webp"
-  ],
-  "114": [
-    "/images/main/114a.webp",
-    "/images/main/114b.webp"
-  ],
-  "115": [
-    "/images/main/115a.webp",
-    "/images/main/115b.webp"
-  ],
-  "116": [
-    "/images/main/116a.webp",
-    "/images/main/116b.webp"
-  ],
-  "117": [
-    "/images/main/117a.webp",
-    "/images/main/117b.webp"
-  ]
+  "62": ["/images/main/62a.webp", "/images/main/62b.webp"],
+  "63": ["/images/main/63a.webp", "/images/main/63b.webp"],
+  "64": ["/images/main/64a.webp", "/images/main/64b.webp"],
+  "65": ["/images/main/65a.webp", "/images/main/65b.webp"],
+  "66": ["/images/main/66a.webp", "/images/main/66b.webp"],
+  "67": ["/images/main/67a.webp", "/images/main/67b.webp"],
+  "68": ["/images/main/68a.webp", "/images/main/68b.webp"],
+  "69": ["/images/main/69a.webp", "/images/main/69b.webp"],
+  "70": ["/images/main/70a.webp", "/images/main/70b.webp"],
+  "71": ["/images/main/71a.webp", "/images/main/71b.webp"],
+  "72": ["/images/main/72a.webp", "/images/main/72b.webp"],
+  "73": ["/images/main/73a.webp", "/images/main/73b.webp"],
+  "74": ["/images/main/74a.webp", "/images/main/74b.webp"],
+  "75": ["/images/main/75a.webp", "/images/main/75b.webp"],
+  "76": ["/images/main/76a.webp", "/images/main/76b.webp"],
+  "77": ["/images/main/77a.webp", "/images/main/77b.webp"],
+  "78": ["/images/main/78a.webp", "/images/main/78b.webp"],
+  "79": ["/images/main/79a.webp", "/images/main/79b.webp"],
+  "80": ["/images/main/80a.webp", "/images/main/80b.webp"],
+  "81": ["/images/main/81a.webp", "/images/main/81b.webp"],
+  "82": ["/images/main/82a.webp", "/images/main/82b.webp"],
+  "83": ["/images/main/83a.webp", "/images/main/83b.webp"],
+  "84": ["/images/main/84a.webp", "/images/main/84b.webp"],
+  "85": ["/images/main/85a.webp", "/images/main/85b.webp"],
+  "86": ["/images/main/86a.webp", "/images/main/86b.webp"],
+  "87": ["/images/main/87a.webp", "/images/main/87b.webp"],
+  "88": ["/images/main/88a.webp", "/images/main/88b.webp"],
+  "89": ["/images/main/89a.webp", "/images/main/89b.webp"],
+  "90": ["/images/main/90a.webp", "/images/main/90b.webp"],
+  "91": ["/images/main/91a.webp", "/images/main/91b.webp"],
+  "92": ["/images/main/92a.webp", "/images/main/92b.webp"],
+  "93": ["/images/main/93a.webp", "/images/main/93b.webp"],
+  "94": ["/images/main/94a.webp", "/images/main/94b.webp"],
+  "95": ["/images/main/95a.webp", "/images/main/95b.webp"],
+  "96": ["/images/main/96a.webp", "/images/main/96b.webp"],
+  "97": ["/images/main/97a.webp", "/images/main/97b.webp"],
+  "98": ["/images/main/98a.webp", "/images/main/98b.webp"],
+  "99": ["/images/main/99a.webp", "/images/main/99b.webp"],
+  "100": ["/images/main/100a.webp", "/images/main/100b.webp"],
+  "101": ["/images/main/101a.webp", "/images/main/101b.webp"],
+  "102": ["/images/main/102a.webp", "/images/main/102b.webp"],
+  "103": ["/images/main/103a.webp", "/images/main/103b.webp"],
+  "104": ["/images/main/104a.webp", "/images/main/104b.webp"],
+  "105": ["/images/main/105a.webp", "/images/main/105b.webp"],
+  "106": ["/images/main/106a.webp", "/images/main/106b.webp"],
+  "107": ["/images/main/107a.webp", "/images/main/107b.webp"],
+  "108": ["/images/main/108a.webp", "/images/main/108b.webp"],
+  "109": ["/images/main/109a.webp", "/images/main/109b.webp"],
+  "110": ["/images/main/110a.webp", "/images/main/110b.webp"],
+  "111": ["/images/main/111a.webp", "/images/main/111b.webp"],
+  "112": ["/images/main/112a.webp", "/images/main/112b.webp"],
+  "113": ["/images/main/113a.webp", "/images/main/113b.webp"],
+  "114": ["/images/main/114a.webp", "/images/main/114b.webp"],
+  "115": ["/images/main/115a.webp", "/images/main/115b.webp"],
+  "116": ["/images/main/116a.webp", "/images/main/116b.webp"],
+  "117": ["/images/main/117a.webp", "/images/main/117b.webp"]
 }

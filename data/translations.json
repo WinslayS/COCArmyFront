@@ -1,26 +1,24 @@
 {
-    "ru": {
-      "title": "Главное меню",
-      "logo_alt": "Логотип",
-      "bases": "Планировки",
-      "mixes": "Миксы",
-      "advice": "Советы",
-      "clan_war": "ЛВК",
-      "theme_toggle": "Сменить тему",
-      "language_toggle": "Сменить язык",
-      "profile": "Профиль"
-    },
-    "en": {
-      "title": "Main Menu",
-      "logo_alt": "Logo",
-      "bases": "Layouts",
-      "mixes": "Mixes",
-      "advice": "Advice",
-      "clan_war": "Clan War",
-      "theme_toggle": "Change Theme",
-      "language_toggle": "Change Language",
-      "profile": "Profile"
-    }
+  "ru": {
+    "title": "Главное меню",
+    "logo_alt": "Логотип",
+    "bases": "Планировки",
+    "mixes": "Миксы",
+    "advice": "Советы",
+    "clan_war": "ЛВК",
+    "theme_toggle": "Сменить тему",
+    "language_toggle": "Сменить язык",
+    "profile": "Профиль"
+  },
+  "en": {
+    "title": "Main Menu",
+    "logo_alt": "Logo",
+    "bases": "Layouts",
+    "mixes": "Mixes",
+    "advice": "Advice",
+    "clan_war": "Clan War",
+    "theme_toggle": "Change Theme",
+    "language_toggle": "Change Language",
+    "profile": "Profile"
   }
-  
-  
+}

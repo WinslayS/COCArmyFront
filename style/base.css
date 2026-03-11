@@ -1,72 +1,73 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 a {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
-  @font-face {
-    font-family: 'MyCustomFont';
-    src: url('font.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+@font-face {
+  font-family: "MyCustomFont";
+  src: url("font.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
 :root {
-    --main-font: 'MyCustomFont', Arial, sans-serif;
-    --yellow: #ffc107;
-    --red: #ff5733;
-    --dark-gray: #333;
-    --white: #ffffff;
+  --main-font: "MyCustomFont", Arial, sans-serif;
+  --yellow: #ffc107;
+  --red: #ff5733;
+  --dark-gray: #333;
+  --white: #ffffff;
 }
 body {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    font-family: var(--main-font);
-	margin: 0;
-	padding: 0;
-	height: 100vh;
-    background: var(--white);
-    background-attachment: fixed;
-    margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  font-family: var(--main-font);
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background: var(--white);
+  background-attachment: fixed;
+  margin-top: 0;
 }
 h1 {
-    font-family: var(--main-font);
-    font-size: 2.5em;
-    font-weight: bold;
+  font-family: var(--main-font);
+  font-size: 2.5em;
+  font-weight: bold;
 }
 p {
-    font-family: var(--main-font);
-    font-size: 1.2em;
+  font-family: var(--main-font);
+  font-size: 1.2em;
 }
-html, body {
-    overflow-x: hidden;
-    max-width: 100%;
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100%;
 }
 .footer-bottom {
-    width: 90%;
-    background: #000;
-    color: #ddd;
-    padding: 80px;
-    text-align: center;
-    margin-top: 20px;
-    margin: 10px auto;
-    border-radius: 20px;
-  }
-  .footer-content a {
-    color: #ddd;
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-  .footer-content a:hover {
-    color: #fff;
-  }
+  width: 90%;
+  background: #000;
+  color: #ddd;
+  padding: 80px;
+  text-align: center;
+  margin-top: 20px;
+  margin: 10px auto;
+  border-radius: 20px;
+}
+.footer-content a {
+  color: #ddd;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.footer-content a:hover {
+  color: #fff;
+}
 @media (max-width: 699px) {
-    .footer-bottom {
-        width: 100%;
-        margin: 0 auto;
-        border-radius: 0;
-    }
+  .footer-bottom {
+    width: 100%;
+    margin: 0 auto;
+    border-radius: 0;
+  }
 }

@@ -1,8 +1,8 @@
 {
-  "button.login":      "Войти",
-  "button.logout":     "Выйти",
-  "nav.profile":       "Профиль",
-  "nav.settings":      "Настройки",
-  "title.home":        "Главная",
-  "greeting.hello":    "Привет, пользователь!"
+  "button.login": "Войти",
+  "button.logout": "Выйти",
+  "nav.profile": "Профиль",
+  "nav.settings": "Настройки",
+  "title.home": "Главная",
+  "greeting.hello": "Привет, пользователь!"
 }

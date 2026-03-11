@@ -44,20 +44,20 @@
   min-height: 1800px;
 }
 .card {
-  overflow: hidden; 
+  overflow: hidden;
   position: absolute;
   box-sizing: border-box;
   background: #c9c9c9;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 @media screen and (min-width: 1100px) {
   .greeting {
     margin-top: 80px;
   }
   .greeting h2 {
-    font-size: 2.5em;   
+    font-size: 2.5em;
   }
   .greeting p {
     max-width: 800px;
@@ -73,7 +73,7 @@
   .card-advise {
     top: 600px;
     left: 45%;
-    width: 50%; 
+    width: 50%;
     height: 400px;
     z-index: 2;
   }
@@ -135,7 +135,7 @@
   .card:hover .card-content h3.category-mix {
     transform: translateY(-70%);
   }
-  .slice-label1{
+  .slice-label1 {
     font-size: 1.4em;
     left: 7%;
     bottom: -30px;
@@ -144,7 +144,7 @@
     font-size: 1.4em;
     left: 25%;
     bottom: -30px;
-    }
+  }
   .slice-label3 {
     font-size: 1.4em;
     left: 48%;
@@ -160,7 +160,7 @@
     width: calc(100% + 500%);
     height: 70px;
     bottom: 0;
-}
+  }
   .slice-label2::before {
     left: -200%;
     width: calc(100% + 500%);
@@ -229,7 +229,7 @@
   .greeting h2 {
     max-width: 600px;
     margin: 0 auto;
-    font-size: 2em;   
+    font-size: 2em;
   }
   .greeting p {
     max-width: 600px;
@@ -245,7 +245,7 @@
   .card-advise {
     top: 600px;
     left: 35%;
-    width: 60%; 
+    width: 60%;
     height: 300px;
     z-index: 1;
   }
@@ -276,7 +276,7 @@
     top: 20px;
     left: 15%;
   }
-  
+
   .description-advise {
     top: 100px;
     left: 10%;
@@ -308,7 +308,7 @@
   .card:hover .card-content h3.category-mix {
     transform: translateY(-170%);
   }
-  .slice-label1{
+  .slice-label1 {
     font-size: 1.2em;
     left: 18%;
     bottom: -30px;
@@ -401,7 +401,7 @@
   }
   .greeting h2 {
     font-size: 1.5em;
-    max-width: 400px;   
+    max-width: 400px;
     margin: 0 auto;
   }
   .greeting p {
@@ -418,7 +418,7 @@
   .card-advise {
     top: 650px;
     left: 25%;
-    width: 80%; 
+    width: 80%;
     height: 200px;
     z-index: 1;
   }
@@ -483,7 +483,7 @@
   .card:hover .card-content h3.category-mix {
     transform: translateY(-150%);
   }
-  .slice-label1{
+  .slice-label1 {
     font-size: 1em;
     left: 32%;
     bottom: -30px;
@@ -607,7 +607,8 @@
     transform: translateX(-50%) translateY(0);
   }
 }
-.slice-link, .card-link {
+.slice-link,
+.card-link {
   display: block;
   width: 100%;
   height: 100%;
@@ -652,67 +653,151 @@
   animation: fadeInDecor7 1.7s forwards, levitateDecor7 6s ease-in-out infinite;
 }
 @keyframes fadeInDecor1 {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes fadeInDecor2 {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes fadeInDecor3 {
-  from { opacity: 0; transform: translateY(40px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes fadeInDecor4 {
-  from { opacity: 0; transform: translateY(25px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes fadeInDecor5 {
-  from { opacity: 0; transform: translateY(35px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(35px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes fadeInDecor6 {
-  from { opacity: 0; transform: translateY(15px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes fadeInDecor7 {
-  from { opacity: 0; transform: translateY(45px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(45px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes levitateDecor1 {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 @keyframes levitateDecor2 {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-15px); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 @keyframes levitateDecor3 {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 @keyframes levitateDecor4 {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 @keyframes levitateDecor5 {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-18px); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-18px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 @keyframes levitateDecor6 {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 @keyframes levitateDecor7 {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-16px); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-16px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 .card,
 .decor {
@@ -720,13 +805,25 @@
   transform: translateY(20px);
 }
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes levitate {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 .card.in-view {
   animation: fadeInUp 0.8s forwards;
@@ -734,11 +831,19 @@
 .decor.in-view {
   animation: fadeInUp 0.8s forwards;
 }
-.cards .card:nth-child(1).in-view { animation-delay: 0.2s; }
-.cards .card:nth-child(2).in-view { animation-delay: 0.4s; }
-.cards .card:nth-child(3).in-view { animation-delay: 0.6s; }
-.cards .card:nth-child(4).in-view { animation-delay: 0.8s; }
-.cards .decor:nth-child(n+5).in-view { 
+.cards .card:nth-child(1).in-view {
+  animation-delay: 0.2s;
+}
+.cards .card:nth-child(2).in-view {
+  animation-delay: 0.4s;
+}
+.cards .card:nth-child(3).in-view {
+  animation-delay: 0.6s;
+}
+.cards .card:nth-child(4).in-view {
+  animation-delay: 0.8s;
+}
+.cards .decor:nth-child(n + 5).in-view {
   animation-delay: 0.3s;
 }
 .card.diagonal-slices .slice {
@@ -751,7 +856,6 @@
   z-index: 5;
   background-size: cover;
   background-position: center;
-
 }
 .card.diagonal-slices .card-content {
   position: relative;
@@ -831,12 +935,18 @@
   position: relative;
   z-index: 2;
 }
-.slice-label1, .slice-label2, .slice-label3, .slice-label4  {
+.slice-label1,
+.slice-label2,
+.slice-label3,
+.slice-label4 {
   position: absolute;
   opacity: 0;
   transition: bottom 0.3s ease, opacity 0.3s ease;
 }
-.slice-label1::before, .slice-label2::before, .slice-label3::before, .slice-label4::before{
+.slice-label1::before,
+.slice-label2::before,
+.slice-label3::before,
+.slice-label4::before {
   content: "";
   position: absolute;
   background-color: rgba(0, 0, 0, 0.5);
