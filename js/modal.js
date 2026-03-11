@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const modal = document.getElementById('modal');
     const modalContent = modal.querySelector('.modal-content');
-    // Работаем со слайдами внутри image-stage:
     const imageStage = modalContent.querySelector('.image-stage');
     const slideCurrent = imageStage.querySelector('.slide.current');
     const slideNext = imageStage.querySelector('.slide.next');
@@ -9,21 +8,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const thumbnailsContainer = document.getElementById('thumbnailsContainer');
     const zoomSlider = document.getElementById('zoomSlider');
-    const resetZoom = document.getElementById('resetZoom');
+    const resetZoomButton = document.getElementById('resetZoom');
     const closeModal = document.getElementById('closeModal');
+    const fullscreenModal = document.getElementById('fullscreenModal');
 
-    // ==============================
-    // Переменные состояния
-    // ==============================
+    const TAP_MOVEMENT_THRESHOLD = 10;
+
     let scale = 1;
-    let offsetX = 0;  // смещение по X (относительно центра)
-    let offsetY = 0;  // смещение по Y
 
-    // Для перемещения при зуме
+    let rawOffsetX = 0;
+    let rawOffsetY = 0;
+
+    let offsetX = 0;
+    let offsetY = 0;
+
+    const MIN_SCALE = 1;
+    const MAX_SCALE = 5;
+    const MID_SCALE = 2.5;
+
+    const ELASTIC_PULL = 0.3; 
+
+    let baseWidth = 0;
+    let baseHeight = 0;
+
     let isDragging = false;
     let startX = 0, startY = 0;
 
-    // Для свайпа (при scale == 1)
     let isPotentialSwipe = false;
     let isHorizontalSwipe = false;
     let isVerticalSwipe = false;
@@ -36,160 +46,168 @@ document.addEventListener('DOMContentLoaded', async () => {
     let clickCount = 0;
     let doubleClickTimer = null;
     const DOUBLE_CLICK_DELAY = 300;
+    let doubleTapLock = false;
 
-    // Управление указателями (для pinch‑масштабирования)
     let pointers = [];
-    let startPinchDist = 0;
-    let startPinchScale = 1;
-    let startPinchCenter = { x: 0, y: 0 };
-    // Новые переменные для сохранения начальных смещений
-    let startOffsetX = 0;
-    let startOffsetY = 0;
+    let pinchStartDistance = 0;
+    let pinchStartScale = 1;
+    let pinchStartOffsetX = 0;
+    let pinchStartOffsetY = 0;
+    let pinchStartCenter = { x: 0, y: 0 };
 
-    // Текущий индекс и список изображений
     let currentImageIndex = 0;
     let imagesList = [];
     let layoutsData = [];
     let thumbnailData = {};
 
-    // ==============================
-    // Загрузка JSON (пример)
-    // ==============================
-    try {
-        const layoutsResponse = await fetch('data/layouts.json');
-        layoutsData = await layoutsResponse.json();
+    let isSwipeAnimating = false;
+    let isSnapBackActive = false;
+    
+    let lastMoveTime = 0;
+    let velocityX = 0;
+    let velocityY = 0;
+    const MAX_VELOCITY = 2;
+    const INERTIA_MULTIPLIER = 8;
 
-        const thumbnailsResponse = await fetch('data/thumbnailData.json');
+    let inertiaAnimationFrame = null;
+
+    try {
+        const layoutsResponse = await fetch('/data/layouts.json');
+        layoutsData = await layoutsResponse.json();
+        const thumbnailsResponse = await fetch('/data/thumbnailData.json');
         thumbnailData = await thumbnailsResponse.json();
     } catch (error) {
         console.error('Ошибка загрузки JSON:', error);
-        return;
     }
 
-    // ==============================
-    // Ползунок зума
-    // ==============================
-    zoomSlider.addEventListener('input', (e) => {
-        const newScale = parseFloat(e.target.value);
-        applyZoomCenterPreserving(newScale);
-    });
+    function startZoomAnimation() {
+        slideCurrent.classList.add('zoom-animating');
+        slideCurrent.addEventListener('transitionend', function handler() {
+            slideCurrent.classList.remove('zoom-animating');
+            slideCurrent.removeEventListener('transitionend', handler);
+        });
+    }
 
-    resetZoom.addEventListener('click', () => {
-        let newScale = (scale === 1) ? 2 : 1;
-        if (newScale === 1) {
-            offsetX = 0;
-            offsetY = 0;
+    function computeBaseSize() {
+        const containerW = imageStage.offsetWidth;
+        const containerH = imageStage.offsetHeight;
+        const containerRatio = containerW / containerH;
+        if (currentImageAspectRatio > containerRatio) {
+            baseWidth = containerW;
+            baseHeight = containerW / currentImageAspectRatio;
+        } else {
+            baseHeight = containerH;
+            baseWidth = containerH * currentImageAspectRatio;
         }
-        applyZoomCenterPreserving(newScale);
-    });
+    }
 
-    // Масштабирование относительно точки (если координаты не заданы – используется центр)
-    function applyZoomCenterPreserving(newScale, centerX, centerY) {
-        const rect = slideCurrent.getBoundingClientRect();
-        // Если координаты не заданы – берём центр контейнера
-        if (centerX === undefined || centerY === undefined) {
-            centerX = rect.width / 2;
-            centerY = rect.height / 2;
+    function updateBackground(isPointerMove = false) {
+        const finalW = baseWidth * scale;
+        const finalH = baseHeight * scale;
+        const containerW = imageStage.offsetWidth;
+        const containerH = imageStage.offsetHeight;
+        const maxOffsetX = (finalW - containerW) / 2;
+        const maxOffsetY = (finalH - containerH) / 2;
+
+        let dispX = rawOffsetX;
+        let dispY = rawOffsetY;
+
+        if (isPointerMove && finalW > containerW) {
+            if (rawOffsetX > maxOffsetX) {
+                let excess = rawOffsetX - maxOffsetX;
+                dispX = maxOffsetX + excess * ELASTIC_PULL; 
+            } else if (rawOffsetX < -maxOffsetX) {
+                let excess = -maxOffsetX - rawOffsetX;
+                dispX = -maxOffsetX - excess * ELASTIC_PULL;
+            }
         }
-        const deltaScale = newScale - scale;
-        // Корректируем смещения так, чтобы точка (centerX, centerY) оставалась неподвижной
-        offsetX -= (centerX - rect.width / 2) * deltaScale;
-        offsetY -= (centerY - rect.height / 2) * deltaScale;
+        if (isPointerMove && finalH > containerH) {
+            if (rawOffsetY > maxOffsetY) {
+                let excess = rawOffsetY - maxOffsetY;
+                dispY = maxOffsetY + excess * ELASTIC_PULL;
+            } else if (rawOffsetY < -maxOffsetY) {
+                let excess = -maxOffsetY - rawOffsetY;
+                dispY = -maxOffsetY - excess * ELASTIC_PULL;
+            }
+        }
 
-        scale = Math.max(1, Math.min(newScale, 3));
-        updateBackground();
+        if (!isPointerMove) {
+            if (finalW > containerW) {
+                dispX = Math.max(-maxOffsetX, Math.min(dispX, maxOffsetX));
+            } else {
+                dispX = 0;
+            }
+            if (finalH > containerH) {
+                dispY = Math.max(-maxOffsetY, Math.min(dispY, maxOffsetY));
+            } else {
+                dispY = 0;
+            }
+            rawOffsetX = dispX;
+            rawOffsetY = dispY;
+        }
+
+        offsetX = dispX;
+        offsetY = dispY;
+
+        slideCurrent.style.backgroundSize = `${finalW}px ${finalH}px`;
+        slideCurrent.style.backgroundPosition = `calc(50% + ${offsetX}px) calc(50% + ${offsetY}px)`;
         syncZoomSlider();
     }
 
     function syncZoomSlider() {
-        zoomSlider.value = scale.toFixed(1);
-        const fillPercent = ((scale - zoomSlider.min) / (zoomSlider.max - zoomSlider.min)) * 100;
+        zoomSlider.value = scale.toFixed(2);
+        const min = parseFloat(zoomSlider.min);
+        const max = parseFloat(zoomSlider.max);
+        const fillPercent = ((scale - min) / (max - min)) * 100;
         zoomSlider.style.setProperty('--slider-fill', `${fillPercent}%`);
     }
 
-    // ==============================
-    // Функции обновления слайдов
-    // ==============================
-    // Обновляет фон текущего слайда с учетом зума и смещения
-    function updateBackground() {
-        constrainOffsets();
-        slideCurrent.style.backgroundSize = `${scale * 100}%`;
-        slideCurrent.style.backgroundPosition = `calc(50% + ${offsetX}px) calc(50% + ${offsetY}px)`;
-    }
+    resetZoomButton.addEventListener('pointerdown', () => {
+        startZoomAnimation();
+        if (scale === 1) {
+            scale = MID_SCALE;
+        } else {
+            scale = 1;
+        }
+        updateBackground(false);
+    });
 
-    // Ограничение смещений так, чтобы изображение не "выходило" за границы
-    function constrainOffsets() {
-        const containerWidth = imageStage.offsetWidth;
-        const containerHeight = imageStage.offsetHeight;
-        const scaledWidth = containerWidth * scale;
-        const scaledHeight = containerHeight * scale;
-        const maxOffsetX = (scaledWidth - containerWidth) / 2;
-        const maxOffsetY = (scaledHeight - containerHeight) / 2;
-        offsetX = Math.max(-maxOffsetX, Math.min(offsetX, maxOffsetX));
-        offsetY = Math.max(-maxOffsetY, Math.min(offsetY, maxOffsetY));
-    }
+    zoomSlider.addEventListener('input', (e) => {
+        startZoomAnimation();
+        let newScale = parseFloat(e.target.value);
+        newScale = Math.max(MIN_SCALE, Math.min(newScale, MAX_SCALE));
+        scale = newScale;
+        updateBackground(false);
+    });
 
-    // Обновляет фон всех трёх слайдов: current, next и prev
-    function updateSlides() {
-        // Текущий слайд
-        slideCurrent.style.backgroundImage = `url(${imagesList[currentImageIndex]})`;
-        // Следующий слайд (циклично)
-        const nextIndex = (currentImageIndex + 1) % imagesList.length;
-        slideNext.style.backgroundImage = `url(${imagesList[nextIndex]})`;
-        // Предыдущий слайд (циклично)
-        const prevIndex = (currentImageIndex - 1 + imagesList.length) % imagesList.length;
-        slidePrev.style.backgroundImage = `url(${imagesList[prevIndex]})`;
-
-        // Сбрасываем трансформации и переходы
-        slideCurrent.style.transition = 'none';
-        slideNext.style.transition = 'none';
-        slidePrev.style.transition = 'none';
-        slideCurrent.style.transform = 'translateX(0)';
-        slideNext.style.transform = 'translateX(100%)';
-        slidePrev.style.transform = 'translateX(-100%)';
-    }
-
-    // Сброс параметров зума (при переходе на новое изображение)
     function resetZoomParams() {
         scale = 1;
+        rawOffsetX = 0;
+        rawOffsetY = 0;
         offsetX = 0;
         offsetY = 0;
     }
 
-    // ==============================
-    // Отображение изображения
-    // ==============================
     function showImage(index) {
         if (index < 0 || index >= imagesList.length) return;
         currentImageIndex = index;
         resetZoomParams();
-
-        // Сбрасываем фон слайдов перед загрузкой
         slideCurrent.style.backgroundImage = 'none';
         modalContent.classList.add('loading');
-
         const fullImage = imagesList[index];
         const image = new Image();
         image.src = fullImage;
-
         image.onload = () => {
             modalContent.classList.remove('loading');
-            // Подгоняем размеры modalContent по соотношению сторон
-            const aspectRatio = image.width / image.height;
-            const containerWidth = modalContent.offsetWidth;
-            modalContent.style.height = `${containerWidth / aspectRatio}px`;
-            const previewArea = modalContent.querySelector('.preview-area');
-            if (previewArea) previewArea.style.height = 'auto';
-
-            // Устанавливаем фон для текущего слайда и обновляем соседние
+            currentImageAspectRatio = image.width / image.height;
+            computeBaseSize();
             slideCurrent.style.backgroundImage = `url(${fullImage})`;
             updateSlides();
-            updateBackground();
-            syncZoomSlider();
+            updateBackground(false);
+            recalcModalHeight();
             updateThumbnails();
             scrollToActiveThumbnail();
         };
-
         image.onerror = () => {
             console.error("Не удалось загрузить:", fullImage);
             modalContent.classList.remove('loading');
@@ -204,6 +222,32 @@ document.addEventListener('DOMContentLoaded', async () => {
         currentImageIndex = (currentImageIndex - 1 + imagesList.length) % imagesList.length;
         showImage(currentImageIndex);
     }
+
+    function updateSlides() {
+        const nextIndex = (currentImageIndex + 1) % imagesList.length;
+        slideNext.style.backgroundImage = `url(${imagesList[nextIndex]})`;
+        const prevIndex = (currentImageIndex - 1 + imagesList.length) % imagesList.length;
+        slidePrev.style.backgroundImage = `url(${imagesList[prevIndex]})`;
+        slideCurrent.style.transition = 'none';
+        slideNext.style.transition = 'none';
+        slidePrev.style.transition = 'none';
+        slideCurrent.style.transform = 'translateX(0)';
+        slideNext.style.transform = 'translateX(100%)';
+        slidePrev.style.transform = 'translateX(-100%)';
+    }
+
+    function recalcModalHeight() {
+        if (modal.classList.contains('show')) {
+            const containerWidth = modalContent.offsetWidth;
+            const thumbnailPanelHeight = 120;
+            const verticalMargin = 20;
+            const availableHeight = window.innerHeight - thumbnailPanelHeight - verticalMargin;
+            const computedHeight = containerWidth / currentImageAspectRatio;
+            const finalHeight = Math.min(computedHeight, availableHeight);
+            modalContent.style.setProperty('--modal-height', `${finalHeight}px`);
+        }
+    }
+    window.addEventListener('resize', recalcModalHeight);
 
     function updateThumbnails() {
         const thumbs = thumbnailsContainer.querySelectorAll('.thumbnail');
@@ -224,20 +268,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // ==============================
-    // Открытие/закрытие модалки
-    // ==============================
     const images = document.querySelectorAll('.zoomable');
     images.forEach((img) => {
         img.addEventListener('click', () => {
-            const imageId = img.dataset.id;
-            imagesList = thumbnailData[imageId] || [];
+            modal.classList.add('show');
+            document.body.classList.add('modal-open');
+            thumbnailsContainer.innerHTML = '';
+            imagesList = thumbnailData[img.dataset.id] || [];
             if (imagesList.length > 0) {
-                showImage(0);
-                modal.classList.add('show');
-                document.body.classList.add('modal-open');
-
-                thumbnailsContainer.innerHTML = '';
                 imagesList.forEach((src, idx) => {
                     const thumb = document.createElement('img');
                     thumb.src = src;
@@ -246,28 +284,66 @@ document.addEventListener('DOMContentLoaded', async () => {
                     thumb.addEventListener('click', () => showImage(idx));
                     thumbnailsContainer.appendChild(thumb);
                 });
+                requestAnimationFrame(() => {
+                    showImage(0);
+                });
             } else {
-                console.error('Нет изображений для ID:', imageId);
+                console.error('Нет изображений для ID:', img.dataset.id);
             }
         });
     });
 
-    closeModal.addEventListener('click', closeModalWindow);
+    closeModal.addEventListener('click', () => {
+        closeModalWindow();
+    });
 
-    function closeModalWindow() {
+    function resetSwipeState() {
+        isSwipeAnimating = false;
+        isSnapBackActive = false;
+        isPotentialSwipe = false;
+        isHorizontalSwipe = false;
+        isVerticalSwipe = false;
+        pointers = [];
+    }    
+
+    function closeModalWindow(swipeClose = false) {
+        if (document.fullscreenElement) {
+            document.exitFullscreen().catch(err => {
+                console.error(`Ошибка выхода из fullscreen: ${err.message}`);
+            });
+        }
         resetZoomParams();
-        slideCurrent.style.backgroundImage = 'none';
+        resetSwipeState();
         modalContent.classList.remove('loading');
-
-        // Сброс анимаций и трансформаций на modalContent (для вертикального свайпа)
-        modalContent.style.transition = 'none';
-        modalContent.style.transform = 'translateY(0)';
-        modalContent.style.opacity = '1';
-
-        updateBackground();
-        syncZoomSlider();
-        modal.classList.remove('show');
-        document.body.classList.remove('modal-open');
+        if (!swipeClose) {
+            modal.classList.add('closing');
+            modalContent.addEventListener('animationend', function handler() {
+                modalContent.removeEventListener('animationend', handler);
+                slideCurrent.style.backgroundImage = 'none';
+                modal.classList.remove('show', 'closing');
+                document.body.classList.remove('modal-open');
+                modalContent.style.transition = 'none';
+                modalContent.style.transform = 'translateY(0)';
+                modalContent.style.opacity = '1';
+                computeBaseSize();
+                updateBackground(false);
+                document.body.style.setProperty('--overlay-opacity', 1);
+                document.body.style.setProperty('--gallery-blur', '4px');
+                modalContent.style.setProperty('--modal-dimming', 0);
+            });
+        } else {
+            modal.classList.remove('show');
+            document.body.classList.remove('modal-open');
+            slideCurrent.style.backgroundImage = 'none';
+            modalContent.style.transition = 'none';
+            modalContent.style.transform = 'translateY(0)';
+            modalContent.style.opacity = '1';
+            computeBaseSize();
+            updateBackground(false);
+            document.body.style.setProperty('--overlay-opacity', 1);
+            document.body.style.setProperty('--gallery-blur', '4px');
+            modalContent.style.setProperty('--modal-dimming', 0);
+        }
     }
 
     modal.addEventListener('click', (e) => {
@@ -276,94 +352,97 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // ==============================
-    // Масштабирование колесиком
-    // ==============================
-    slideCurrent.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        const rect = slideCurrent.getBoundingClientRect();
-        const cursorX = e.clientX - rect.left;
-        const cursorY = e.clientY - rect.top;
-
-        const prevScale = scale;
-        const delta = (e.deltaY > 0) ? -0.1 : 0.1;
-        let newScale = scale + delta;
-        newScale = Math.max(1, Math.min(newScale, 3));
-
-        if (Math.abs(newScale - prevScale) < 0.00001) {
-            return;
+    fullscreenModal.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+            modal.requestFullscreen().catch(err => {
+                console.error(`Ошибка fullscreen: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen().catch(err => {
+                console.error(`Ошибка выхода: ${err.message}`);
+            });
         }
+    });
 
-        // Используем координаты курсора для масштабирования относительно него
-        applyZoomCenterPreserving(newScale, cursorX, cursorY);
-    }, { passive: false });
+    slideCurrent.addEventListener('wheel', (e) => {
+        if (isPotentialSwipe || isHorizontalSwipe || isVerticalSwipe) return;
+        e.preventDefault();
+        startZoomAnimation();
+        const factor = 0.25;
+        const deltaFactor = (e.deltaY > 0) ? (1 - factor) : (1 + factor);
+        let newScale = scale * deltaFactor;
+        newScale = Math.max(MIN_SCALE, Math.min(newScale, MAX_SCALE));
+        const ds = newScale - scale;
+        const rect = imageStage.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const cursorX = e.clientX;
+        const cursorY = e.clientY;
+        const dx = cursorX - centerX;
+        const dy = cursorY - centerY;
+        rawOffsetX -= dx * ds;
+        rawOffsetY -= dy * ds;
+        scale = newScale;
+        updateBackground(false);
+    }, { passive: false });    
 
-    // ==============================
-    // Pointer Events (включая обработку pinch‑масштабирования)
-    // ==============================
     imageStage.addEventListener('pointerdown', onPointerDown);
     imageStage.addEventListener('pointermove', onPointerMove);
     imageStage.addEventListener('pointerup', onPointerUp);
     imageStage.addEventListener('pointercancel', onPointerCancel);
 
     function onPointerDown(e) {
+        lastMoveTime = Date.now();
+        velocityX = 0;
+        velocityY = 0;
+        if (isSwipeAnimating) {
+            return;
+        }
+        if (isSnapBackActive) {
+            slideCurrent.classList.remove('snap-back-transition');
+            slideCurrent.style.transition = 'none';
+            isSnapBackActive = false;
+        }
         if (e.target.closest('.control-button, #closeModal, #zoomSliderContainer, .thumbnail')) {
             return;
         }
         imageStage.setPointerCapture(e.pointerId);
         pointers.push({ id: e.pointerId, x: e.clientX, y: e.clientY });
-        
-        // Если появляется второй палец – запускаем pinch‑масштабирование:
+
         if (pointers.length === 2) {
-            startPinchDist = getPinchDistance(pointers[0], pointers[1]);
-            startPinchScale = scale;
-            startPinchCenter = getPinchCenter(pointers[0], pointers[1]);
-            // Запоминаем текущие смещения, чтобы отсчитывать изменения от них:
-            startOffsetX = offsetX;
-            startOffsetY = offsetY;
+            isPotentialSwipe = false;
+            isDragging = false;
+            pinchStartDistance = getPinchDistance(pointers[0], pointers[1]);
+            pinchStartScale = scale;
+            pinchStartOffsetX = rawOffsetX;
+            pinchStartOffsetY = rawOffsetY;
+            pinchStartCenter = getPinchCenter(pointers[0], pointers[1]);
+            return;
         }
         
-        // Обрабатываем double tap ТОЛЬКО если задействован один указатель
-        if (pointers.length === 1) {
-            clickCount++;
-            if (clickCount === 1) {
-                doubleClickTimer = setTimeout(() => { clickCount = 0; }, DOUBLE_CLICK_DELAY);
-            } else if (clickCount === 2) {
-                clearTimeout(doubleClickTimer);
-                clickCount = 0;
-                handleDoublePress(e);
-            }
+        if (scale > 1) {
+            isDragging = true;
+            isPotentialSwipe = false;
         } else {
-            // Если уже два и более пальцев – сбрасываем счётчик двойного тапа
-            clickCount = 0;
+            isDragging = false;
+            isPotentialSwipe = true;
+            isHorizontalSwipe = false;
+            isVerticalSwipe = false;
+            swipeStartX = e.clientX;
+            swipeStartY = e.clientY;
+            slideCurrent.style.transition = 'none';
+            slideNext.style.transition = 'none';
+            slidePrev.style.transition = 'none';
+            slideCurrent.style.transform = 'translateX(0)';
+            slideNext.style.transform = 'translateX(100%)';
+            slidePrev.style.transform = 'translateX(-100%)';
         }
-        
-        // Если только один палец – начинаем отслеживать drag/swipe
-        if (pointers.length === 1) {
-            startX = e.clientX;
-            startY = e.clientY;
-            if (scale > 1) {
-                isDragging = true;
-                isPotentialSwipe = false;
-            } else {
-                isDragging = false;
-                isPotentialSwipe = true;
-                isHorizontalSwipe = false;
-                isVerticalSwipe = false;
-                swipeStartX = e.clientX;
-                swipeStartY = e.clientY;
-                slideCurrent.style.transition = 'none';
-                slideNext.style.transition = 'none';
-                slidePrev.style.transition = 'none';
-                slideCurrent.style.transform = 'translateX(0)';
-                slideNext.style.transform = 'translateX(100%)';
-                slidePrev.style.transform = 'translateX(-100%)';
-            }
-        }
+        startX = e.clientX;
+        startY = e.clientY;
     }    
 
     function onPointerMove(e) {
-        // Обновляем координаты указателей
+        if (doubleTapLock) return;
         for (let i = 0; i < pointers.length; i++) {
             if (pointers[i].id === e.pointerId) {
                 pointers[i].x = e.clientX;
@@ -371,32 +450,43 @@ document.addEventListener('DOMContentLoaded', async () => {
                 break;
             }
         }
-        
-        // Если задействовано два пальца – выполняем pinch‑масштабирование
-        if (pointers.length === 2) {
-            let newDist = getPinchDistance(pointers[0], pointers[1]);
-            let newPinchCenter = getPinchCenter(pointers[0], pointers[1]);
-            let pinchRatio = newDist / startPinchDist;
-            let newScale = startPinchScale * pinchRatio;
-            newScale = Math.max(1, Math.min(newScale, 3));
-            const rect = slideCurrent.getBoundingClientRect();
-            // Корректируем смещения так, чтобы середина между пальцами оставалась неподвижной
-            offsetX = startOffsetX - (((newPinchCenter.x - rect.left) - rect.width / 2) * (newScale - startPinchScale));
-            offsetY = startOffsetY - (((newPinchCenter.y - rect.top) - rect.height / 2) * (newScale - startPinchScale));
+        if (pointers.length === 2 && !(isPotentialSwipe || isHorizontalSwipe || isVerticalSwipe)) {
+            const currentDistance = getPinchDistance(pointers[0], pointers[1]);
+            const currentPinchCenter = getPinchCenter(pointers[0], pointers[1]);
+            let newScale = pinchStartScale * (currentDistance / pinchStartDistance);
+            newScale = Math.max(MIN_SCALE, Math.min(newScale, MAX_SCALE));
+            const rect = imageStage.getBoundingClientRect();
+            const containerCenter = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+            const deltaCenter = {
+                x: currentPinchCenter.x - pinchStartCenter.x,
+                y: currentPinchCenter.y - pinchStartCenter.y
+            };
+            const scaleFactor = newScale / pinchStartScale;
+            rawOffsetX = pinchStartOffsetX + deltaCenter.x + (1 - scaleFactor) * (pinchStartCenter.x - containerCenter.x);
+            rawOffsetY = pinchStartOffsetY + deltaCenter.y + (1 - scaleFactor) * (pinchStartCenter.y - containerCenter.y);
             scale = newScale;
-            updateBackground();
-            syncZoomSlider();
+            updateBackground(true);
             return;
         }
-        
         if (isDragging) {
             const dx = e.clientX - startX;
             const dy = e.clientY - startY;
-            offsetX += dx;
-            offsetY += dy;
+            
+            rawOffsetX += dx;
+            rawOffsetY += dy;
+            
+            const now = Date.now();
+            const dt = now - lastMoveTime;
+            if (dt > 0) {
+                velocityX = dx / dt;
+                velocityY = dy / dt;
+            }
+            lastMoveTime = now;
+            
             startX = e.clientX;
             startY = e.clientY;
-            updateBackground();
+            
+            updateBackground(true);
         }
         else if (isPotentialSwipe) {
             const dx = e.clientX - swipeStartX;
@@ -408,6 +498,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     } else {
                         isVerticalSwipe = true;
                     }
+                    velocityX = 0;
+                    velocityY = 0;
                 }
             }
             if (isHorizontalSwipe) {
@@ -418,14 +510,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                     slideCurrent.style.transform = `translateX(${dx}px)`;
                     slidePrev.style.transform = `translateX(calc(-100% + ${dx}px))`;
                 }
-            }
-            else if (isVerticalSwipe) {
+            } else if (isVerticalSwipe) {
                 const absDY = Math.abs(dy);
                 const maxDist = 300;
                 let newOpacity = 1 - (absDY / maxDist);
                 if (newOpacity < 0) newOpacity = 0;
                 modalContent.style.transform = `translateY(${dy}px)`;
                 modalContent.style.opacity = newOpacity.toString();
+                document.body.style.setProperty('--overlay-opacity', newOpacity);
+                document.body.style.setProperty('--gallery-blur', `${4 * newOpacity}px`);
             }
         }
     }
@@ -434,22 +527,52 @@ document.addEventListener('DOMContentLoaded', async () => {
         imageStage.releasePointerCapture(e.pointerId);
         pointers = pointers.filter(p => p.id !== e.pointerId);
         if (pointers.length < 2) {
-            startPinchDist = 0;
+            pinchStartDistance = 0;
         }
+        
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        const moveDistance = Math.sqrt(dx * dx + dy * dy);
+    
+        if (moveDistance < TAP_MOVEMENT_THRESHOLD) {
+            clickCount++;
+            if (clickCount === 1) {
+                doubleClickTimer = setTimeout(() => {
+                    clickCount = 0;
+                }, DOUBLE_CLICK_DELAY);
+            } else if (clickCount === 2) {
+                clearTimeout(doubleClickTimer);
+                clickCount = 0;
+                handleDoublePress(e);
+                doubleTapLock = true;
+                setTimeout(() => { doubleTapLock = false; }, 300);
+                return;
+            }
+        }
+    
         if (isDragging) {
             isDragging = false;
-        }
-        else if (isPotentialSwipe) {
-            const dx = e.clientX - swipeStartX;
-            const dy = e.clientY - swipeStartY;
+            const limitedVelX = Math.max(-MAX_VELOCITY, Math.min(velocityX, MAX_VELOCITY));
+            const limitedVelY = Math.max(-MAX_VELOCITY, Math.min(velocityY, MAX_VELOCITY));
+            const momentumX = limitedVelX * INERTIA_MULTIPLIER * 24;
+            const momentumY = limitedVelY * INERTIA_MULTIPLIER * 24;
+            rawOffsetX += momentumX;
+            rawOffsetY += momentumY;
+            updateBackground(false);
+            snapBackToBounds();
+        } else if (isPotentialSwipe) {
+            const dxSwipe = e.clientX - swipeStartX;
+            const dySwipe = e.clientY - swipeStartY;
             if (isHorizontalSwipe) {
-                finishHorizontalSwipe(dx);
+                finishHorizontalSwipe(dxSwipe);
             } else if (isVerticalSwipe) {
-                finishVerticalSwipe(dy);
+                finishVerticalSwipe(dySwipe);
             }
             isPotentialSwipe = false;
             isHorizontalSwipe = false;
             isVerticalSwipe = false;
+        } else {
+            snapBackToBounds();
         }
     }
 
@@ -460,92 +583,95 @@ document.addEventListener('DOMContentLoaded', async () => {
         isPotentialSwipe = false;
         isHorizontalSwipe = false;
         isVerticalSwipe = false;
+        snapBackToBounds();
     }
 
-    // ==============================
-    // Завершаем свайпы
-    // ==============================
+    function snapBackToBounds() {
+        slideCurrent.style.transition = 'background-position 0.3s ease';
+        updateBackground(false);
+        slideCurrent.addEventListener('transitionend', function handler() {
+            slideCurrent.removeEventListener('transitionend', handler);
+            slideCurrent.style.transition = 'none';
+            isSnapBackActive = false;
+        }, { once: true });
+        isSnapBackActive = true;
+    }
+
     function finishHorizontalSwipe(dx) {
+        if (isSwipeAnimating) return;
+        isSwipeAnimating = true;
         const duration = 300;
+        let transitionElement;
         if (dx < -SWIPE_THRESHOLD) {
             slideCurrent.style.transition = `transform ${duration}ms ease`;
             slideNext.style.transition = `transform ${duration}ms ease`;
             slideCurrent.style.transform = 'translateX(-100%)';
             slideNext.style.transform = 'translateX(0)';
-            slideNext.addEventListener('transitionend', function handler() {
-                slideNext.removeEventListener('transitionend', handler);
+            transitionElement = slideNext;
+            transitionElement.addEventListener('transitionend', function handler() {
+                transitionElement.removeEventListener('transitionend', handler);
                 currentImageIndex = (currentImageIndex + 1) % imagesList.length;
                 resetZoomParams();
-                updateSlides();
-                updateBackground();
-                syncZoomSlider();
-                updateThumbnails();
-                scrollToActiveThumbnail();
+                showImage(currentImageIndex);
+                isSwipeAnimating = false;
             });
-        }
-        else if (dx > SWIPE_THRESHOLD) {
+        } else if (dx > SWIPE_THRESHOLD) {
             slideCurrent.style.transition = `transform ${duration}ms ease`;
             slidePrev.style.transition = `transform ${duration}ms ease`;
             slideCurrent.style.transform = 'translateX(100%)';
             slidePrev.style.transform = 'translateX(0)';
-            slidePrev.addEventListener('transitionend', function handler() {
-                slidePrev.removeEventListener('transitionend', handler);
+            transitionElement = slidePrev;
+            transitionElement.addEventListener('transitionend', function handler() {
+                transitionElement.removeEventListener('transitionend', handler);
                 currentImageIndex = (currentImageIndex - 1 + imagesList.length) % imagesList.length;
                 resetZoomParams();
-                updateSlides();
-                updateBackground();
-                syncZoomSlider();
-                updateThumbnails();
-                scrollToActiveThumbnail();
+                showImage(currentImageIndex);
+                isSwipeAnimating = false;
             });
-        }
-        else {
+        } else {
             slideCurrent.style.transition = `transform ${duration}ms ease`;
             if (dx < 0) {
                 slideCurrent.style.transform = 'translateX(0)';
                 slideNext.style.transition = `transform ${duration}ms ease`;
                 slideNext.style.transform = 'translateX(100%)';
+                transitionElement = slideNext;
             } else {
                 slideCurrent.style.transform = 'translateX(0)';
                 slidePrev.style.transition = `transform ${duration}ms ease`;
                 slidePrev.style.transform = 'translateX(-100%)';
+                transitionElement = slidePrev;
             }
+            transitionElement.addEventListener('transitionend', function handler() {
+                transitionElement.removeEventListener('transitionend', handler);
+                isSwipeAnimating = false;
+            });
         }
+        setTimeout(() => { isSwipeAnimating = false; }, duration + 50);
     }
 
     function finishVerticalSwipe(dy) {
-        modalContent.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-        if (dy > SWIPE_CLOSE_THRESHOLD) {
-            modalContent.style.transform = 'translateY(100%)';
+        modalContent.style.transition = 'transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease';
+        if (dy > SWIPE_CLOSE_THRESHOLD || dy < -SWIPE_CLOSE_THRESHOLD) {
+            modalContent.style.transform = dy > 0 ? 'translateY(100%)' : 'translateY(-100%)';
             modalContent.style.opacity = '0';
-            modalContent.addEventListener('transitionend', function _closeDown() {
-                modalContent.removeEventListener('transitionend', _closeDown);
-                closeModalWindow();
+            modalContent.addEventListener('transitionend', function _close() {
+                modalContent.removeEventListener('transitionend', _close);
+                closeModalWindow(true);
             });
-        }
-        else if (dy < -SWIPE_CLOSE_THRESHOLD) {
-            modalContent.style.transform = 'translateY(-100%)';
-            modalContent.style.opacity = '0';
-            modalContent.addEventListener('transitionend', function _closeUp() {
-                modalContent.removeEventListener('transitionend', _closeUp);
-                closeModalWindow();
-            });
-        }
-        else {
+        } else {
             modalContent.style.transform = 'translateY(0)';
             modalContent.style.opacity = '1';
+            document.body.style.setProperty('--overlay-opacity', 1);
+            document.body.style.setProperty('--gallery-blur', '4px');
+            modalContent.style.setProperty('--modal-dimming', 0);
         }
     }
 
-    // ==============================
-    // Pinch‑утилиты
-    // ==============================
     function getPinchDistance(p1, p2) {
         const dx = p2.x - p1.x;
         const dy = p2.y - p1.y;
         return Math.sqrt(dx * dx + dy * dy);
     }
-
     function getPinchCenter(p1, p2) {
         return {
             x: (p1.x + p2.x) / 2,
@@ -553,20 +679,43 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
     }
 
-    // ==============================
-    // Двойной клик/тап
-    // ==============================
     function handleDoublePress(e) {
-        const rect = slideCurrent.getBoundingClientRect();
-        const cursorX = e.clientX - rect.left;
-        const cursorY = e.clientY - rect.top;
-        let newScale = (scale === 1) ? 2 : 1;
-        applyZoomCenterPreserving(newScale, cursorX, cursorY);
-    }
+        startZoomAnimation();
+        const rect = imageStage.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        let newScale;
+        if (scale === 1) {
+            newScale = MID_SCALE;
+            const ds = newScale - scale;
+            const dx = e.clientX - centerX;
+            const dy = e.clientY - centerY;
+            rawOffsetX -= dx * ds;
+            rawOffsetY -= dy * ds;
+        } else {
+            newScale = 1;
+            resetZoomParams();
+            isDragging = false;
+        }
+        scale = newScale;
+        updateBackground(false);
+        resetSwipeState();
+    }               
 
-    // ==============================
-    // Клавиши управления
-    // ==============================
+    document.addEventListener('fullscreenchange', () => {
+        if (modal.classList.contains('show')) {
+            if (document.fullscreenElement) {
+                modalContent.classList.add('fullscreen');
+            } else {
+                modalContent.classList.remove('fullscreen');
+            }
+            resetZoomParams();
+            computeBaseSize();
+            updateBackground(false);
+            recalcModalHeight();
+        }
+    });    
+
     window.addEventListener('keydown', (e) => {
         if (modal.classList.contains('show')) {
             if (e.key === 'ArrowRight') {

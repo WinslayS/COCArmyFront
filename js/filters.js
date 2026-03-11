@@ -1,141 +1,248 @@
-// Находим основные элементы
 const filterPanelToggle = document.getElementById("filterPanelToggle");
 const filterSection = document.querySelector(".filter-section");
 const mainContainer = document.querySelector(".main-container");
 
-// Создаём кнопку "Фильтры" (будет на маленьких экранах внизу)
 const showFiltersButton = document.createElement("button");
 showFiltersButton.id = "showFiltersButton";
-showFiltersButton.textContent = "Фильтры";
+showFiltersButton.textContent = "Filters";
 showFiltersButton.classList.add("filter-toggle-button", "show-filters-button");
-showFiltersButton.style.display = "none"; // По умолчанию скрыта (для больших экранов)
+showFiltersButton.style.display = "none";
 document.body.appendChild(showFiltersButton);
 
-// ----- Логика скрытия/показа панели (объединённая) -----
-
-// Открыть панель (убрать hidden, добавить show)
 function openFilterPanel() {
   filterSection.classList.remove("hidden");
   filterSection.classList.add("show");
-  mainContainer.classList.remove("fullscreen"); // Если нужно убирать fullscreen
-  // Кнопки
+  mainContainer.classList.remove("fullscreen");
   filterPanelToggle.style.display = "block";
   showFiltersButton.style.display = "none";
 }
-
-// Закрыть панель (убрать show, добавить hidden)
 function closeFilterPanel() {
   filterSection.classList.remove("show");
   filterSection.classList.add("hidden");
   mainContainer.classList.add("fullscreen");
-  // Кнопки
   filterPanelToggle.style.display = "none";
   showFiltersButton.style.display = "block";
 }
 
-// Клик по кнопке (большая) "Скрыть/Показать"
 filterPanelToggle.addEventListener("click", () => {
-  // Если панель сейчас открыта (.show), то закрываем
   if (filterSection.classList.contains("show")) {
     closeFilterPanel();
   } else {
     openFilterPanel();
   }
 });
-
-// Клик по кнопке "Фильтры" (на маленьких экранах)
 showFiltersButton.addEventListener("click", () => {
   openFilterPanel();
 });
 
-// ----- Логика фильтрации (ваша изначальная) -----
-const filterCategories = document.querySelectorAll('.filter-category');
-const filterStatuses = document.querySelectorAll('.filter-status');
-
-// Функция активации/деактивации
-function toggleActiveFilter(buttons, clickedButton) {
-  if (clickedButton.classList.contains('active')) {
-    clickedButton.classList.remove('active');
-  } else {
-    buttons.forEach(button => button.classList.remove('active'));
-    clickedButton.classList.add('active');
-  }
-}
-
-function filterGallery() {
-  const galleryItems = document.querySelectorAll('.gallery .item');
-  const activeCategory = document.querySelector('.filter-category.active')?.dataset.category;
-  const activeStatus = document.querySelector('.filter-status.active')?.dataset.status;
-
-  galleryItems.forEach(item => {
-    const itemCategory = item.getAttribute('data-categories');
-    const itemStatus = item.getAttribute('data-status');
-
-    const categoryMap = {
-      "war": "война",
-      "resources": "ресурсы",
-      "decor": "декор"
-    };
-    const mappedCategory = categoryMap[activeCategory] || null;
-
-    const categoryMatch = !activeCategory || itemCategory === mappedCategory;
-    const statusMatch = !activeStatus || itemStatus === activeStatus;
-
-    if (categoryMatch && statusMatch) {
-      item.style.display = 'block';
-    } else {
-      item.style.display = 'none';
-    }
-  });
-}
-
-// Навешиваем события клика на кнопки
-filterCategories.forEach(button => {
-  button.addEventListener('click', () => {
-    toggleActiveFilter(filterCategories, button);
-    filterGallery();
-  });
-});
-
-filterStatuses.forEach(button => {
-  button.addEventListener('click', () => {
-    toggleActiveFilter(filterStatuses, button);
-    filterGallery();
-  });
-});
-
-// ----- Логика адаптива (updateFiltersState) -----
-
 function updateFiltersState() {
   const screenWidth = window.innerWidth;
+  const filtersHidden = filterSection.classList.contains("hidden");
+  if (screenWidth <= 699) {
+    if (!filtersHidden) closeFilterPanel();
+  } else {
+    if (filtersHidden) openFilterPanel();
+  }
+}
+window.addEventListener("resize", updateFiltersState);
+document.addEventListener("DOMContentLoaded", updateFiltersState);
 
-  if (filterSection && mainContainer && showFiltersButton) {
-    // Проверяем, скрыта ли панель сейчас
-    const filtersHidden = filterSection.classList.contains("hidden");
+const villagePageBtns = document.querySelectorAll(".btn-village-page");
+villagePageBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const targetPage = btn.dataset.page;
+    window.location.href = targetPage;
+  });
+});
 
-    // Ваши условия: <= 379, 380-699, 900-1099...
-    // Предположим, что при ширине до 699 хотим панель снизу (всплывающую)
-    if (screenWidth <= 379 || (screenWidth >= 380 && screenWidth <= 699) || (screenWidth >= 900 && screenWidth <= 1199)) {
-      // На этих разрешениях по умолчанию хотим панель скрытой (чтобы всплывала)
-      if (!filtersHidden) {
-        // Если она не скрыта — скроем
-        closeFilterPanel();
-      }
+let currentTH = null;
+
+let currentTag = null; 
+
+let currentGeneralSubtags = [];
+let currentSpell = null;
+let currentInferno = null;
+
+let currentSortKey = null;
+
+const townHallBtns = document.querySelectorAll(".filter-townhall");
+const tagBtns      = document.querySelectorAll(".filter-tag");
+const subtagBtns   = document.querySelectorAll(".filter-subtag");
+const sortBtns     = document.querySelectorAll(".filter-sort");
+
+townHallBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const clickedTH = btn.dataset.th;
+    if (currentTH === clickedTH) {
+      return;
     } else {
-      // Иначе (например, > 699, но не попадаем в 900..1099) – показываем панель
-      if (filtersHidden) {
-        openFilterPanel();
-      }
+      townHallBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentTH = clickedTH;
     }
+    filterGallery();
+  });
+});
+function updateSubtagDisplay() {
+  const subtagGroups = document.querySelectorAll(".subtag-group");
+  const subtagButtons = document.querySelectorAll(".filter-subtag");
+
+  if (!currentTag) {
+    subtagGroups.forEach(group => group.style.display = "flex");
+    subtagButtons.forEach(btn => btn.style.display = "inline-block");
+  } else if (currentTag === "war") {
+    subtagGroups.forEach(group => group.style.display = "flex");
+    subtagButtons.forEach(btn => {
+      if (btn.dataset.subtag === "progress" && btn.parentElement.classList.contains("general-subtags")) {
+        btn.style.display = "none";
+      } else {
+        btn.style.display = "inline-block";
+      }
+    });
+  } else if (currentTag === "farm") {
+    subtagGroups.forEach(group => group.style.display = "none");
+  } else if (currentTag === "decor") {
+    subtagGroups.forEach(group => {
+      if (group.classList.contains("general-subtags")) {
+        group.style.display = "flex";
+      } else {
+        group.style.display = "none";
+      }
+    });
+    subtagButtons.forEach(btn => {
+      if (btn.dataset.subtag === "progress") {
+        btn.style.display = "inline-block";
+      } else {
+        btn.style.display = "none";
+      }
+    });
   }
 }
 
-// При загрузке страницы сразу проверяем ширину
-document.addEventListener("DOMContentLoaded", () => {
-  updateFiltersState();
+tagBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const clickedTag = btn.dataset.tag;
+    if (currentTag === clickedTag) {
+      currentTag = null;
+      btn.classList.remove('active');
+    } else {
+      tagBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentTag = clickedTag;
+    }
+    updateSubtagDisplay();
+    filterGallery();
+  });
 });
 
-// При ресайзе тоже проверяем
-window.addEventListener("resize", () => {
-  updateFiltersState();
+subtagBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const tag = btn.dataset.subtag;
+    if (["rage","poison","invis"].includes(tag)) {
+      if (currentSpell === tag) {
+        currentSpell = null;
+        btn.classList.remove("active");
+      } else {
+        if (currentSpell) {
+          const oldBtn = document.querySelector(`.filter-subtag[data-subtag="${currentSpell}"]`);
+          if (oldBtn) oldBtn.classList.remove("active");
+        }
+        currentSpell = tag;
+        btn.classList.add("active");
+      }
+    }
+    else if (["inferno-single","inferno-multi"].includes(tag)) {
+      if (currentInferno === tag) {
+        currentInferno = null;
+        btn.classList.remove("active");
+      } else {
+        if (currentInferno) {
+          const oldBtn = document.querySelector(`.filter-subtag[data-subtag="${currentInferno}"]`);
+          if (oldBtn) oldBtn.classList.remove("active");
+        }
+        currentInferno = tag;
+        btn.classList.add("active");
+      }
+    }
+    else {
+      const isActive = btn.classList.contains("active");
+      if (isActive) {
+        btn.classList.remove("active");
+        currentGeneralSubtags = currentGeneralSubtags.filter(t => t !== tag);
+      } else {
+        btn.classList.add("active");
+        currentGeneralSubtags.push(tag);
+      }
+    }
+    filterGallery();
+  });
 });
+
+sortBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const clickedSort = btn.dataset.sort;
+    if (currentSortKey === clickedSort) {
+      return;
+    } else {
+      sortBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentSortKey = clickedSort;
+      applySort();
+    }
+  });
+});
+
+function filterGallery() {
+  const items = document.querySelectorAll(".gallery .item");
+  items.forEach(item => {
+    const itemTH    = item.dataset.th;
+    const itemTag   = item.dataset.tag;
+    const itemStags = (item.dataset.subtags || "").split(" ");
+
+    let passTH = true;
+    if (currentTH) {
+      passTH = (itemTH === currentTH);
+    }
+    let passTag = true;
+    if (currentTag) {
+      passTag = (itemTag === currentTag);
+    }
+    let passSpell = true;
+    if (currentSpell) {
+      passSpell = itemStags.includes(currentSpell);
+    }
+    let passInferno = true;
+    if (currentInferno) {
+      passInferno = itemStags.includes(currentInferno);
+    }
+    let passGeneral = true;
+    if (currentGeneralSubtags.length > 0) {
+      passGeneral = currentGeneralSubtags.every(st => itemStags.includes(st));
+    }
+
+    if (passTH && passTag && passSpell && passInferno && passGeneral) {
+      item.style.display = "";
+    } else {
+      item.style.display = "none";
+    }
+  });
+}
+
+function applySort() {
+  if (!currentSortKey) return;
+  const gallery = document.querySelector(".gallery");
+  const arr = Array.from(gallery.querySelectorAll(".item"));
+  arr.sort((a,b) => {
+    if (currentSortKey === "last") {
+      return +b.dataset.id - +a.dataset.id;
+    } else if (currentSortKey === "views") {
+      return (+b.dataset.views||0) - (+a.dataset.views||0);
+    } else if (currentSortKey === "uploaded") {
+      return (+b.dataset.uploaded||0) - (+a.dataset.uploaded||0);
+    } else if (currentSortKey === "saved") {
+      return (+b.dataset.saved||0) - (+a.dataset.saved||0);
+    }
+    return 0;
+  });
+  arr.forEach(i => gallery.appendChild(i));
+}
