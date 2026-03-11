@@ -1,156 +1,488 @@
+main {
+  margin-top: 100px !important;
+}
 .header-top {
-    position: relative; /* Обычное положение в потоке */
-    width: 100%;
-    height: 70px; /* Высота первой шапки */
-    background: #e43b04;
-    color: var(--white);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--font-top);
-    font-weight: bold;
-    z-index: 1000;
+  position: fixed;
+  width: 90%;
+  min-height: 70px;
+  background: #000;
+  color: #ddd;
+  z-index: 1000;
+  left: 50%;
+  transform: translateX(-50%);
 }
-.header-top::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('../images/banner/back.webp'); /* Путь к фону */
-    background-size: cover; /* Изображение покрывает весь элемент */
-    background-position: center; /* Центрирование фонового изображения */
-    filter: blur(2px);
-    z-index: -1; /* Помещаем фон под текст */
+.header-top.scrolled {
+  background: rgba(0, 0, 0, 0.85);
+  height: 60px;
 }
-.header-nav {
-    position: relative; /* Нормальное поведение в потоке */
-    width: 100%;
-    flex-shrink: 0;
-    background: linear-gradient(180deg, rgba(245, 215, 180, 0.9), rgba(210, 140, 80, 0.9)); /* Улучшенный градиент */
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Более лёгкая тень */
-    z-index: 2; /* Низкий z-index */
-    transition: transform 0.3s ease, top 0.3s ease;
+.header-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+}
+.logo img {
+  height: 30px;
+}
+.menu-icons {
+  margin-left: auto;
+  display: flex;
+  gap: 15px;
+}
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(255,255,255,0.6);
+  transition: color 0.3s;
+}
+.icon-button:hover {
+  color: #fff;
+}
+.icon-button svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+.nav-menu {
+  position: fixed;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px) brightness(0.9);
+  -webkit-backdrop-filter: blur(5px) brightness(0.9);
+  transition: top 0.4s ease;
+  z-index: 1001;
+  padding: 10px 0;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+}
+.nav-menu.open {
+  top: 70px;
 }
 .nav-menu ul {
-    list-style: none;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 20px;
+  padding: 0;
+  list-style: none;
+}
+.nav-menu li {
+  position: relative;
+  margin-right: 20px;
+}
+.nav-menu > ul {
+  display: flex;
+  flex-direction: column;
+  margin: 0 20px;
+  padding: 0;
+  list-style: none;
+}
+.nav-menu > ul > li {
+  margin-right: 20px;
+}
+.nav-menu a {
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.nav-menu a:hover {
+  color: #fff;
+}
+.nav-menu .dropdown > a {
+  color: rgba(255,255,255,0.6);
+  transition: color 0.3s, opacity 0.3s;
+}
+.nav-menu .dropdown > a:hover {
+  color: #fff;
+  opacity: 1;
+}
+.nav-menu li:not(.dropdown):hover > a {
+  color: #fff;
+}
+.nav-menu li > a {
+  position: relative;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color 0.6s ease;
+}
+.nav-menu li > a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background-color: white;
+  transition: width 0.6s ease, opacity 0.6s ease;
+  opacity: 0;
+}
+.nav-menu li > a:hover {
+  color: #ffffff;
+}
+.nav-menu li > a:hover::after {
+  width: 100%;
+  opacity: 1;
+}
+.dropdown-menu {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+  overflow: visible;
+}
+.dropdown-menu a {
+  position: relative;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: color 0.6s ease;
+  display: inline-block;
+}
+.dropdown-menu a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background-color: white;
+  transition: width 0.6s ease, opacity 0.6s ease;
+  opacity: 0;
+}
+.dropdown-menu a:hover {
+  color: white;
+}
+.dropdown-menu a:hover::after {
+  width: 100%;
+  opacity: 1;
+}
+.dropdown-panel {
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px) brightness(0.9);
+  -webkit-backdrop-filter: blur(5px) brightness(0.9);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 20px;
+}
+.dropdown-panel.active {
+  transform: scaleY(1);
+}
+.dropdown-panel ul {
+  margin: 20px;
+  margin-top: 40px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  gap: 30px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  transition-delay: 0s;
+}
+.dropdown-panel.active ul {
+  opacity: 1;
+  transition-delay: 0.05s;
+}
+.dropdown-panel a {
+  color: rgba(255,255,255,0.6);
+  transition: color 0.3s;
+}
+.dropdown-panel a:hover {
+  color: #fff;
+}
+.hamburger {
+  display: none;
+  cursor: pointer;
+  color: rgba(255,255,255,0.6);
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+.hamburger svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.hamburger:hover {
+  color: #fff;
+}
+.hamburger-lines,
+.hamburger-close {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.hamburger-lines {
+  opacity: 1;
+  transform: translateY(0);
+}
+.hamburger-close {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+.hamburger.open .hamburger-lines {
+  opacity: 0;
+  transform: translateY(20px);
+}
+.hamburger.open .hamburger-close {
+  opacity: 1;
+  transform: translateY(0);
+}
+.content-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+[data-theme="dark"] {
+  background-color: #444444;
+  color: white;
+}
+[data-theme="light"] {
+  background-color: white;
+  color: black;
+}
+.submenu {
+  display: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  padding-left: 20px;
+}
+.dropdown.open .submenu {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 4px;
+}
+.dropdown.open .arrow {
+  transform: rotate(180deg);
+}
+.no-transition {
+  transition: none !important;
+}
+@media (max-width: 699px) {
+  .header-top {
+    width: 100%;
+  }
+  .nav-menu {
+  z-index: 999;
+  height: 50%;
+  overflow-y: auto;
+  } 
+  .nav-menu ul {
+    gap: 25px;
+  } 
+  .header-row {
+    flex-direction: row;
+    justify-content: space-between;
+    height: 70px;
+    padding: 0 10px;
+  }
+  .hamburger {
+    display: inline-block;
+  }
+  .dropdown-menu {
+    display: none;
+  }
+  .submenu li:first-child {
+    margin-top: 25px;
+  }
+  .submenu {
     display: flex;
-    gap: 20px; /* Отступ между элементами */
+    flex-direction: column;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .dropdown.open .submenu {
+    max-height: 300px;
+  }
+  .arrow {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 5px;
+    vertical-align: middle;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid rgba(255,255,255,0.6);
+    transition: transform 0.3s;
+  }
+  .dropdown.open .arrow {
+    transform: rotate(180deg);
+  }
+  .nav-menu .dropdown > a.dropdown-link {
+    font-size: 1.2rem;
+  }
+  .nav-menu .submenu a {
+    font-size: 1rem;
+  }
+  .nav-overlay {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 70px);
+    background: transparent;
+    z-index: 998;
+  }
+}
+@media (min-width: 700px) and (max-width: 999px)  {
+  .header-top {
+    border-radius: 20px;
+    top: 10px;
+  }
+  .header-row {
+    padding: 0 20px;
+    height: 70px;
+  }
+  .hamburger {
+    display: none;
+  }
+  .nav-menu {
+    font-size: 1rem;
+    top: 30px;
+    left: 10%;
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: none;
+    box-shadow: none;
+    margin-left: 40px;
+    z-index: 1000;
+    transition: none;
+  }
+  .nav-menu ul {
+    display: flex;
+    flex-direction: row;
     margin: 0;
     padding: 0;
+    gap: 0;
+  }
+  .dropdown .submenu {
+    display: none !important;
+  }
+  .dropdown.open .submenu {
+    display: none !important;
+  }
 }
-.nav-menu ul li a {
-    color: #f8f5f0; /* Почти белый текст */
-    font-size: var(--font-nav);
-    font-weight: bold;
-    text-decoration: none;
-    transition: background 0.3s ease, color 0.3s ease;
-    padding: 5px 10px; /* Добавим немного пространства */
-    border-radius: 5px; /* Скруглённые углы */
-}
-.nav-menu ul li a:hover {
-    color: #fff3e0; /* Светлый персиковый цвет при наведении */
-    transform: scale(1.1);
-    background: rgba(245, 215, 180, 0.95); /* Светлый бежевый при наведении */
-}
-.nav-menu ul li a.active {
-    background: rgba(210, 140, 80, 0.95); /* Более тёмный для активного раздела */
-    color: var(--white); /* Белый текст */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Легкая тень */
-    font-weight: bold;
-}
-.footer-bottom {
-    background: linear-gradient(180deg, #ffa175, #ff6a30); /* Градиентный оранжевый фон */
-    color: #ffffff; /* Темно-коричневый текст */
-    padding: 0px; /* Внутренние отступы */
-    font-size: var(--font-bot);
-    text-align: center; /* Центровка текста */
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Тень сверху */
-    margin-top: 10px; /* Отступ сверху от основного контента */
-}
-.footer-content a {
-    color: #ffffff; /* Более насыщенный оранжевый для ссылок */
-    text-decoration: none; /* Убираем подчеркивание */
-}
-.footer-content a:hover {
-    text-decoration: underline; /* Подчеркивание при наведении */
-    color: #fff3e0; /* Светло-оранжевый при наведении */
-    text-decoration: none;
-}
-.clickable {
-    color: #ffffff; /* Оранжевый текст */
-    cursor: pointer; /* Указатель при наведении */
-    text-decoration: none;
-}
-.clickable:hover {
-    color: #fff3e0; /* Светло-оранжевый при наведении */
-}
-@media (max-width: 379px) {
-    :root {
-        --font-top: 0.9em;
-        --font-nav: 0.8em;
-        --font-bot: 0.7em;
-    }
+@media (min-width: 1000px) {
     .header-top {
-        height: 50px;
-    }
-    .header-nav {
-        height: 60px;
-    }
-    .nav-menu ul {
-        flex-wrap: wrap; /* Разрешаем перенос элементов */
-        justify-content: center; /* Центрируем элементы */
-        gap: 5px;
-    }
-    .nav-menu ul li {
-        flex: 1 1 40%; /* Элементы занимают 45% ширины родителя */
-        text-align: center; /* Центрируем текст */
-    }
+    border-radius: 20px;
+    top: 10px;
+  }
+  .header-row {
+    padding: 0 20px;
+    height: 70px;
+  }
+  .hamburger {
+    display: none;
+  }
+  .nav-menu {
+    font-size: 1rem;
+    top: 30px;
+    left: 10%;
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: none;
+    box-shadow: none;
+    margin-left: 10px;
+    z-index: 1000;
+    transition: none;
+  }
+  .nav-menu ul {
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    padding: 0;
+  }
+  .dropdown .submenu {
+    display: none !important;
+  }
+  .dropdown.open .submenu {
+    display: none !important;
+  }
 }
-@media (min-width: 380px) and (max-width: 699px) {
-    :root {
-    --font-top: 0.9em;
-    --font-nav: 0.8em;
-    --font-bot: 0.8em;
-    }
-    .header-top {
-        height: 50px;
-    }
-    .header-nav {
-        height: 40px;
-    }
-    .nav-menu ul {
-    gap: 5px;
-    }
+@media (min-width: 1500px) {
+  .nav-menu {
+  margin-left: 0 !important;
+  }
 }
-@media (min-width: 700px) and (max-width: 1099px) {
-    :root {
-    --font-top: 1.2em;
-    --font-nav: 1em;
-    --font-bot: 0.9em;
-    }
-    .header-top {
-        height: 60px;
-    }
-    .header-nav {
-        height: 50px;
-    }
-    .nav-menu ul {
-        gap: 10px;
-    }
+/* Отдельные панели для иконок */
+.icon-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  display: none;
+  background: #111;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  padding: 8px 0;
+  min-width: 140px;
+  z-index: 1002;
 }
-@media (min-width: 1100px) {
-    :root {
-    --font-top: 1.5em;
-    --font-nav: 1.2em;
-    --font-bot: 1em;
-    }
-    .header-nav {
-        height: 60px; /* вы хотите 60px */
-      }
+
+.icon-panel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.icon-panel li {
+  padding: 6px 16px;
+}
+
+.icon-panel li:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.icon-panel a,
+.icon-panel button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  font: inherit;
+  color: #ddd;
+  cursor: pointer;
+}
+
+/* Показываем панель при active */
+.icon-container.active .icon-panel {
+  display: block;
+}
+/* простая модалка */
+.modal {
+  position: fixed;
+  top:0; left:0; width:100%; height:100%;
+  display:flex; align-items:center; justify-content:center;
+  background: rgba(0,0,0,0.5);
+  z-index:2000;
+}
+.modal.hidden { display: none; }
+.modal-content {
+  background:#fff; padding:24px; border-radius:8px;
+  text-align:center;
+}
+.modal-content button {
+  margin:8px; padding:8px 16px; cursor:pointer;
 }
